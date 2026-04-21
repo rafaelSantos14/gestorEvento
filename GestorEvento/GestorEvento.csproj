@@ -80,12 +80,15 @@
     <Compile Include="Repositories\ProdutoRepository.cs" />
     <Compile Include="Repositories\EventoRepository.cs" />
     <Compile Include="Repositories\ProdutoEventoRepository.cs" />
+    <Compile Include="Repositories\FormaPagamentoRepository.cs" />
     <Compile Include="Models\Produto.cs" />
     <Compile Include="Models\Evento.cs" />
     <Compile Include="Models\ProdutoEvento.cs" />
+    <Compile Include="Models\FormaPagamento.cs" />
     <Compile Include="Services\ProdutoService.cs" />
     <Compile Include="Services\EventoService.cs" />
     <Compile Include="Services\ProdutoEventoService.cs" />
+    <Compile Include="Services\FormaPagamentoService.cs" />
     <Compile Include="Utilities\EstiloManager.cs" />
     <Compile Include="Views\DialogoCustomizado.cs">
       <SubType>Form</SubType>

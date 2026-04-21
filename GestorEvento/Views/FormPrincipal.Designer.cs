@@ -35,10 +35,10 @@ namespace GestorEvento.Views
             this.btnSair = new System.Windows.Forms.Button();
             this.btnRelatorios = new System.Windows.Forms.Button();
             this.btnCaixa = new System.Windows.Forms.Button();
-            this.btnVincular = new System.Windows.Forms.Button();
             this.btnEventos = new System.Windows.Forms.Button();
             this.btnProdutos = new System.Windows.Forms.Button();
             this.lblTitulo = new System.Windows.Forms.Label();
+            this.btnVincular = new System.Windows.Forms.Button();
             this.panelTitulo.SuspendLayout();
             this.panelMenu.SuspendLayout();
             this.SuspendLayout();
@@ -151,23 +151,6 @@ namespace GestorEvento.Views
             this.btnCaixa.UseVisualStyleBackColor = false;
             this.btnCaixa.Click += new System.EventHandler(this.btnCaixa_Click);
             // 
-            // btnVincular
-            // 
-            this.btnVincular.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.btnVincular.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnVincular.FlatAppearance.BorderSize = 0;
-            this.btnVincular.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnVincular.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnVincular.ForeColor = System.Drawing.Color.White;
-            this.btnVincular.Location = new System.Drawing.Point(0, 99);
-            this.btnVincular.Name = "btnVincular";
-            this.btnVincular.Size = new System.Drawing.Size(202, 46);
-            this.btnVincular.TabIndex = 3;
-            this.btnVincular.Text = "🔗 VINCULAR PRODUTOS";
-            this.btnVincular.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnVincular.UseVisualStyleBackColor = false;
-            this.btnVincular.Click += new System.EventHandler(this.btnVincular_Click);
-            // 
             // btnEventos
             // 
             this.btnEventos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
@@ -213,6 +196,23 @@ namespace GestorEvento.Views
             this.lblTitulo.TabIndex = 0;
             this.lblTitulo.Text = "MENU";
             // 
+            // btnVincular
+            // 
+            this.btnVincular.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.btnVincular.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnVincular.FlatAppearance.BorderSize = 0;
+            this.btnVincular.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnVincular.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnVincular.ForeColor = System.Drawing.Color.White;
+            this.btnVincular.Location = new System.Drawing.Point(0, 99);
+            this.btnVincular.Name = "btnVincular";
+            this.btnVincular.Size = new System.Drawing.Size(202, 46);
+            this.btnVincular.TabIndex = 3;
+            this.btnVincular.Text = "🔗 VINCULAR PRODUTOS";
+            this.btnVincular.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnVincular.UseVisualStyleBackColor = false;
+            this.btnVincular.Click += new System.EventHandler(this.btnVincular_Click);
+            // 
             // FormPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -240,9 +240,9 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.Button btnProdutos;
         private System.Windows.Forms.Button btnEventos;
-        private System.Windows.Forms.Button btnVincular;
         private System.Windows.Forms.Button btnCaixa;
         private System.Windows.Forms.Button btnRelatorios;
         private System.Windows.Forms.Button btnSair;
+        private System.Windows.Forms.Button btnVincular;
     }
 }
