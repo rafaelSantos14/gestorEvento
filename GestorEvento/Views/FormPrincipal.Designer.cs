@@ -52,7 +52,7 @@ namespace GestorEvento.Views
             this.panelTitulo.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTitulo.Location = new System.Drawing.Point(0, 0);
             this.panelTitulo.Name = "panelTitulo";
-            this.panelTitulo.Size = new System.Drawing.Size(1000, 40);
+            this.panelTitulo.Size = new System.Drawing.Size(1200, 40);
             this.panelTitulo.TabIndex = 10;
             this.panelTitulo.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelTitulo_MouseDown);
             this.panelTitulo.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PanelTitulo_MouseMove);
@@ -66,7 +66,7 @@ namespace GestorEvento.Views
             this.btnMinimizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMinimizar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnMinimizar.ForeColor = System.Drawing.Color.White;
-            this.btnMinimizar.Location = new System.Drawing.Point(953, 0);
+            this.btnMinimizar.Location = new System.Drawing.Point(1153, 0);
             this.btnMinimizar.Name = "btnMinimizar";
             this.btnMinimizar.Size = new System.Drawing.Size(45, 38);
             this.btnMinimizar.TabIndex = 1;
@@ -98,7 +98,7 @@ namespace GestorEvento.Views
             this.panelMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelMenu.Location = new System.Drawing.Point(0, 40);
             this.panelMenu.Name = "panelMenu";
-            this.panelMenu.Size = new System.Drawing.Size(202, 560);
+            this.panelMenu.Size = new System.Drawing.Size(202, 660);
             this.panelMenu.TabIndex = 0;
             // 
             // btnSair
@@ -109,7 +109,7 @@ namespace GestorEvento.Views
             this.btnSair.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSair.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSair.ForeColor = System.Drawing.Color.White;
-            this.btnSair.Location = new System.Drawing.Point(0, 514);
+            this.btnSair.Location = new System.Drawing.Point(0, 614);
             this.btnSair.Name = "btnSair";
             this.btnSair.Size = new System.Drawing.Size(202, 46);
             this.btnSair.TabIndex = 6;
@@ -130,6 +130,7 @@ namespace GestorEvento.Views
             this.btnRelatorios.Size = new System.Drawing.Size(202, 46);
             this.btnRelatorios.TabIndex = 5;
             this.btnRelatorios.Text = "📊 RELATÓRIOS";
+            this.btnRelatorios.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnRelatorios.UseVisualStyleBackColor = false;
             this.btnRelatorios.Click += new System.EventHandler(this.btnRelatorios_Click);
             // 
@@ -146,6 +147,7 @@ namespace GestorEvento.Views
             this.btnCaixa.Size = new System.Drawing.Size(202, 46);
             this.btnCaixa.TabIndex = 4;
             this.btnCaixa.Text = "💰 FRENTE DE CAIXA";
+            this.btnCaixa.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnCaixa.UseVisualStyleBackColor = false;
             this.btnCaixa.Click += new System.EventHandler(this.btnCaixa_Click);
             // 
@@ -162,6 +164,7 @@ namespace GestorEvento.Views
             this.btnVincular.Size = new System.Drawing.Size(202, 46);
             this.btnVincular.TabIndex = 3;
             this.btnVincular.Text = "🔗 VINCULAR PRODUTOS";
+            this.btnVincular.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnVincular.UseVisualStyleBackColor = false;
             this.btnVincular.Click += new System.EventHandler(this.btnVincular_Click);
             // 
@@ -178,6 +181,7 @@ namespace GestorEvento.Views
             this.btnEventos.Size = new System.Drawing.Size(202, 42);
             this.btnEventos.TabIndex = 2;
             this.btnEventos.Text = "🎪 EVENTOS";
+            this.btnEventos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnEventos.UseVisualStyleBackColor = false;
             this.btnEventos.Click += new System.EventHandler(this.btnEventos_Click);
             // 
@@ -194,6 +198,7 @@ namespace GestorEvento.Views
             this.btnProdutos.Size = new System.Drawing.Size(202, 57);
             this.btnProdutos.TabIndex = 1;
             this.btnProdutos.Text = "📦 PRODUTOS";
+            this.btnProdutos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnProdutos.UseVisualStyleBackColor = false;
             this.btnProdutos.Click += new System.EventHandler(this.btnProdutos_Click);
             // 
@@ -213,12 +218,12 @@ namespace GestorEvento.Views
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1000, 600);
+            this.ClientSize = new System.Drawing.Size(1200, 700);
             this.Controls.Add(this.panelMenu);
             this.Controls.Add(this.panelTitulo);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormPrincipal";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.panelTitulo.ResumeLayout(false);
             this.panelTitulo.PerformLayout();
             this.panelMenu.ResumeLayout(false);

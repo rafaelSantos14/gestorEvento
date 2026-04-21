@@ -19,3 +19,5 @@ C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\bin\Debug\MetroFramework
 C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\bin\Debug\MetroFramework.Fonts.dll
 C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\obj\Debug\GestorEvento.Views.FormEventos.resources
 C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\obj\Debug\GestorEvento.Views.FormEditarProduto.resources
+C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\obj\Debug\GestorEvento.Views.FormEditarEvento.resources
+C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\obj\Debug\GestorEvento.Views.FormVincularProdutoEvento.resources

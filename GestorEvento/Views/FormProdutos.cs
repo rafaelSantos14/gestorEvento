@@ -32,9 +32,6 @@ namespace GestorEvento.Views
 
             // Configurar DataGridView
             ConfigurarDataGridView();
-            
-            // Carregar dados iniciais do banco
-            CarregarProdutosDoDb();
         }
 
         private void ConfigurarDataGridView()
@@ -236,38 +233,7 @@ namespace GestorEvento.Views
                     erro.ShowDialog();
                 }
             }
-        }
-
-        private void btnEditar_Click(object sender, EventArgs e)
-        {
-            if (dgvProdutos.SelectedRows.Count == 0)
-            {
-                DialogoCustomizado dialogo = new DialogoCustomizado(
-                    "Informação",
-                    "Selecione um produto na lista para editar",
-                    TipoDialogo.Informacao,
-                    TipoButton.Ok
-                );
-                dialogo.ShowDialog();
-                return;
-            }
-
-            // Validar se as células têm valores
-            if (dgvProdutos.SelectedRows[0].Cells["ID"].Value == null || 
-                dgvProdutos.SelectedRows[0].Cells["Nome"].Value == null)
-            {
-                return;
-            }
-
-            // Abrir FormEditarProduto como dialog modal
-            int produtoId = Convert.ToInt32(dgvProdutos.SelectedRows[0].Cells["ID"].Value);
-            var formEditar = new FormEditarProduto(produtoId);
-            if (formEditar.ShowDialog(this) == DialogResult.OK)
-            {
-                // Se salvou com sucesso, recarregar dados do grid
-                CarregarProdutosDoDb();
-            }
-        }
+        }       
 
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
@@ -332,6 +298,37 @@ namespace GestorEvento.Views
         private void PanelTitulo_MouseUp(object sender, MouseEventArgs e)
         {
             // Não permite arrasco em forms MDI filhos
+        }
+
+        private void btnEditar_Click(object sender, EventArgs e)
+        {
+            if (dgvProdutos.SelectedRows.Count == 0)
+            {
+                DialogoCustomizado dialogo = new DialogoCustomizado(
+                    "Informação",
+                    "Selecione um produto na lista para editar",
+                    TipoDialogo.Informacao,
+                    TipoButton.Ok
+                );
+                dialogo.ShowDialog();
+                return;
+            }
+
+            // Validar se as células têm valores
+            if (dgvProdutos.SelectedRows[0].Cells["ID"].Value == null || 
+                dgvProdutos.SelectedRows[0].Cells["Nome"].Value == null)
+            {
+                return;
+            }
+
+            // Abrir FormEditarProduto como dialog modal
+            int produtoId = Convert.ToInt32(dgvProdutos.SelectedRows[0].Cells["ID"].Value);
+            var formEditar = new FormEditarProduto(produtoId);
+            if (formEditar.ShowDialog(this) == DialogResult.OK)
+            {
+                // Se salvou com sucesso, recarregar dados do grid
+                CarregarProdutosDoDb();
+            }
         }
     }
 }

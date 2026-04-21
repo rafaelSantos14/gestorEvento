@@ -78,8 +78,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Connection.cs" />
     <Compile Include="Repositories\ProdutoRepository.cs" />
+    <Compile Include="Repositories\EventoRepository.cs" />
+    <Compile Include="Repositories\ProdutoEventoRepository.cs" />
     <Compile Include="Models\Produto.cs" />
+    <Compile Include="Models\Evento.cs" />
+    <Compile Include="Models\ProdutoEvento.cs" />
     <Compile Include="Services\ProdutoService.cs" />
+    <Compile Include="Services\EventoService.cs" />
+    <Compile Include="Services\ProdutoEventoService.cs" />
     <Compile Include="Utilities\EstiloManager.cs" />
     <Compile Include="Views\DialogoCustomizado.cs">
       <SubType>Form</SubType>
@@ -105,11 +111,23 @@
     <Compile Include="Views\FormEventos.Designer.cs">
       <DependentUpon>FormEventos.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FormVincularProdutoEvento.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormVincularProdutoEvento.Designer.cs">
+      <DependentUpon>FormVincularProdutoEvento.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\FormEditarProduto.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\FormEditarProduto.Designer.cs">
       <DependentUpon>FormEditarProduto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormEditarEvento.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormEditarEvento.Designer.cs">
+      <DependentUpon>FormEditarEvento.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -129,6 +147,10 @@
     <EmbeddedResource Include="Views\FormEditarProduto.resx">
       <DependentUpon>FormEditarProduto.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormEditarEvento.resx">
+      <DependentUpon>FormEditarEvento.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\FormPrincipal.resx">
       <DependentUpon>FormPrincipal.cs</DependentUpon>
     </EmbeddedResource>
@@ -137,6 +159,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormEventos.resx">
       <DependentUpon>FormEventos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormVincularProdutoEvento.resx">
+      <DependentUpon>FormVincularProdutoEvento.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
