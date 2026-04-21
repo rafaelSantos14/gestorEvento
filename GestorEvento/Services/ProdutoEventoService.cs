@@ -65,9 +65,9 @@ namespace GestorEvento.Services
         }
 
         /// <summary>
-        /// Desvincula um produto de um evento
+        /// Remove um produto de um evento
         /// </summary>
-        public bool DesvincularProduto(int produtoId, int eventoId)
+        public bool RemoverProdutoDoEvento(int produtoId, int eventoId)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao desvincular produto: {ex.Message}");
+                throw new Exception($"Erro ao remover produto do evento: {ex.Message}");
             }
         }
     }

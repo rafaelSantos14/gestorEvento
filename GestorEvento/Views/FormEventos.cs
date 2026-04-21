@@ -740,21 +740,20 @@ namespace GestorEvento.Views
                 int produtoId = (int)row.Cells["ID"].Value;
                 string nomeProduto = row.Cells["Nome"].Value.ToString();
 
-                // Dialog de confirmação para desvincular
-                DialogResult result = MessageBox.Show(
-                    this,
-                    $"Desvincular o produto '{nomeProduto}' do evento?",
-                    "Confirmar Desvinculação",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question
+                // Dialog de confirmação para remover
+                DialogoCustomizado confirmacao = new DialogoCustomizado(
+                    "Confirmar Remoção",
+                    $"Remover o produto '{nomeProduto}' do evento?",
+                    TipoDialogo.Aviso,
+                    TipoButton.SimNao
                 );
 
-                if (result == DialogResult.Yes)
+                if (confirmacao.ShowDialog() == DialogResult.Yes)
                 {
                     try
                     {
-                        // Desvincular do banco de dados
-                        _produtoEventoService.DesvincularProduto(produtoId, _eventoIdSelecionado);
+                        // Remover do banco de dados
+                        _produtoEventoService.RemoverProdutoDoEvento(produtoId, _eventoIdSelecionado);
 
                         // Remover de vinculados e adicionar a disponíveis
                         dgvProdutosVinculados.Rows.Remove(row);
@@ -763,12 +762,12 @@ namespace GestorEvento.Views
 
                         AtualizarContadores();
 
-                        DialogoCustomizado dialogo = new DialogoCustomizado("Sucesso", $"Produto {nomeProduto} desvinculado com sucesso!", TipoDialogo.Sucesso, TipoButton.Ok);
+                        DialogoCustomizado dialogo = new DialogoCustomizado("Sucesso", $"Produto {nomeProduto} removido do evento com sucesso!", TipoDialogo.Sucesso, TipoButton.Ok);
                         dialogo.ShowDialog();
                     }
                     catch (Exception ex)
                     {
-                        DialogoCustomizado dialogo = new DialogoCustomizado("Erro", $"Erro ao desvincular produto: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
+                        DialogoCustomizado dialogo = new DialogoCustomizado("Erro", $"Erro ao remover produto: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
                         dialogo.ShowDialog();
                     }
                 }
