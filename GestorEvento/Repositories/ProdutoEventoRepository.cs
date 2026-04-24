@@ -27,7 +27,7 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = "SELECT id_produto_evento, id_produto, id_evento, vl_produto, qtde_produto FROM PRODUTO_EVENTO WHERE id_evento = @eventoId AND fl_ativo = 'SIM'";
+                    string query = "SELECT id_produto_evento, id_produto, id_evento, vl_produto, qtde_produto, COALESCE(qtde_vendida, 0) as qtde_vendida FROM PRODUTO_EVENTO WHERE id_evento = @eventoId AND fl_ativo = 'SIM'";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
@@ -43,7 +43,8 @@ namespace GestorEvento.Repositories
                                     IdProduto = Convert.ToInt32(reader["id_produto"]),
                                     IdEvento = Convert.ToInt32(reader["id_evento"]),
                                     Preco = Convert.ToDecimal(reader["vl_produto"]),
-                                    Quantidade = Convert.ToInt32(reader["qtde_produto"])
+                                    Quantidade = Convert.ToInt32(reader["qtde_produto"]),
+                                    QuantidadeVendida = Convert.ToInt32(reader["qtde_vendida"])
                                 };
                                 produtos.Add(produtoEvento);
                             }
@@ -193,6 +194,35 @@ namespace GestorEvento.Repositories
             catch (Exception ex)
             {
                 throw new Exception($"Erro ao remover vinculações do evento: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Reduz a quantidade vendida de um produto em um evento (ao confirmar venda)
+        /// </summary>
+        public bool ReducirQuantidadeVendida(int idProdutoEvento, int quantidade)
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = "UPDATE PRODUTO_EVENTO SET qtde_vendida = COALESCE(qtde_vendida, 0) + @quantidade WHERE id_produto_evento = @idProdutoEvento";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@idProdutoEvento", idProdutoEvento);
+                        command.Parameters.AddWithValue("@quantidade", quantidade);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+                        return rowsAffected > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao reduzir quantidade vendida: {ex.Message}");
             }
         }
     }

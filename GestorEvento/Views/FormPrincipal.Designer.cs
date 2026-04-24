@@ -32,13 +32,13 @@ namespace GestorEvento.Views
             this.btnMinimizar = new System.Windows.Forms.Button();
             this.lblTituloTela = new System.Windows.Forms.Label();
             this.panelMenu = new System.Windows.Forms.Panel();
+            this.btnPdv = new System.Windows.Forms.Button();
             this.btnSair = new System.Windows.Forms.Button();
-            this.btnRelatorios = new System.Windows.Forms.Button();
             this.btnCaixa = new System.Windows.Forms.Button();
+            this.btnVincular = new System.Windows.Forms.Button();
             this.btnEventos = new System.Windows.Forms.Button();
             this.btnProdutos = new System.Windows.Forms.Button();
             this.lblTitulo = new System.Windows.Forms.Label();
-            this.btnVincular = new System.Windows.Forms.Button();
             this.panelTitulo.SuspendLayout();
             this.panelMenu.SuspendLayout();
             this.SuspendLayout();
@@ -88,8 +88,8 @@ namespace GestorEvento.Views
             // panelMenu
             // 
             this.panelMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.panelMenu.Controls.Add(this.btnPdv);
             this.panelMenu.Controls.Add(this.btnSair);
-            this.panelMenu.Controls.Add(this.btnRelatorios);
             this.panelMenu.Controls.Add(this.btnCaixa);
             this.panelMenu.Controls.Add(this.btnVincular);
             this.panelMenu.Controls.Add(this.btnEventos);
@@ -100,6 +100,23 @@ namespace GestorEvento.Views
             this.panelMenu.Name = "panelMenu";
             this.panelMenu.Size = new System.Drawing.Size(202, 660);
             this.panelMenu.TabIndex = 0;
+            // 
+            // btnPdv
+            // 
+            this.btnPdv.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.btnPdv.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnPdv.FlatAppearance.BorderSize = 0;
+            this.btnPdv.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPdv.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnPdv.ForeColor = System.Drawing.Color.White;
+            this.btnPdv.Location = new System.Drawing.Point(0, 191);
+            this.btnPdv.Name = "btnPdv";
+            this.btnPdv.Size = new System.Drawing.Size(202, 46);
+            this.btnPdv.TabIndex = 7;
+            this.btnPdv.Text = "💰 PONTO DE VENDA";
+            this.btnPdv.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnPdv.UseVisualStyleBackColor = false;
+            this.btnPdv.Click += new System.EventHandler(this.btnPdv_Click_1);
             // 
             // btnSair
             // 
@@ -117,23 +134,6 @@ namespace GestorEvento.Views
             this.btnSair.UseVisualStyleBackColor = false;
             this.btnSair.Click += new System.EventHandler(this.btnSair_Click);
             // 
-            // btnRelatorios
-            // 
-            this.btnRelatorios.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.btnRelatorios.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnRelatorios.FlatAppearance.BorderSize = 0;
-            this.btnRelatorios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRelatorios.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnRelatorios.ForeColor = System.Drawing.Color.White;
-            this.btnRelatorios.Location = new System.Drawing.Point(0, 191);
-            this.btnRelatorios.Name = "btnRelatorios";
-            this.btnRelatorios.Size = new System.Drawing.Size(202, 46);
-            this.btnRelatorios.TabIndex = 5;
-            this.btnRelatorios.Text = "📊 RELATÓRIOS";
-            this.btnRelatorios.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnRelatorios.UseVisualStyleBackColor = false;
-            this.btnRelatorios.Click += new System.EventHandler(this.btnRelatorios_Click);
-            // 
             // btnCaixa
             // 
             this.btnCaixa.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
@@ -146,10 +146,27 @@ namespace GestorEvento.Views
             this.btnCaixa.Name = "btnCaixa";
             this.btnCaixa.Size = new System.Drawing.Size(202, 46);
             this.btnCaixa.TabIndex = 4;
-            this.btnCaixa.Text = "💰 FRENTE DE CAIXA";
+            this.btnCaixa.Text = "💰 GERENCIAR CAIXA";
             this.btnCaixa.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnCaixa.UseVisualStyleBackColor = false;
             this.btnCaixa.Click += new System.EventHandler(this.btnCaixa_Click);
+            // 
+            // btnVincular
+            // 
+            this.btnVincular.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.btnVincular.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnVincular.FlatAppearance.BorderSize = 0;
+            this.btnVincular.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnVincular.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnVincular.ForeColor = System.Drawing.Color.White;
+            this.btnVincular.Location = new System.Drawing.Point(0, 99);
+            this.btnVincular.Name = "btnVincular";
+            this.btnVincular.Size = new System.Drawing.Size(202, 46);
+            this.btnVincular.TabIndex = 3;
+            this.btnVincular.Text = "🔗 VINCULAR PRODUTOS";
+            this.btnVincular.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnVincular.UseVisualStyleBackColor = false;
+            this.btnVincular.Click += new System.EventHandler(this.btnVincular_Click);
             // 
             // btnEventos
             // 
@@ -196,23 +213,6 @@ namespace GestorEvento.Views
             this.lblTitulo.TabIndex = 0;
             this.lblTitulo.Text = "MENU";
             // 
-            // btnVincular
-            // 
-            this.btnVincular.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.btnVincular.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnVincular.FlatAppearance.BorderSize = 0;
-            this.btnVincular.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnVincular.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnVincular.ForeColor = System.Drawing.Color.White;
-            this.btnVincular.Location = new System.Drawing.Point(0, 99);
-            this.btnVincular.Name = "btnVincular";
-            this.btnVincular.Size = new System.Drawing.Size(202, 46);
-            this.btnVincular.TabIndex = 3;
-            this.btnVincular.Text = "🔗 VINCULAR PRODUTOS";
-            this.btnVincular.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnVincular.UseVisualStyleBackColor = false;
-            this.btnVincular.Click += new System.EventHandler(this.btnVincular_Click);
-            // 
             // FormPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -241,8 +241,8 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Button btnProdutos;
         private System.Windows.Forms.Button btnEventos;
         private System.Windows.Forms.Button btnCaixa;
-        private System.Windows.Forms.Button btnRelatorios;
         private System.Windows.Forms.Button btnSair;
         private System.Windows.Forms.Button btnVincular;
+        private System.Windows.Forms.Button btnPdv;
     }
 }

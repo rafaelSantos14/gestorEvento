@@ -78,5 +78,23 @@ namespace GestorEvento.Services
                 throw new Exception($"Erro ao remover produto do evento: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Reduz a quantidade vendida de um produto em um evento (ao confirmar venda)
+        /// </summary>
+        public bool RegistrarVendaProduto(int idProdutoEvento, int quantidade)
+        {
+            try
+            {
+                if (quantidade <= 0)
+                    throw new Exception("Quantidade deve ser maior que zero");
+
+                return _repository.ReducirQuantidadeVendida(idProdutoEvento, quantidade);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao registrar venda do produto: {ex.Message}");
+            }
+        }
     }
 }

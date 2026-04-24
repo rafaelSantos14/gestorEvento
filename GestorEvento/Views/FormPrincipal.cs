@@ -36,8 +36,7 @@ namespace GestorEvento.Views
             EstiloManager.AplicarEstiloInfo(btnProdutos);
             EstiloManager.AplicarEstiloInfo(btnEventos);
             EstiloManager.AplicarEstiloInfo(btnVincular);
-            EstiloManager.AplicarEstiloInfo(btnCaixa);
-            EstiloManager.AplicarEstiloInfo(btnRelatorios);
+            EstiloManager.AplicarEstiloInfo(btnCaixa);            
             EstiloManager.AplicarEstiloAviso(btnSair);
         }
 
@@ -110,8 +109,34 @@ namespace GestorEvento.Views
 
         private void btnCaixa_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Frente de Caixa - em desenvolvimento", "Info");
-        }
+            try
+            {
+                // Verifica se já existe uma janela aberta
+                foreach (Form f in this.MdiChildren)
+                {
+                    if (f is FormEventosAtivos)
+                    {
+                        f.Activate();
+                        return;
+                    }
+                }
+                
+                // Abre uma nova instância
+                FormEventosAtivos form = new FormEventosAtivos();
+                form.Text = "Seleção de caixa";
+                form.MdiParent = this;
+                form.Show();
+                
+                // Dimensionar DEPOIS de Show() para resetar qualquer configuração anterior
+                // Desconta: panelMenu (202px) + barra de título (40px) + espaço abas (35px)
+                form.Location = new Point(0, 0);
+                form.Size = new Size(this.ClientSize.Width - panelMenu.Width - 5, this.ClientSize.Height - panelTitulo.Height - 35);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao abrir FormEventosAtivos: " + ex.Message + "\n" + ex.StackTrace, "Erro");
+            }
+        }       
 
         private void btnRelatorios_Click(object sender, EventArgs e)
         {
@@ -161,6 +186,20 @@ namespace GestorEvento.Views
         private void PanelTitulo_MouseUp(object sender, MouseEventArgs e)
         {
             arrastandoJanela = false;
+        }
+
+        private void btnPdv_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                // Abrir FormSelecionarPDV como dialog
+                FormSelecionarPDV form = new FormSelecionarPDV();
+                form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao abrir FormSelecionarPDV: " + ex.Message + "\n" + ex.StackTrace, "Erro");
+            }
         }
     }
 }

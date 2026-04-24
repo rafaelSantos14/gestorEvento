@@ -217,7 +217,7 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = "SELECT id_evento, nm_evento, dt_evento FROM EVENTO WHERE nm_evento LIKE @nome ORDER BY dt_evento DESC";
+                    string query = "SELECT id_evento, nm_evento, dt_evento FROM EVENTO WHERE UPPER(nm_evento) LIKE UPPER(@nome) ORDER BY dt_evento DESC";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {

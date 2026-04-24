@@ -36,8 +36,9 @@
     <Reference Include="MaterialSkin, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialSkin.2.2.3.0\lib\net461\MaterialSkin.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=8.0.33.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.8.0.33\lib\net462\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.10.14.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MySql.Data.6.10.14\lib\net462\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="MetroFramework, Version=1.2.0.3, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
       <HintPath>..\packages\MetroFramework.1.2.0.3\lib\net40\MetroFramework.dll</HintPath>
@@ -79,16 +80,25 @@
     <Compile Include="Repositories\Connection.cs" />
     <Compile Include="Repositories\ProdutoRepository.cs" />
     <Compile Include="Repositories\EventoRepository.cs" />
+    <Compile Include="Repositories\PontoVendaRepository.cs" />
+    <Compile Include="Repositories\VendaRepository.cs" />
     <Compile Include="Repositories\ProdutoEventoRepository.cs" />
     <Compile Include="Repositories\FormaPagamentoRepository.cs" />
+    <Compile Include="Repositories\RecebimentoRepository.cs" />
     <Compile Include="Models\Produto.cs" />
     <Compile Include="Models\Evento.cs" />
+    <Compile Include="Models\PontoVenda.cs" />
+    <Compile Include="Models\Venda.cs" />
     <Compile Include="Models\ProdutoEvento.cs" />
     <Compile Include="Models\FormaPagamento.cs" />
+    <Compile Include="Models\Recebimento.cs" />
     <Compile Include="Services\ProdutoService.cs" />
     <Compile Include="Services\EventoService.cs" />
+    <Compile Include="Services\PontoVendaService.cs" />
+    <Compile Include="Services\VendaService.cs" />
     <Compile Include="Services\ProdutoEventoService.cs" />
     <Compile Include="Services\FormaPagamentoService.cs" />
+    <Compile Include="Services\RecebimentoService.cs" />
     <Compile Include="Utilities\EstiloManager.cs" />
     <Compile Include="Views\DialogoCustomizado.cs">
       <SubType>Form</SubType>
@@ -113,6 +123,42 @@
     </Compile>
     <Compile Include="Views\FormEventos.Designer.cs">
       <DependentUpon>FormEventos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormEventosAtivos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormEventosAtivos.Designer.cs">
+      <DependentUpon>FormEventosAtivos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormAbrirCaixa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormAbrirCaixa.Designer.cs">
+      <DependentUpon>FormAbrirCaixa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormSelecionarPontoVenda.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormSelecionarPontoVenda.Designer.cs">
+      <DependentUpon>FormSelecionarPontoVenda.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormFecharCaixa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormFecharCaixa.Designer.cs">
+      <DependentUpon>FormFecharCaixa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormPDV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormPDV.Designer.cs">
+      <DependentUpon>FormPDV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormSelecionarPDV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormSelecionarPDV.Designer.cs">
+      <DependentUpon>FormSelecionarPDV.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\FormVincularProdutoEvento.cs">
       <SubType>Form</SubType>
@@ -162,6 +208,29 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormEventos.resx">
       <DependentUpon>FormEventos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormEventosAtivos.resx">
+      <DependentUpon>FormEventosAtivos.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormAbrirCaixa.resx">
+      <DependentUpon>FormAbrirCaixa.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormSelecionarPontoVenda.resx">
+      <DependentUpon>FormSelecionarPontoVenda.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormFecharCaixa.resx">
+      <DependentUpon>FormFecharCaixa.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormPDV.resx">
+      <DependentUpon>FormPDV.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormSelecionarPDV.resx">
+      <DependentUpon>FormSelecionarPDV.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormVincularProdutoEvento.resx">
       <DependentUpon>FormVincularProdutoEvento.cs</DependentUpon>

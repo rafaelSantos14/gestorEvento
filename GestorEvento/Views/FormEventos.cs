@@ -676,8 +676,8 @@ namespace GestorEvento.Views
 
                         AtualizarContadores();
 
-                        DialogoCustomizado dialogo = new DialogoCustomizado("Sucesso", $"Produto {nomeProduto} vinculado com sucesso!", TipoDialogo.Sucesso, TipoButton.Ok);
-                        dialogo.ShowDialog();
+                        //DialogoCustomizado dialogo = new DialogoCustomizado("Sucesso", $"Produto {nomeProduto} vinculado com sucesso!", TipoDialogo.Sucesso, TipoButton.Ok);
+                        //dialogo.ShowDialog();
                     }
                     catch (Exception ex)
                     {

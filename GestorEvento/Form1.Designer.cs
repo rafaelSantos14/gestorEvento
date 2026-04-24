@@ -38,7 +38,7 @@ namespace GestorEvento
             this.dgvProdutos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvProdutos.Location = new System.Drawing.Point(24, 101);
             this.dgvProdutos.Name = "dgvProdutos";
-            this.dgvProdutos.Size = new System.Drawing.Size(240, 150);
+            this.dgvProdutos.Size = new System.Drawing.Size(756, 429);
             this.dgvProdutos.TabIndex = 0;
             // 
             // Form1
