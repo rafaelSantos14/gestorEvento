@@ -104,7 +104,23 @@ namespace GestorEvento.Repositories
                         int count = Convert.ToInt32(checkCommand.ExecuteScalar());
                         if (count > 0)
                         {
-                            // Se já existe, apenas atualiza preco e quantidade
+                            // Se já existe, primeiro obter a quantidade já vendida para validação
+                            string getVendidaQuery = "SELECT COALESCE(qtde_vendida, 0) as qtde_vendida FROM PRODUTO_EVENTO WHERE id_produto = @produtoId AND id_evento = @eventoId";
+                            using (MySqlCommand getVendidaCommand = new MySqlCommand(getVendidaQuery, connection))
+                            {
+                                getVendidaCommand.Parameters.AddWithValue("@produtoId", produtoId);
+                                getVendidaCommand.Parameters.AddWithValue("@eventoId", eventoId);
+
+                                int qtdeVendida = Convert.ToInt32(getVendidaCommand.ExecuteScalar());
+                                
+                                // Validação: não permitir reduzir a quantidade para menos que o já vendido
+                                if (quantidade < qtdeVendida)
+                                {
+                                    throw new Exception($"Não é permitido reduzir a quantidade para {quantidade} pois já foram vendidas {qtdeVendida} unidades neste evento. Quantidade mínima: {qtdeVendida}");
+                                }
+                            }
+
+                            // Se já existe e passou na validação, atualiza preco e quantidade
                             string updateQuery = "UPDATE PRODUTO_EVENTO SET vl_produto = @preco, qtde_produto = @quantidade WHERE id_produto = @produtoId AND id_evento = @eventoId";
                             using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
                             {

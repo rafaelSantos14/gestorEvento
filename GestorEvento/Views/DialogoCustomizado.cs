@@ -26,6 +26,9 @@ namespace GestorEvento.Views
             // Alterar ícone e cor conforme tipo
             AlterarPorTipo(tipo);
             ConfigurarBotoes(tipoButton);
+            
+            // Adaptar tamanho do formulário à mensagem
+            AdaptarTamanho();
         }
 
         private void AlterarPorTipo(TipoDialogo tipo)
@@ -73,6 +76,64 @@ namespace GestorEvento.Views
                     btnOk.Location = new Point(55, 130);
                     btnNao.Location = new Point(195, 130);
                     break;
+            }
+        }
+
+        private void AdaptarTamanho()
+        {
+            // Dimensões mínimas e máximas
+            int larguraMinima = 300;
+            int larguraMaxima = 600;
+            int alturaMinima = 150;
+            
+            // Medir o tamanho da mensagem (considerando menos espaço para o ícone)
+            Size tamanhoMensagem = TextRenderer.MeasureText(
+                lblMensagem.Text,
+                lblMensagem.Font,
+                new Size(larguraMaxima - 120, int.MaxValue),
+                TextFormatFlags.WordBreak
+            );
+
+            // Calcular nova largura (com padding)
+            int novaLargura = Math.Max(
+                Math.Min(tamanhoMensagem.Width + 130, larguraMaxima),
+                larguraMinima
+            );
+
+            // Calcular nova altura baseada no conteúdo
+            int novaAltura = Math.Max(
+                tamanhoMensagem.Height + 160, // +160 para ícone, padding extra e botões
+                alturaMinima
+            );
+
+            // Posicionar o ícone à esquerda (espaço dedicado)
+            lblIcone.Location = new Point(15, 25);
+            lblIcone.AutoSize = true;
+
+            // Ajustar o label de mensagem com AutoSize, com mais espaço para o ícone
+            lblMensagem.AutoSize = false;
+            lblMensagem.Size = new Size(novaLargura - 110, tamanhoMensagem.Height);
+            lblMensagem.Location = new Point(80, 25);
+
+            // Ajustar o formulário
+            this.ClientSize = new Size(novaLargura, novaAltura);
+            this.MaximumSize = new Size(larguraMaxima + 30, novaAltura + 40);
+
+            // Reposicionar botões
+            int posYBotoes = novaAltura - 50;
+            
+            if (this.TipoBotao == TipoButton.Ok)
+            {
+                btnOk.Location = new Point((novaLargura - btnOk.Width) / 2, posYBotoes);
+            }
+            else if (this.TipoBotao == TipoButton.SimNao)
+            {
+                int espacoTotal = novaLargura - 40;
+                int espacoBotao = 80;
+                int espacoEntre = (espacoTotal - (espacoBotao * 2)) / 3;
+                
+                btnOk.Location = new Point(espacoEntre, posYBotoes);
+                btnNao.Location = new Point(espacoEntre + espacoBotao + espacoEntre, posYBotoes);
             }
         }
 

@@ -41,12 +41,12 @@ namespace GestorEvento
             this.btnTestarImpressao.Depth = 0;
             this.btnTestarImpressao.HighEmphasis = true;
             this.btnTestarImpressao.Icon = null;
-            this.btnTestarImpressao.Location = new System.Drawing.Point(12, 12);
+            this.btnTestarImpressao.Location = new System.Drawing.Point(241, 264);
             this.btnTestarImpressao.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.btnTestarImpressao.MouseState = MaterialSkin.MouseState.HOVER;
             this.btnTestarImpressao.Name = "btnTestarImpressao";
             this.btnTestarImpressao.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.btnTestarImpressao.Size = new System.Drawing.Size(251, 36);
+            this.btnTestarImpressao.Size = new System.Drawing.Size(277, 36);
             this.btnTestarImpressao.TabIndex = 0;
             this.btnTestarImpressao.Text = "Testar Impressão - REFRIGERANTE";
             this.btnTestarImpressao.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
