@@ -99,6 +99,7 @@
     <Compile Include="Services\ProdutoEventoService.cs" />
     <Compile Include="Services\FormaPagamentoService.cs" />
     <Compile Include="Services\RecebimentoService.cs" />
+    <Compile Include="Services\EpsonTM20Service.cs" />
     <Compile Include="Utilities\EstiloManager.cs" />
     <Compile Include="Views\DialogoCustomizado.cs">
       <SubType>Form</SubType>
@@ -250,6 +251,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\Validators\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="img\logo_impressao_rahamim.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="img\logo_impressao_alianca.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

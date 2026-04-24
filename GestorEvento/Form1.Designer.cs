@@ -8,6 +8,8 @@ namespace GestorEvento
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
+        private MaterialSkin.Controls.MaterialButton btnTestarImpressao;
+
         /// <summary>
         /// Limpar os recursos que estão sendo usados.
         /// </summary>
@@ -29,35 +31,43 @@ namespace GestorEvento
         /// </summary>
         private void InitializeComponent()
         {
-            this.dgvProdutos = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvProdutos)).BeginInit();
+            this.btnTestarImpressao = new MaterialSkin.Controls.MaterialButton();
             this.SuspendLayout();
             // 
-            // dgvProdutos
+            // btnTestarImpressao
             // 
-            this.dgvProdutos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvProdutos.Location = new System.Drawing.Point(24, 101);
-            this.dgvProdutos.Name = "dgvProdutos";
-            this.dgvProdutos.Size = new System.Drawing.Size(756, 429);
-            this.dgvProdutos.TabIndex = 0;
+            this.btnTestarImpressao.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnTestarImpressao.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.btnTestarImpressao.Depth = 0;
+            this.btnTestarImpressao.HighEmphasis = true;
+            this.btnTestarImpressao.Icon = null;
+            this.btnTestarImpressao.Location = new System.Drawing.Point(12, 12);
+            this.btnTestarImpressao.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.btnTestarImpressao.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnTestarImpressao.Name = "btnTestarImpressao";
+            this.btnTestarImpressao.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.btnTestarImpressao.Size = new System.Drawing.Size(251, 36);
+            this.btnTestarImpressao.TabIndex = 0;
+            this.btnTestarImpressao.Text = "Testar Impressão - REFRIGERANTE";
+            this.btnTestarImpressao.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.btnTestarImpressao.UseAccentColor = false;
+            this.btnTestarImpressao.Click += new System.EventHandler(this.BtnTestarImpressao_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 550);
-            this.Controls.Add(this.dgvProdutos);
+            this.Controls.Add(this.btnTestarImpressao);
             this.Name = "Form1";
             this.Text = "GestorEvento - Teste de Conexão";
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvProdutos)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.DataGridView dgvProdutos;
     }
 }
 

@@ -29,6 +29,7 @@ namespace GestorEvento.Views
         private PontoVendaService _pontoVendaService;
         private FormaPagamentoService _formaPagamentoService;
         private RecebimentoService _recebimentoService;
+        private EpsonTM20Service _epsonService;
 
         public FormPDV(int caixaId)
         {
@@ -40,12 +41,29 @@ namespace GestorEvento.Views
             _pontoVendaService = new PontoVendaService();
             _formaPagamentoService = new FormaPagamentoService();
             _recebimentoService = new RecebimentoService();
+            _epsonService = new EpsonTM20Service("COM2", 9600);
+            
+            // Conectar à impressora no início
+            if (!_epsonService.Conectar())
+            {
+                System.Diagnostics.Debug.WriteLine("Aviso: Não foi possível conectar à impressora térmica");
+                // Mostrar alerta mas não impede o uso do PDV
+                MessageBox.Show(
+                    "Aviso: Não foi possível conectar à impressora térmica.\n\nVerifique:\n• Cabo USB conectado\n• Impressora ligada\n• COM2 disponível",
+                    "Aviso - Impressora",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+            }
         }
 
         private void FormPDV_Load(object sender, EventArgs e)
         {
             try
             {
+                // Registrar evento de fechamento para desconectar impressora
+                this.FormClosing += FormPDV_FormClosing;
+                
                 // Buscar número do caixa e exibir
                 var pontoVenda = _pontoVendaService.GetPontoVendaById(_caixaIdSelecionado);
                 if (pontoVenda != null)
@@ -382,6 +400,59 @@ namespace GestorEvento.Views
                     }
                 }
 
+                // ============ IMPRIMIR CUPONS NA IMPRESSORA TÉRMICA ============
+                System.Diagnostics.Debug.WriteLine($"\n[IMPRESSÃO] Iniciando impressão de cupons para venda #{idVenda}");
+                int cupomsPrintados = 0;
+                int cupomsFalhados = 0;
+
+                foreach (var linha in _produtosLinhas)
+                {
+                    int qtde = linha.GetQuantidade();
+                    if (qtde > 0)
+                    {
+                        for (int i = 0; i < qtde; i++)
+                        {
+                            try
+                            {
+                                // Imprimir um cupom por unidade vendida
+                                bool sucesso_impressao = _epsonService.ImprimirCupom(linha.NomeProduto);
+                                if (sucesso_impressao)
+                                {
+                                    cupomsPrintados++;
+                                    System.Diagnostics.Debug.WriteLine($"✓ Cupom {cupomsPrintados} impresso: {linha.NomeProduto}");
+                                }
+                                else
+                                {
+                                    cupomsFalhados++;
+                                    System.Diagnostics.Debug.WriteLine($"✗ Falha ao imprimir cupom para: {linha.NomeProduto}");
+                                }
+                                
+                                // Pequeno delay entre cupons para não sobrecarregar a impressora
+                                System.Threading.Thread.Sleep(500);
+                            }
+                            catch (Exception exImpressao)
+                            {
+                                cupomsFalhados++;
+                                System.Diagnostics.Debug.WriteLine($"Erro ao imprimir cupom: {exImpressao.Message}");
+                            }
+                        }
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[IMPRESSÃO] Resumo: {cupomsPrintados} cupom(ns) impresso(s), {cupomsFalhados} falha(s)");
+
+                // Exibir alerta se houver falhas na impressão
+                if (cupomsFalhados > 0)
+                {
+                    DialogoCustomizado aviso = new DialogoCustomizado(
+                        "Aviso - Impressão",
+                        $"Impressão parcial!\n\n✓ Cupons impressos: {cupomsPrintados}\n✗ Falhas: {cupomsFalhados}\n\nVerifique se a impressora está conectada e ligada.",
+                        TipoDialogo.Aviso,
+                        TipoButton.Ok
+                    );
+                    aviso.ShowDialog();
+                }
+
                 DialogoCustomizado sucesso = new DialogoCustomizado(
                     "Sucesso",
                     $"Venda #{idVenda} confirmada!\nTotal: R$ {_totalVenda.ToString("F2")}",
@@ -445,6 +516,23 @@ namespace GestorEvento.Views
             this.WindowState = FormWindowState.Minimized;
         }
 
+        // Desconectar da impressora térmica ao fechar o formulário
+        private void FormPDV_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                if (_epsonService != null)
+                {
+                    _epsonService.Desconectar();
+                    System.Diagnostics.Debug.WriteLine("✓ Desconectado da impressora térmica");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro ao desconectar: {ex.Message}");
+            }
+        }
+
         private void PanelTitulo_MouseDown(object sender, MouseEventArgs e)
         {
             if (this.WindowState != FormWindowState.Maximized)
@@ -479,7 +567,7 @@ namespace GestorEvento.Views
 
         // ==================== CLASSES INTERNAS ====================
 
-        // Classe que representa uma linha de produto (Label + TextBox Qtde + TextBox Valor)
+        // Classe que representa uma linha de produto (Label + TextBox Qtde + Botões +/-)
         private class ProdutoLinhaVenda
         {
             public int IdProdutoEvento { get; set; }  // ID da vinculação produto-evento
@@ -489,6 +577,8 @@ namespace GestorEvento.Views
             private int _quantidadeDisponivel;  // Quantidade que pode ser vendida
             private Label _lblProduto;
             private TextBox _txtQuantidade;
+            private Button _btnMais;
+            private Button _btnMenos;
             private FormPDV _formParent;
 
             public ProdutoLinhaVenda(int idProdutoEvento, int idProduto, string nomeProduto, decimal valorPadrao, int quantidadeDisponivel, int xPosition, int yPosition, FormPDV formParent)
@@ -511,17 +601,71 @@ namespace GestorEvento.Views
                     TextAlign = ContentAlignment.TopLeft
                 };
 
-                // Criar TextBox Quantidade (vazio, habilitado) - EMBAIXO
+                // Criar TextBox Quantidade (reduzido para 80px) - EMBAIXO
                 _txtQuantidade = new TextBox
                 {
                     Location = new Point(xPosition, yPosition + 35),
-                    Size = new Size(340, 35),
+                    Size = new Size(80, 35),
                     Enabled = true,
                     Font = new Font("Segoe UI", 12F),
                     Text = "",
+                    TextAlign = HorizontalAlignment.Center
                 };
                 _txtQuantidade.Leave += TxtQuantidade_Leave;
                 _txtQuantidade.TextChanged += TxtQuantidade_TextChanged;
+
+                // Criar Botão + (mais)
+                _btnMais = new Button
+                {
+                    Location = new Point(xPosition + 90, yPosition + 35),
+                    Size = new Size(40, 35),
+                    Text = "+",
+                    Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                    FlatStyle = FlatStyle.Flat
+                };
+                _btnMais.Click += BtnMais_Click;
+
+                // Criar Botão - (menos)
+                _btnMenos = new Button
+                {
+                    Location = new Point(xPosition + 140, yPosition + 35),
+                    Size = new Size(40, 35),
+                    Text = "−",
+                    Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                    FlatStyle = FlatStyle.Flat
+                };
+                _btnMenos.Click += BtnMenos_Click;
+            }
+
+            private void BtnMais_Click(object sender, EventArgs e)
+            {
+                int qtdeAtual = GetQuantidade();
+                if (qtdeAtual < _quantidadeDisponivel)
+                {
+                    _txtQuantidade.Text = (qtdeAtual + 1).ToString();
+                }
+                else
+                {
+                    // Exibir aviso se atingiu o limite
+                    DialogoCustomizado dialogo = new DialogoCustomizado(
+                        "Aviso",
+                        $"Quantidade máxima disponível: {_quantidadeDisponivel}",
+                        TipoDialogo.Aviso,
+                        TipoButton.Ok
+                    );
+                    dialogo.ShowDialog();
+                }
+                _formParent.AtualizarTotalVenda();
+            }
+
+            private void BtnMenos_Click(object sender, EventArgs e)
+            {
+                int qtdeAtual = GetQuantidade();
+                if (qtdeAtual > 0)
+                {
+                    _txtQuantidade.Text = (qtdeAtual - 1).ToString();
+                }
+                _formParent.AtualizarTotalVenda();
             }
 
             private void TxtQuantidade_Leave(object sender, EventArgs e)
@@ -575,6 +719,8 @@ namespace GestorEvento.Views
             {
                 panel.Controls.Add(_lblProduto);
                 panel.Controls.Add(_txtQuantidade);
+                panel.Controls.Add(_btnMais);
+                panel.Controls.Add(_btnMenos);
             }
 
             public int GetQuantidade()

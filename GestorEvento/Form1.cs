@@ -19,6 +19,7 @@ namespace GestorEvento
     public partial class Form1 : MaterialForm
     {
         private FormaPagamentoService _formaPagamentoService;
+        private EpsonTM20Service _epsonService;
 
         public Form1()
         {
@@ -31,8 +32,9 @@ namespace GestorEvento
 
             materialSkinManager.ColorScheme = new ColorScheme(Primary.Blue600, Primary.Blue700, Primary.Blue500, Accent.Amber200, TextShade.BLACK);
 
-            // Inicializar serviço
+            // Inicializar serviços
             _formaPagamentoService = new FormaPagamentoService();
+            _epsonService = new EpsonTM20Service("COM2", 9600);
 
             // Configurar DataGridView
             ConfigurarDataGridView();
@@ -43,39 +45,45 @@ namespace GestorEvento
 
         private void ConfigurarDataGridView()
         {
-            dgvProdutos.ColumnCount = 3;
-            dgvProdutos.Columns[0].Name = "ID";
-            dgvProdutos.Columns[1].Name = "Nome Forma";
-            dgvProdutos.Columns[2].Name = "Código";
-            
-            dgvProdutos.Columns[0].Width = 50;
-            dgvProdutos.Columns[1].Width = 200;
-            dgvProdutos.Columns[2].Width = 150;
-
-            dgvProdutos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+           
         }
 
         private void CarregarFormasPagamento()
         {
-            dgvProdutos.Rows.Clear();
-            
-            try
-            {
-                var formas = _formaPagamentoService.GetAllFormasPagamento();
-                foreach (var forma in formas)
-                {
-                    dgvProdutos.Rows.Add(forma.Id, forma.NmFormaPagamento, forma.CdFormaPagamento);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Erro ao carregar formas de pagamento: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+           
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void BtnTestarImpressao_Click(object sender, EventArgs e)
+        {
+            int sucessos = 0;
+            int falhas = 0;
+
+            // Loop para imprimir 3 vezes
+            for (int i = 1; i <= 1; i++)
+            {
+                bool sucesso = _epsonService.ImprimirCupom($"REFRIGERANTE #{i}");
+                if (sucesso)
+                {
+                    sucessos++;
+                }
+                else
+                {
+                    falhas++;
+                }
+            }
+
+            // Exibir resultado
+            MessageBox.Show(
+                $"Impressões concluídas!\n\nSucessos: {sucessos}\nFalhas: {falhas}",
+                "Resultado",
+                MessageBoxButtons.OK,
+                sucessos == 3 ? MessageBoxIcon.Information : MessageBoxIcon.Warning
+            );
         }
     }
 }

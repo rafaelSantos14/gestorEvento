@@ -25,3 +25,5 @@ C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\obj\Debug\GestorEvento.c
 C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\obj\Debug\GestorEvento.csproj.CopyComplete
 C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\obj\Debug\GestorEvento.exe
 C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\obj\Debug\GestorEvento.pdb
+C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\bin\Debug\img\logo_impressao_rahamim.png
+C:\Users\Rafaela\source\repos\GestorEvento\GestorEvento\bin\Debug\img\logo_impressao_alianca.png
