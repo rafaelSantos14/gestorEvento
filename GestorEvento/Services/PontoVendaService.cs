@@ -10,12 +10,14 @@ namespace GestorEvento.Services
         private readonly PontoVendaRepository _repository;
         private readonly VendaService _vendaService;
         private readonly RecebimentoService _recebimentoService;
+        private readonly MovimentacaoService _movimentacaoService;
 
         public PontoVendaService()
         {
             _repository = new PontoVendaRepository();
             _vendaService = new VendaService();
             _recebimentoService = new RecebimentoService();
+            _movimentacaoService = new MovimentacaoService();
         }
 
         /// <summary>
@@ -114,8 +116,19 @@ namespace GestorEvento.Services
                 // Calcular total de vendas em dinheiro
                 decimal totalVendasDinheiro = _recebimentoService.GetTotalRecebimentoDinheiro(idPontoVenda);
 
-                // Calcular total esperado
-                decimal totalEsperado = pontoVenda.VlInicial + totalVendasDinheiro;
+                // Obter movimentações (troco, sangria, entrada)
+                var movimentacoes = _movimentacaoService.GetMovimentacoesByPontoVenda(idPontoVenda);
+                decimal totalTroco = _movimentacaoService.GetTotalMovimentacaoPorTipo(idPontoVenda, TipoMovimento.TROCO);
+                decimal totalSangria = _movimentacaoService.GetTotalMovimentacaoPorTipo(idPontoVenda, TipoMovimento.SANGRIA);
+                decimal totalEntradaTroco = _movimentacaoService.GetTotalMovimentacaoPorTipo(idPontoVenda, TipoMovimento.ENTRADA_TROCO);
+
+                // Calcular total esperado com movimentações
+                // TotalEsperado = VlInicial + DINHEIRO - TROCO - SANGRIA + ENTRADA_TROCO
+                decimal totalEsperado = pontoVenda.VlInicial 
+                    + totalVendasDinheiro 
+                    - totalTroco 
+                    - totalSangria 
+                    + totalEntradaTroco;
 
                 // Obter resumo por forma de pagamento
                 var recebimentosPorForma = new List<ResumoRecebimentoPorForma>();
@@ -152,6 +165,20 @@ namespace GestorEvento.Services
                     });
                 }
 
+                // Montar lista de movimentações detalhadas para exibição
+                var movimentacoesDetalhadas = new List<MovimentacaoDetalhada>();
+                foreach (var mov in movimentacoes)
+                {
+                    movimentacoesDetalhadas.Add(new MovimentacaoDetalhada
+                    {
+                        IdMovimentacao = mov.IdMovimentacao,
+                        TipoMovimento = mov.TipoMovimento.ToString(),
+                        VlMovimento = mov.VlMovimento,
+                        DtMovimento = mov.DtMovimento,
+                        Descricao = mov.Descricao
+                    });
+                }
+
                 // Montar o DTO final
                 return new ResumoFechamentoCaixa
                 {
@@ -163,7 +190,8 @@ namespace GestorEvento.Services
                     TotalVendasDinheiro = totalVendasDinheiro,
                     TotalEsperado = totalEsperado,
                     RecebimentosPorForma = recebimentosPorForma,
-                    Vendas = vendas
+                    Vendas = vendas,
+                    Movimentacoes = movimentacoesDetalhadas
                 };
             }
             catch (Exception ex)

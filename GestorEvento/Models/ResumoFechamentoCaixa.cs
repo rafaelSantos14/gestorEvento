@@ -21,11 +21,13 @@ namespace GestorEvento.Models
         // Listas de detalhamento
         public List<ResumoRecebimentoPorForma> RecebimentosPorForma { get; set; }
         public List<ResumoVendaFechamento> Vendas { get; set; }
+        public List<MovimentacaoDetalhada> Movimentacoes { get; set; }
 
         public ResumoFechamentoCaixa()
         {
             RecebimentosPorForma = new List<ResumoRecebimentoPorForma>();
             Vendas = new List<ResumoVendaFechamento>();
+            Movimentacoes = new List<MovimentacaoDetalhada>();
         }
     }
 
@@ -48,5 +50,17 @@ namespace GestorEvento.Models
         public DateTime DtVenda { get; set; }
         public decimal VlTotal { get; set; }
         public string NomeFormaPagamento { get; set; } // Principal forma de pagamento
+    }
+
+    /// <summary>
+    /// Informações simplificadas de uma movimentação para exibição no fechamento
+    /// </summary>
+    public class MovimentacaoDetalhada
+    {
+        public int IdMovimentacao { get; set; }
+        public string TipoMovimento { get; set; }
+        public decimal VlMovimento { get; set; }
+        public DateTime DtMovimento { get; set; }
+        public string Descricao { get; set; }
     }
 }

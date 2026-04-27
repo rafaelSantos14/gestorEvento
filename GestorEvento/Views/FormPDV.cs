@@ -29,6 +29,7 @@ namespace GestorEvento.Views
         private PontoVendaService _pontoVendaService;
         private FormaPagamentoService _formaPagamentoService;
         private RecebimentoService _recebimentoService;
+        private MovimentacaoService _movimentacaoService;
         private EpsonTM20Service _epsonService;
 
         public FormPDV(int caixaId)
@@ -41,6 +42,7 @@ namespace GestorEvento.Views
             _pontoVendaService = new PontoVendaService();
             _formaPagamentoService = new FormaPagamentoService();
             _recebimentoService = new RecebimentoService();
+            _movimentacaoService = new MovimentacaoService();
             _epsonService = new EpsonTM20Service("COM2", 9600);
             
             // Conectar à impressora no início
@@ -362,8 +364,24 @@ namespace GestorEvento.Views
                     }
                 }
 
-                // Registrar venda no banco de dados
-                int idVenda = _vendaService.RegistrarVenda(venda);
+                // Registrar venda + recebimentos + troco em TRANSAÇÃO ÚNICA (seguro!)
+                decimal vlTroco = somaPagementos - _totalVenda;
+                
+                // Preparar lista de recebimentos
+                var recebimentos = new List<(int idFormaPagamento, decimal valor)>();
+                foreach (var forma in _formasPagamento)
+                {
+                    decimal valor = forma.GetValor();
+                    if (valor > 0)
+                    {
+                        recebimentos.Add((forma.IdFormaPagamento, valor));
+                    }
+                }
+
+                // Registrar TUDO em uma transação (se algo falhar, rollback completo)
+                int idVenda = _vendaService.RegistrarVendaComTrocoComTransacao(venda, recebimentos, vlTroco);
+
+                System.Diagnostics.Debug.WriteLine($"[TRANSAÇÃO] Venda #{idVenda} registrada com sucesso (com troco R$ {vlTroco:F2})");
 
                 // Registrar quantidade vendida no PRODUTO_EVENTO
                 // (reduz a quantidade disponível para futuras vendas)
@@ -379,23 +397,6 @@ namespace GestorEvento.Views
                         catch (Exception exEstoque)
                         {
                             System.Diagnostics.Debug.WriteLine($"Aviso ao registrar estoque: {exEstoque.Message}");
-                        }
-                    }
-                }
-
-                // Registrar recebimentos (formas de pagamento com valor > 0)
-                foreach (var forma in _formasPagamento)
-                {
-                    decimal valor = forma.GetValor();
-                    if (valor > 0)
-                    {
-                        try
-                        {
-                            _recebimentoService.RegistrarRecebimento(idVenda, forma.IdFormaPagamento, valor);
-                        }
-                        catch (Exception exRecebimento)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"Aviso ao registrar recebimento: {exRecebimento.Message}");
                         }
                     }
                 }

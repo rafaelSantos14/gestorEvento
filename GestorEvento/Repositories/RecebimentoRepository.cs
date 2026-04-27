@@ -271,5 +271,36 @@ namespace GestorEvento.Repositories
                 throw;
             }
         }
+
+        /// <summary>
+        /// Registra um recebimento dentro de uma transação existente
+        /// </summary>
+        public int RegistrarRecebimentoComTransacao(MySqlConnection connection, MySqlTransaction transaction, Recebimento recebimento)
+        {
+            try
+            {
+                string query = @"INSERT INTO RECEBIMENTO_VENDA 
+                                 (id_venda, id_forma_pagamento, vl_recebimento_venda, dt_recebimento_venda) 
+                                 VALUES 
+                                 (@idVenda, @idFormaPagamento, @vlRecebimento, @dtRecebimento);
+                                 SELECT LAST_INSERT_ID();";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection, transaction))
+                {
+                    command.Parameters.AddWithValue("@idVenda", recebimento.IdVenda);
+                    command.Parameters.AddWithValue("@idFormaPagamento", recebimento.IdFormaPagamento);
+                    command.Parameters.AddWithValue("@vlRecebimento", recebimento.VlRecebimento);
+                    command.Parameters.AddWithValue("@dtRecebimento", recebimento.DtRecebimento);
+
+                    object result = command.ExecuteScalar();
+                    return Convert.ToInt32(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao registrar recebimento em transação: {ex.Message}");
+                throw;
+            }
+        }
     }
 }

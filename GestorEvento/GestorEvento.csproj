@@ -85,6 +85,7 @@
     <Compile Include="Repositories\ProdutoEventoRepository.cs" />
     <Compile Include="Repositories\FormaPagamentoRepository.cs" />
     <Compile Include="Repositories\RecebimentoRepository.cs" />
+    <Compile Include="Repositories\MovimentacaoRepository.cs" />
     <Compile Include="Models\Produto.cs" />
     <Compile Include="Models\Evento.cs" />
     <Compile Include="Models\PontoVenda.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Models\ProdutoEvento.cs" />
     <Compile Include="Models\FormaPagamento.cs" />
     <Compile Include="Models\Recebimento.cs" />
+    <Compile Include="Models\Movimentacao.cs" />
     <Compile Include="Models\ResumoFechamentoCaixa.cs" />
     <Compile Include="Services\ProdutoService.cs" />
     <Compile Include="Services\EventoService.cs" />
@@ -100,6 +102,7 @@
     <Compile Include="Services\ProdutoEventoService.cs" />
     <Compile Include="Services\FormaPagamentoService.cs" />
     <Compile Include="Services\RecebimentoService.cs" />
+    <Compile Include="Services\MovimentacaoService.cs" />
     <Compile Include="Services\EpsonTM20Service.cs" />
     <Compile Include="Utilities\EstiloManager.cs" />
     <Compile Include="Views\DialogoCustomizado.cs">

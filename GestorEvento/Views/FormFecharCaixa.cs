@@ -40,6 +40,7 @@ namespace GestorEvento.Views
         private Label lblObservacoes;
         private TextBox txtObservacoes;
         private TextBox txtValorContado;
+        private Label lblTotalTroco;
 
         public FormFecharCaixa(int caixaId)
         {
@@ -89,7 +90,7 @@ namespace GestorEvento.Views
             int larguraDisponivel = telaAtiva.WorkingArea.Width;
 
             // Definir tamanho com margem de segurança (100px para taskbar do Windows)
-            int alturaPadrao = 770;
+            int alturaPadrao = 860;
             int larguraPadrao = 850;
             int margemSeguranca = 100;
 
@@ -171,24 +172,25 @@ namespace GestorEvento.Views
             {
                 Text = "RESUMO EXECUTIVO",
                 Location = new Point(20, 60),
-                Size = new Size(this.ClientSize.Width - 40, 170),
+                Size = new Size(this.ClientSize.Width - 40, 190),
                 Font = new Font("Segoe UI", 10F)
             };
 
             lblTituloResumo = new Label { Location = new Point(10, 30), AutoSize = true };
-            lblAbertura = new Label { Location = new Point(10, 60), AutoSize = true };
-            lblTotalDinheiro = new Label { Location = new Point(10, 90), AutoSize = true };
-            lblTotalEsperado = new Label { Location = new Point(10, 120), AutoSize = true };
-            lblTotalVendas = new Label { Location = new Point(10, 150), AutoSize = true };
+            lblAbertura = new Label { Location = new Point(10, 60), AutoSize = true, Font = new Font("Consolas", 10F) };
+            lblTotalDinheiro = new Label { Location = new Point(10, 78), AutoSize = true, Font = new Font("Consolas", 10F) };
+            lblTotalTroco = new Label { Location = new Point(10, 96), AutoSize = true, Font = new Font("Consolas", 10F) };
+            lblTotalEsperado = new Label { Location = new Point(10, 114), AutoSize = true, Font = new Font("Consolas", 10F) };
+            lblTotalVendas = new Label { Location = new Point(10, 132), AutoSize = true, Font = new Font("Consolas", 10F) };
 
-            gbResumo.Controls.AddRange(new Control[] { lblTituloResumo, lblAbertura, lblTotalDinheiro, lblTotalEsperado, lblTotalVendas });
+            gbResumo.Controls.AddRange(new Control[] { lblTituloResumo, lblAbertura, lblTotalDinheiro, lblTotalTroco, lblTotalEsperado, lblTotalVendas });
             this.Controls.Add(gbResumo);
 
             // Panel para Formas de Pagamento
             GroupBox gbFormas = new GroupBox
             {
                 Text = "RESUMO POR FORMA DE PAGAMENTO",
-                Location = new Point(20, 240),
+                Location = new Point(20, 260),
                 Size = new Size(this.ClientSize.Width - 40, 180),
                 Font = new Font("Segoe UI", 10F)
             };
@@ -212,8 +214,8 @@ namespace GestorEvento.Views
             GroupBox gbContagem = new GroupBox
             {
                 Text = "FECHAMENTO",
-                Location = new Point(20, 430),
-                Size = new Size(this.ClientSize.Width - 40, 180),
+                Location = new Point(20, 450),
+                Size = new Size(this.ClientSize.Width - 40, 220),
                 Font = new Font("Segoe UI", 10F)
             };
 
@@ -261,7 +263,7 @@ namespace GestorEvento.Views
             this.Controls.Add(gbContagem);
 
             // Resize form antes de criar botões (para calcular posição correta)
-            this.ClientSize = new Size(Math.Max(850, this.ClientSize.Width), 770);
+            this.ClientSize = new Size(Math.Max(850, this.ClientSize.Width), 860);
 
             // Botões
             Button btnFecharCaixa = new Button
@@ -294,10 +296,27 @@ namespace GestorEvento.Views
         private void PreencherResumoExecutivo()
         {
             lblTituloResumo.Text = $"Caixa #{_resumoFechamento.NoPontoVenda} - {_resumoFechamento.NomePontoVenda} | Aberto em {_resumoFechamento.DtAbertura:dd/MM/yyyy HH:mm:ss}";
-            lblAbertura.Text = $"Valor de Abertura: R$ {_resumoFechamento.VlInicial:F2}";
-            lblTotalDinheiro.Text = $"Total Vendido (Dinheiro): R$ {_resumoFechamento.TotalVendasDinheiro:F2}";
-            lblTotalEsperado.Text = $"TOTAL ESPERADO: R$ {_resumoFechamento.TotalEsperado:F2}";
-            lblTotalVendas.Text = $"Total de Vendas: {_resumoFechamento.Vendas.Count}";
+            
+            int comprimentoBase = 35; // Comprimento para alinhamento
+            
+            lblAbertura.Text = AlinharComPontos("Valor de Abertura", $"R$ {_resumoFechamento.VlInicial:F2}", comprimentoBase);
+            lblTotalDinheiro.Text = AlinharComPontos("Total Vendido (Dinheiro)", $"R$ {_resumoFechamento.TotalVendasDinheiro:F2}", comprimentoBase);
+            
+            // Calcular total de troco
+            decimal totalTroco = _resumoFechamento.Movimentacoes
+                .Where(m => m.TipoMovimento == "TROCO")
+                .Sum(m => m.VlMovimento);
+            lblTotalTroco.Text = AlinharComPontos("Total Troco", $"R$ {totalTroco:F2}", comprimentoBase);
+            
+            lblTotalEsperado.Text = AlinharComPontos("TOTAL ESPERADO", $"R$ {_resumoFechamento.TotalEsperado:F2}", comprimentoBase);
+            lblTotalVendas.Text = AlinharComPontos("Total de Vendas", $"{_resumoFechamento.Vendas.Count}", comprimentoBase);
+        }
+
+        private string AlinharComPontos(string descricao, string valor, int comprimentoTotal)
+        {
+            int espacoDisponivel = comprimentoTotal - descricao.Length;
+            if (espacoDisponivel < 3) espacoDisponivel = 3;
+            return descricao + new string('.', espacoDisponivel) + " " + valor;
         }
 
         private void PreencherTabelaFormasPagamento()
