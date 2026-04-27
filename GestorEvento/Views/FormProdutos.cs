@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MetroFramework;
 using GestorEvento.Utilities;
 using GestorEvento.Services;
 using GestorEvento.Models;
