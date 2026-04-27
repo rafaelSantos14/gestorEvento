@@ -243,5 +243,51 @@ namespace GestorEvento.Repositories
 
             return vendas;
         }
+
+        /// <summary>
+        /// Obtém resumo de vendas de um ponto de venda (apenas id, data e valor) para fechamento de caixa
+        /// </summary>
+        public List<(int idVenda, DateTime dtVenda, decimal vlTotal)> GetResumoVendasByPontoVenda(int idPontoVenda)
+        {
+            var vendas = new List<(int, DateTime, decimal)>();
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"SELECT id_venda, dt_venda, vl_total 
+                                     FROM VENDA 
+                                     WHERE id_ponto_venda = @idPontoVenda
+                                     ORDER BY dt_venda ASC";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@idPontoVenda", idPontoVenda);
+
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int idVenda = Convert.ToInt32(reader["id_venda"]);
+                                DateTime dtVenda = Convert.ToDateTime(reader["dt_venda"]);
+                                decimal vlTotal = Convert.ToDecimal(reader["vl_total"]);
+                                vendas.Add((idVenda, dtVenda, vlTotal));
+                            }
+                        }
+                    }
+
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter resumo de vendas: {ex.Message}");
+                throw;
+            }
+
+            return vendas;
+        }
     }
 }

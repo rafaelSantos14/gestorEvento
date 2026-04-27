@@ -26,8 +26,8 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = @"INSERT INTO RECEBIMENTO 
-                                     (id_venda, id_forma_pagamento, vl_recebimento, dt_recebimento) 
+                    string query = @"INSERT INTO RECEBIMENTO_VENDA 
+                                     (id_venda, id_forma_pagamento, vl_recebimento_venda, dt_recebimento_venda) 
                                      VALUES 
                                      (@idVenda, @idFormaPagamento, @vlRecebimento, @dtRecebimento);
                                      SELECT LAST_INSERT_ID();";
@@ -62,9 +62,9 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = @"SELECT id_recebimento, id_venda, id_forma_pagamento, vl_recebimento, dt_recebimento 
-                                     FROM RECEBIMENTO 
-                                     WHERE id_recebimento = @id";
+                    string query = @"SELECT id_recebimento_venda, id_venda, id_forma_pagamento, vl_recebimento_venda, dt_recebimento_venda 
+                                     FROM RECEBIMENTO_VENDA 
+                                     WHERE id_recebimento_venda = @id";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
@@ -76,11 +76,11 @@ namespace GestorEvento.Repositories
                             {
                                 return new Recebimento
                                 {
-                                    IdRecebimento = Convert.ToInt32(reader["id_recebimento"]),
+                                    IdRecebimento = Convert.ToInt32(reader["id_recebimento_venda"]),
                                     IdVenda = Convert.ToInt32(reader["id_venda"]),
                                     IdFormaPagamento = Convert.ToInt32(reader["id_forma_pagamento"]),
-                                    VlRecebimento = Convert.ToDecimal(reader["vl_recebimento"]),
-                                    DtRecebimento = Convert.ToDateTime(reader["dt_recebimento"])
+                                    VlRecebimento = Convert.ToDecimal(reader["vl_recebimento_venda"]),
+                                    DtRecebimento = Convert.ToDateTime(reader["dt_recebimento_venda"])
                                 };
                             }
                         }
@@ -109,10 +109,10 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = @"SELECT id_recebimento, id_venda, id_forma_pagamento, vl_recebimento, dt_recebimento 
-                                     FROM RECEBIMENTO 
+                    string query = @"SELECT id_recebimento_venda, id_venda, id_forma_pagamento, vl_recebimento_venda, dt_recebimento_venda 
+                                     FROM RECEBIMENTO_VENDA 
                                      WHERE id_venda = @idVenda
-                                     ORDER BY dt_recebimento";
+                                     ORDER BY dt_recebimento_venda";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
@@ -124,11 +124,11 @@ namespace GestorEvento.Repositories
                             {
                                 recebimentos.Add(new Recebimento
                                 {
-                                    IdRecebimento = Convert.ToInt32(reader["id_recebimento"]),
+                                    IdRecebimento = Convert.ToInt32(reader["id_recebimento_venda"]),
                                     IdVenda = Convert.ToInt32(reader["id_venda"]),
                                     IdFormaPagamento = Convert.ToInt32(reader["id_forma_pagamento"]),
-                                    VlRecebimento = Convert.ToDecimal(reader["vl_recebimento"]),
-                                    DtRecebimento = Convert.ToDateTime(reader["dt_recebimento"])
+                                    VlRecebimento = Convert.ToDecimal(reader["vl_recebimento_venda"]),
+                                    DtRecebimento = Convert.ToDateTime(reader["dt_recebimento_venda"])
                                 });
                             }
                         }
@@ -142,6 +142,134 @@ namespace GestorEvento.Repositories
             }
 
             return recebimentos;
+        }
+
+        /// <summary>
+        /// Obtém resumo de recebimentos agrupados por forma de pagamento para um ponto de venda
+        /// Retorna: (idFormaPagamento, nomeFormaPagamento, totalRecebimento)
+        /// </summary>
+        public List<(int idFormaPagamento, string nomeFormaPagamento, decimal totalRecebimento)> GetResumoRecebimentosByPontoVenda(int idPontoVenda)
+        {
+            var resumo = new List<(int, string, decimal)>();
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"SELECT fp.id_forma_pagamento, fp.nm_forma_pagamento, SUM(r.vl_recebimento_venda) as total_recebimento
+                                     FROM RECEBIMENTO_VENDA r
+                                     INNER JOIN VENDA v ON r.id_venda = v.id_venda
+                                     INNER JOIN FORMA_PAGAMENTO fp ON r.id_forma_pagamento = fp.id_forma_pagamento
+                                     WHERE v.id_ponto_venda = @idPontoVenda
+                                     GROUP BY fp.id_forma_pagamento, fp.nm_forma_pagamento
+                                     ORDER BY fp.nm_forma_pagamento";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@idPontoVenda", idPontoVenda);
+
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int idFormaPagamento = Convert.ToInt32(reader["id_forma_pagamento"]);
+                                string nomeFormaPagamento = reader["nm_forma_pagamento"].ToString();
+                                decimal totalRecebimento = Convert.ToDecimal(reader["total_recebimento"]);
+                                resumo.Add((idFormaPagamento, nomeFormaPagamento, totalRecebimento));
+                            }
+                        }
+                    }
+
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter resumo de recebimentos: {ex.Message}");
+                throw;
+            }
+
+            return resumo;
+        }
+
+        /// <summary>
+        /// Obtém o total de recebimentos em uma forma de pagamento específica para um ponto de venda
+        /// </summary>
+        public decimal GetTotalRecebimentoByFormaPagamento(int idPontoVenda, int idFormaPagamento)
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"SELECT SUM(r.vl_recebimento_venda) as total
+                                     FROM RECEBIMENTO_VENDA r
+                                     INNER JOIN VENDA v ON r.id_venda = v.id_venda
+                                     WHERE v.id_ponto_venda = @idPontoVenda 
+                                     AND r.id_forma_pagamento = @idFormaPagamento";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@idPontoVenda", idPontoVenda);
+                        command.Parameters.AddWithValue("@idFormaPagamento", idFormaPagamento);
+
+                        object result = command.ExecuteScalar();
+                        if (result != null && !Convert.IsDBNull(result))
+                        {
+                            return Convert.ToDecimal(result);
+                        }
+                        return 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter total de recebimento: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Obtém o total de recebimentos em dinheiro para um ponto de venda (desde a abertura do caixa)
+        /// </summary>
+        public decimal GetTotalRecebimentoDinheiro(int idPontoVenda)
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    // Filtrar por código da forma de pagamento "DINHEIRO"
+                    string query = @"SELECT SUM(r.vl_recebimento_venda) as total
+                                     FROM RECEBIMENTO_VENDA r
+                                     INNER JOIN VENDA v ON r.id_venda = v.id_venda
+                                     INNER JOIN FORMA_PAGAMENTO fp ON r.id_forma_pagamento = fp.id_forma_pagamento
+                                     WHERE v.id_ponto_venda = @idPontoVenda 
+                                     AND fp.cd_forma_pagamento = @cdFormaPagamento";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@idPontoVenda", idPontoVenda);
+                        command.Parameters.AddWithValue("@cdFormaPagamento", "DINHEIRO");
+
+                        object result = command.ExecuteScalar();
+                        if (result != null && !Convert.IsDBNull(result))
+                        {
+                            return Convert.ToDecimal(result);
+                        }
+                        return 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter total dinheiro: {ex.Message}");
+                throw;
+            }
         }
     }
 }

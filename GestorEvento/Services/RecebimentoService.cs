@@ -44,5 +44,41 @@ namespace GestorEvento.Services
         {
             return _repository.GetRecebimentosByVendaId(idVenda);
         }
+
+        /// <summary>
+        /// Obtém resumo de recebimentos agrupados por forma de pagamento para um ponto de venda
+        /// </summary>
+        public List<(int idFormaPagamento, string nomeFormaPagamento, decimal totalRecebimento)> GetResumoRecebimentosByPontoVenda(int idPontoVenda)
+        {
+            try
+            {
+                if (idPontoVenda <= 0)
+                    throw new ArgumentException("ID do ponto de venda inválido");
+
+                return _repository.GetResumoRecebimentosByPontoVenda(idPontoVenda);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter resumo de recebimentos: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Obtém o total de recebimentos em dinheiro para um ponto de venda
+        /// </summary>
+        public decimal GetTotalRecebimentoDinheiro(int idPontoVenda)
+        {
+            try
+            {
+                if (idPontoVenda <= 0)
+                    throw new ArgumentException("ID do ponto de venda inválido");
+
+                return _repository.GetTotalRecebimentoDinheiro(idPontoVenda);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter total dinheiro: {ex.Message}", ex);
+            }
+        }
     }
 }

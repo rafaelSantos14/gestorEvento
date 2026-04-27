@@ -170,7 +170,8 @@ namespace GestorEvento.Views
 
             // Abrir FormSelecionarPontoVenda como dialog
             FormSelecionarPontoVenda formSelecionarPontoVenda = new FormSelecionarPontoVenda(_eventoIdSelecionado);
-            if (formSelecionarPontoVenda.ShowDialog() == DialogResult.OK)
+            formSelecionarPontoVenda.ShowDialog();
+            /*if (formSelecionarPontoVenda.ShowDialog() == DialogResult.OK)
             {
                 // Venda registrada com sucesso
                 DialogoCustomizado sucesso = new DialogoCustomizado(
@@ -180,7 +181,7 @@ namespace GestorEvento.Views
                     TipoButton.Ok
                 );
                 sucesso.ShowDialog();
-            }
+            }*/
         }
 
         // ==================== TITLE BAR HANDLERS ====================

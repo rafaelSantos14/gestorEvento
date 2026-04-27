@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using GestorEvento.Utilities;
 using GestorEvento.Services;
+using GestorEvento.Models;
 
 namespace GestorEvento.Views
 {
@@ -16,54 +17,405 @@ namespace GestorEvento.Views
     {
         private int _caixaIdSelecionado = 0;
         private PontoVendaService _pontoVendaService;
+        private ResumoFechamentoCaixa _resumoFechamento;
+
+        // Componentes UI - Panel Título
+        private Panel panelTitulo;
+        private Button btnFechar;
+        private Button btnMinimizar;
+        private Label lblTitulo;
+
+        // Componentes UI - Conteúdo
+        private Label lblTituloResumo;
+        private Label lblAbertura;
+        private Label lblTotalDinheiro;
+        private Label lblTotalEsperado;
+        private Label lblTotalVendas;
+        private Label lblValorContado;
+        private Label lblDiferenca;
+        
+        private Label lblTituloFormasPagamento;
+        private DataGridView dgvFormasPagamento;
+        
+        private Label lblObservacoes;
+        private TextBox txtObservacoes;
+        private TextBox txtValorContado;
 
         public FormFecharCaixa(int caixaId)
         {
             InitializeComponent();
             _caixaIdSelecionado = caixaId;
             _pontoVendaService = new PontoVendaService();
-            
-            // Buscar número do caixa e exibir
-            var pontoVenda = _pontoVendaService.GetPontoVendaById(caixaId);
-            int noCaixa = pontoVenda?.NoPontoVenda ?? caixaId;
-            txtNomeCaixa.Text = noCaixa.ToString();
         }
 
-        private void BtnFecharCaixaBtn_Click(object sender, EventArgs e)
+        private void FormFecharCaixa_Load(object sender, EventArgs e)
         {
-            // Validar valor final
-            string valorFinalStr = txtValorFinal.Text.Trim();
-            if (string.IsNullOrEmpty(valorFinalStr) || !decimal.TryParse(valorFinalStr, out decimal valorFinal) || valorFinal < 0)
-            {
-                DialogoCustomizado dialogo = new DialogoCustomizado(
-                    "Aviso",
-                    "Por favor, insira um valor final válido (maior ou igual a 0)",
-                    TipoDialogo.Aviso,
-                    TipoButton.Ok
-                );
-                dialogo.ShowDialog();
-                return;
-            }
-
             try
             {
-                // Fechar caixa no banco de dados
-                _pontoVendaService.FecharPontoVenda(
-                    _caixaIdSelecionado,
-                    valorFinal,
-                    txtObservacoes.Text.Trim()
-                );
-                
-                DialogoCustomizado sucesso = new DialogoCustomizado(
-                    "Sucesso",
-                    $"Caixa '{txtNomeCaixa.Text}' fechada com sucesso!",
-                    TipoDialogo.Sucesso,
+                // Carregar dados do resumo
+                _resumoFechamento = _pontoVendaService.GetResumoFechamento(_caixaIdSelecionado);
+
+                // Configurar título da janela
+                this.Text = $"Fechamento de Caixa #{_resumoFechamento.NoPontoVenda} - {_resumoFechamento.NomePontoVenda}";
+
+                // Carregar UI dinâmico (criar componentes)
+                CriarComponentes();
+
+                // Preencher dados
+                PreencherResumoExecutivo();
+                PreencherTabelaFormasPagamento();
+
+                // Ajustar tamanho da janela responsivamente
+                AdjustarTamanhoDaJanela();
+            }
+            catch (Exception ex)
+            {
+                DialogoCustomizado erro = new DialogoCustomizado(
+                    "Erro",
+                    $"Erro ao carregar dados de fechamento: {ex.Message}",
+                    TipoDialogo.Erro,
                     TipoButton.Ok
                 );
-                sucesso.ShowDialog();
-
-                this.DialogResult = DialogResult.OK;
+                erro.ShowDialog();
                 this.Close();
+            }
+        }
+
+        private void AdjustarTamanhoDaJanela()
+        {
+            // Obter resolução da tela
+            Screen telaAtiva = Screen.FromPoint(this.Location);
+            int alturaDisponivel = telaAtiva.WorkingArea.Height;
+            int larguraDisponivel = telaAtiva.WorkingArea.Width;
+
+            // Definir tamanho com margem de segurança (100px para taskbar do Windows)
+            int alturaPadrao = 770;
+            int larguraPadrao = 850;
+            int margemSeguranca = 100;
+
+            // Ajustar altura
+            if (alturaDisponivel < alturaPadrao)
+            {
+                this.ClientSize = new Size(
+                    Math.Min(larguraPadrao, larguraDisponivel - margemSeguranca),
+                    Math.Max(600, alturaDisponivel - margemSeguranca) // Mínimo 600px de altura
+                );
+                this.StartPosition = FormStartPosition.CenterScreen;
+            }
+            else
+            {
+                // Tamanho normal
+                this.ClientSize = new Size(larguraPadrao, alturaPadrao);
+                this.StartPosition = FormStartPosition.CenterScreen;
+            }
+
+            // Se for tela pequena, ativar AutoScroll
+            if (this.ClientSize.Height < 650)
+            {
+                this.AutoScroll = true;
+            }
+        }
+
+        private void CriarComponentes()
+        {
+            // Panel Título
+            panelTitulo = new Panel
+            {
+                BackColor = Color.FromArgb(25, 118, 210),
+                Dock = DockStyle.Top,
+                Height = 40
+            };
+
+            lblTitulo = new Label
+            {
+                Text = $"Fechamento de Caixa #{_resumoFechamento.NoPontoVenda} - {_resumoFechamento.NomePontoVenda}",
+                Location = new Point(10, 10),
+                AutoSize = true,
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                ForeColor = Color.White
+            };
+
+            btnMinimizar = new Button
+            {
+                Text = "−",
+                Dock = DockStyle.Right,
+                Width = 45,
+                Height = 40,
+                BackColor = Color.Transparent,
+                FlatStyle = FlatStyle.Flat,
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold)
+            };
+            btnMinimizar.FlatAppearance.BorderSize = 0;
+            btnMinimizar.Click += BtnMinimizar_Click;
+
+            btnFechar = new Button
+            {
+                Text = "✕",
+                Dock = DockStyle.Right,
+                Width = 45,
+                Height = 40,
+                BackColor = Color.Transparent,
+                FlatStyle = FlatStyle.Flat,
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold)
+            };
+            btnFechar.FlatAppearance.BorderSize = 0;
+            btnFechar.Click += BtnFecharTitulo_Click;
+
+            panelTitulo.Controls.AddRange(new Control[] { lblTitulo, btnMinimizar, btnFechar });
+            this.Controls.Add(panelTitulo);
+
+            // Panel para Resumo Executivo
+            GroupBox gbResumo = new GroupBox
+            {
+                Text = "RESUMO EXECUTIVO",
+                Location = new Point(20, 60),
+                Size = new Size(this.ClientSize.Width - 40, 170),
+                Font = new Font("Segoe UI", 10F)
+            };
+
+            lblTituloResumo = new Label { Location = new Point(10, 30), AutoSize = true };
+            lblAbertura = new Label { Location = new Point(10, 60), AutoSize = true };
+            lblTotalDinheiro = new Label { Location = new Point(10, 90), AutoSize = true };
+            lblTotalEsperado = new Label { Location = new Point(10, 120), AutoSize = true };
+            lblTotalVendas = new Label { Location = new Point(10, 150), AutoSize = true };
+
+            gbResumo.Controls.AddRange(new Control[] { lblTituloResumo, lblAbertura, lblTotalDinheiro, lblTotalEsperado, lblTotalVendas });
+            this.Controls.Add(gbResumo);
+
+            // Panel para Formas de Pagamento
+            GroupBox gbFormas = new GroupBox
+            {
+                Text = "RESUMO POR FORMA DE PAGAMENTO",
+                Location = new Point(20, 240),
+                Size = new Size(this.ClientSize.Width - 40, 180),
+                Font = new Font("Segoe UI", 10F)
+            };
+
+            dgvFormasPagamento = new DataGridView
+            {
+                Location = new Point(10, 25),
+                Size = new Size(gbFormas.ClientSize.Width - 20, 140),
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                ReadOnly = true,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false
+            };
+            dgvFormasPagamento.Columns.Add("FormaVisual", "Forma de Pagamento");
+            dgvFormasPagamento.Columns.Add("TotalVisual", "Valor Total");
+
+            gbFormas.Controls.Add(dgvFormasPagamento);
+            this.Controls.Add(gbFormas);
+
+            // Panel para entrada de Valor Contado
+            GroupBox gbContagem = new GroupBox
+            {
+                Text = "FECHAMENTO",
+                Location = new Point(20, 430),
+                Size = new Size(this.ClientSize.Width - 40, 180),
+                Font = new Font("Segoe UI", 10F)
+            };
+
+            Label lblValorContadoLabel = new Label
+            {
+                Text = "Valor Contado em Mão:",
+                Location = new Point(10, 30),
+                AutoSize = true
+            };
+
+            txtValorContado = new TextBox
+            {
+                Location = new Point(10, 55),
+                Size = new Size(200, 40),
+                Font = new Font("Segoe UI", 14F),
+                TextAlign = HorizontalAlignment.Right
+            };
+            txtValorContado.TextChanged += TxtValorContado_TextChanged;
+
+            lblDiferenca = new Label
+            {
+                Text = "DIFERENÇA: R$ 0,00",
+                Location = new Point(220, 55),
+                Size = new Size(300, 40),
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleLeft,
+                ForeColor = Color.Green
+            };
+
+            lblObservacoes = new Label
+            {
+                Text = "Observações:",
+                Location = new Point(10, 105),
+                AutoSize = true
+            };
+
+            txtObservacoes = new TextBox
+            {
+                Location = new Point(10, 125),
+                Size = new Size(gbContagem.ClientSize.Width - 20, 50),
+                Multiline = true
+            };
+
+            gbContagem.Controls.AddRange(new Control[] { lblValorContadoLabel, txtValorContado, lblDiferenca, lblObservacoes, txtObservacoes });
+            this.Controls.Add(gbContagem);
+
+            // Resize form antes de criar botões (para calcular posição correta)
+            this.ClientSize = new Size(Math.Max(850, this.ClientSize.Width), 770);
+
+            // Botões
+            Button btnFecharCaixa = new Button
+            {
+                Text = "FECHAR CAIXA",
+                Location = new Point(20, this.ClientSize.Height - 45),
+                Size = new Size(150, 35),
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                BackColor = Color.FromArgb(76, 175, 80),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat
+            };
+            btnFecharCaixa.Click += BtnFecharCaixa_Click;
+
+            Button btnCancelar = new Button
+            {
+                Text = "CANCELAR",
+                Location = new Point(180, this.ClientSize.Height - 45),
+                Size = new Size(150, 35),
+                Font = new Font("Segoe UI", 11F),
+                BackColor = Color.FromArgb(244, 67, 54),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat
+            };
+            btnCancelar.Click += BtnCancelar_Click;
+
+            this.Controls.AddRange(new Control[] { btnFecharCaixa, btnCancelar });
+        }
+
+        private void PreencherResumoExecutivo()
+        {
+            lblTituloResumo.Text = $"Caixa #{_resumoFechamento.NoPontoVenda} - {_resumoFechamento.NomePontoVenda} | Aberto em {_resumoFechamento.DtAbertura:dd/MM/yyyy HH:mm:ss}";
+            lblAbertura.Text = $"Valor de Abertura: R$ {_resumoFechamento.VlInicial:F2}";
+            lblTotalDinheiro.Text = $"Total Vendido (Dinheiro): R$ {_resumoFechamento.TotalVendasDinheiro:F2}";
+            lblTotalEsperado.Text = $"TOTAL ESPERADO: R$ {_resumoFechamento.TotalEsperado:F2}";
+            lblTotalVendas.Text = $"Total de Vendas: {_resumoFechamento.Vendas.Count}";
+        }
+
+        private void PreencherTabelaFormasPagamento()
+        {
+            dgvFormasPagamento.Rows.Clear();
+
+            foreach (var resumo in _resumoFechamento.RecebimentosPorForma)
+            {
+                dgvFormasPagamento.Rows.Add(
+                    resumo.NomeFormaPagamento,
+                    $"R$ {resumo.TotalRecebimento:F2}"
+                );
+            }
+
+            // Adicionar linha de total
+            decimal totalGeral = _resumoFechamento.RecebimentosPorForma.Sum(r => r.TotalRecebimento);
+            dgvFormasPagamento.Rows.Add(
+                "TOTAL",
+                $"R$ {totalGeral:F2}"
+            );
+
+            // Colorir última linha (TOTAL)
+            int lastRow = dgvFormasPagamento.Rows.Count - 1;
+            dgvFormasPagamento.Rows[lastRow].DefaultCellStyle.BackColor = Color.LightGray;
+            dgvFormasPagamento.Rows[lastRow].DefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        }
+
+        private void TxtValorContado_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Remove caracteres não numéricos
+                string texto = new string(txtValorContado.Text.Where(c => char.IsDigit(c)).ToArray());
+
+                if (string.IsNullOrEmpty(texto))
+                {
+                    texto = "0";
+                }
+
+                // Formata com 2 casas decimais
+                decimal valor = decimal.Parse(texto) / 100;
+                txtValorContado.Text = valor.ToString("F2");
+                txtValorContado.SelectionStart = txtValorContado.Text.Length;
+
+                // Calcular diferença
+                decimal diferenca = valor - _resumoFechamento.TotalEsperado;
+                lblDiferenca.Text = $"DIFERENÇA: R$ {diferenca:F2}";
+
+                // Colorir
+                if (diferenca < 0)
+                {
+                    lblDiferenca.ForeColor = Color.Red;
+                }
+                else if (diferenca == 0)
+                {
+                    lblDiferenca.ForeColor = Color.Green;
+                }
+                else
+                {
+                    lblDiferenca.ForeColor = Color.Blue;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro ao processar valor contado: {ex.Message}");
+            }
+        }
+
+        private void BtnFecharCaixa_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Validar valor contado
+                if (!decimal.TryParse(txtValorContado.Text, out decimal valorContado) || valorContado < 0)
+                {
+                    DialogoCustomizado dialogo = new DialogoCustomizado(
+                        "Aviso",
+                        "Por favor, insira um valor contado válido (maior ou igual a 0)",
+                        TipoDialogo.Aviso,
+                        TipoButton.Ok
+                    );
+                    dialogo.ShowDialog();
+                    return;
+                }
+
+                // Fechar caixa
+                bool sucesso = _pontoVendaService.FecharPontoVenda(
+                    _caixaIdSelecionado,
+                    valorContado,
+                    txtObservacoes.Text.Trim()
+                );
+
+                if (sucesso)
+                {
+                    DialogoCustomizado mensagem = new DialogoCustomizado(
+                        "Sucesso",
+                        $"Caixa #{_resumoFechamento.NoPontoVenda} - {_resumoFechamento.NomePontoVenda} fechado com sucesso!\n\n" +
+                        $"Total Esperado: R$ {_resumoFechamento.TotalEsperado:F2}\n" +
+                        $"Valor Contado: R$ {valorContado:F2}\n" +
+                        $"Diferença: R$ {(valorContado - _resumoFechamento.TotalEsperado):F2}",
+                        TipoDialogo.Sucesso,
+                        TipoButton.Ok
+                    );
+                    mensagem.ShowDialog();
+
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
+                else
+                {
+                    DialogoCustomizado erro = new DialogoCustomizado(
+                        "Erro",
+                        "Erro ao fechar caixa. Tente novamente.",
+                        TipoDialogo.Erro,
+                        TipoButton.Ok
+                    );
+                    erro.ShowDialog();
+                }
             }
             catch (Exception ex)
             {
@@ -83,7 +435,7 @@ namespace GestorEvento.Views
             this.Close();
         }
 
-        private void BtnFechar_Click(object sender, EventArgs e)
+        private void BtnFecharTitulo_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
@@ -92,23 +444,6 @@ namespace GestorEvento.Views
         private void BtnMinimizar_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
-        }
-
-        private void TxtValorFinal_TextChanged(object sender, EventArgs e)
-        {
-            // Remove caracteres não numéricos
-            string texto = new string(txtValorFinal.Text.Where(c => char.IsDigit(c)).ToArray());
-
-            // Se vazio, mostra "0"
-            if (string.IsNullOrEmpty(texto))
-            {
-                texto = "0";
-            }
-
-            // Formata com 2 casas decimais
-            decimal valor = decimal.Parse(texto) / 100;
-            txtValorFinal.Text = valor.ToString("F2");
-            txtValorFinal.SelectionStart = txtValorFinal.Text.Length; // Coloca cursor no final
         }
     }
 }

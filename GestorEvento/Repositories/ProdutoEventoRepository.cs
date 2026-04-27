@@ -216,7 +216,7 @@ namespace GestorEvento.Repositories
         /// <summary>
         /// Reduz a quantidade vendida de um produto em um evento (ao confirmar venda)
         /// </summary>
-        public bool ReducirQuantidadeVendida(int idProdutoEvento, int quantidade)
+        public bool ReduzirQuantidadeVendida(int idProdutoEvento, int quantidade)
         {
             try
             {

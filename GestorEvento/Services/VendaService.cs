@@ -95,5 +95,23 @@ namespace GestorEvento.Services
                 throw new Exception($"Erro ao obter vendas: {ex.Message}", ex);
             }
         }
+
+        /// <summary>
+        /// Obtém resumo simplificado de vendas para fechamento de caixa (id, data, valor)
+        /// </summary>
+        public List<(int idVenda, DateTime dtVenda, decimal vlTotal)> GetResumoVendasByPontoVenda(int idPontoVenda)
+        {
+            try
+            {
+                if (idPontoVenda <= 0)
+                    throw new ArgumentException("ID do ponto de venda inválido");
+
+                return _repository.GetResumoVendasByPontoVenda(idPontoVenda);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter resumo de vendas: {ex.Message}", ex);
+            }
+        }
     }
 }

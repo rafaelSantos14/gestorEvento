@@ -89,7 +89,7 @@ namespace GestorEvento.Services
                 if (quantidade <= 0)
                     throw new Exception("Quantidade deve ser maior que zero");
 
-                return _repository.ReducirQuantidadeVendida(idProdutoEvento, quantidade);
+                return _repository.ReduzirQuantidadeVendida(idProdutoEvento, quantidade);
             }
             catch (Exception ex)
             {

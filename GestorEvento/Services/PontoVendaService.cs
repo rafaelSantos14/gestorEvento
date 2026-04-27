@@ -8,10 +8,14 @@ namespace GestorEvento.Services
     public class PontoVendaService
     {
         private readonly PontoVendaRepository _repository;
+        private readonly VendaService _vendaService;
+        private readonly RecebimentoService _recebimentoService;
 
         public PontoVendaService()
         {
             _repository = new PontoVendaRepository();
+            _vendaService = new VendaService();
+            _recebimentoService = new RecebimentoService();
         }
 
         /// <summary>
@@ -89,6 +93,82 @@ namespace GestorEvento.Services
             catch (Exception ex)
             {
                 throw new Exception($"Erro ao fechar ponto de venda: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Obtém resumo completo para fechamento de caixa (resumo executivo + detalhes)
+        /// </summary>
+        public ResumoFechamentoCaixa GetResumoFechamento(int idPontoVenda)
+        {
+            try
+            {
+                if (idPontoVenda <= 0)
+                    throw new ArgumentException("ID do ponto de venda inválido");
+
+                // Obter dados básicos do ponto de venda
+                var pontoVenda = GetPontoVendaById(idPontoVenda);
+                if (pontoVenda == null)
+                    throw new ArgumentException("Ponto de venda não encontrado");
+
+                // Calcular total de vendas em dinheiro
+                decimal totalVendasDinheiro = _recebimentoService.GetTotalRecebimentoDinheiro(idPontoVenda);
+
+                // Calcular total esperado
+                decimal totalEsperado = pontoVenda.VlInicial + totalVendasDinheiro;
+
+                // Obter resumo por forma de pagamento
+                var recebimentosPorForma = new List<ResumoRecebimentoPorForma>();
+                foreach (var (idFormaPagamento, nomeFormaPagamento, totalRecebimento) in _recebimentoService.GetResumoRecebimentosByPontoVenda(idPontoVenda))
+                {
+                    recebimentosPorForma.Add(new ResumoRecebimentoPorForma
+                    {
+                        IdFormaPagamento = idFormaPagamento,
+                        NomeFormaPagamento = nomeFormaPagamento,
+                        TotalRecebimento = totalRecebimento
+                    });
+                }
+
+                // Obter vendas simplificadas
+                var vendas = new List<ResumoVendaFechamento>();
+                foreach (var (idVenda, dtVenda, vlTotal) in _vendaService.GetResumoVendasByPontoVenda(idPontoVenda))
+                {
+                    // Obter a principal forma de pagamento da venda
+                    var recebimentos = _recebimentoService.GetRecebimentosByVendaId(idVenda);
+                    string nomeFormaPagamento = ""; // Default
+                    if (recebimentos.Count > 0)
+                    {
+                        // Obter o primeiro/principal recebimento
+                        var recebimento = recebimentos[0];
+                        // TODO: Buscar o nome da forma de pagamento (pode ser necessário criar um method no FormaPagamentoService)
+                    }
+
+                    vendas.Add(new ResumoVendaFechamento
+                    {
+                        IdVenda = idVenda,
+                        DtVenda = dtVenda,
+                        VlTotal = vlTotal,
+                        NomeFormaPagamento = nomeFormaPagamento
+                    });
+                }
+
+                // Montar o DTO final
+                return new ResumoFechamentoCaixa
+                {
+                    IdPontoVenda = idPontoVenda,
+                    NoPontoVenda = pontoVenda.NoPontoVenda,
+                    NomePontoVenda = pontoVenda.DsPontoVenda,
+                    DtAbertura = pontoVenda.DtAbertura,
+                    VlInicial = pontoVenda.VlInicial,
+                    TotalVendasDinheiro = totalVendasDinheiro,
+                    TotalEsperado = totalEsperado,
+                    RecebimentosPorForma = recebimentosPorForma,
+                    Vendas = vendas
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter resumo de fechamento: {ex.Message}", ex);
             }
         }
     }

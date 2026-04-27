@@ -92,6 +92,7 @@
     <Compile Include="Models\ProdutoEvento.cs" />
     <Compile Include="Models\FormaPagamento.cs" />
     <Compile Include="Models\Recebimento.cs" />
+    <Compile Include="Models\ResumoFechamentoCaixa.cs" />
     <Compile Include="Services\ProdutoService.cs" />
     <Compile Include="Services\EventoService.cs" />
     <Compile Include="Services\PontoVendaService.cs" />
