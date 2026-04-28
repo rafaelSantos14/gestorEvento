@@ -1,0 +1,90 @@
+# Visual Studio
+.vs/
+.vscode/
+*.user
+*.sln.user
+*.suo
+
+# Build outputs
+bin/
+obj/
+Debug/
+Release/
+x86/
+x64/
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+.nuget/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Local user settings
+app.config.local
+appsettings.local.json
+
+# IDE specific files
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+*.stackdump
+
+# Test Results
+TestResults/
+*.trx
+
+# ReSharper
+.resharper
+
+# Visual Studio Cache/Options
+.vs/
+.vscode/
+*.VC.db
+*.opendb
+
+# Publish Folder
+PublishProfiles/
+
+# Click Once
+publish/
+app.publish/
+
+# Log files
+*.log
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Database backups
+*.bak
+*.sql
+
+# IDE files to ignore but keep config
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# Keep only the necessary project files
+!.gitignore
+!*.sln
+!*.csproj
+!*.cs
+!*.resx
+!*.config
+!packages.config
+!Database/
+!img/
