@@ -1,0 +1,112 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using GestorEvento.Models;
+using GestorEvento.Repositories;
+
+namespace GestorEvento.Services
+{
+    public class RelatorioVendaService
+    {
+        private readonly VendaRepository _vendaRepository;
+        private readonly RecebimentoRepository _recebimentoRepository;
+        private readonly FormaPagamentoRepository _formaPagamentoRepository;
+        private readonly PontoVendaRepository _pontoVendaRepository;
+
+        public RelatorioVendaService()
+        {
+            _vendaRepository = new VendaRepository();
+            _recebimentoRepository = new RecebimentoRepository();
+            _formaPagamentoRepository = new FormaPagamentoRepository();
+            _pontoVendaRepository = new PontoVendaRepository();
+        }
+
+        /// <summary>
+        /// Obtém os dados consolidados do relatório de vendas para um evento
+        /// </summary>
+        public RelatorioVendaData ObterDadosRelatorio(int idEvento)
+        {
+            try
+            {
+                var resultado = new RelatorioVendaData();
+
+                // 1. Obter todas as vendas do evento
+                var vendas = _vendaRepository.ObterVendasPorEvento(idEvento);
+                resultado.TotalQuantidadeVendas = vendas.Count;
+
+                // 2. Calcular valor total vendido
+                resultado.ValorTotalVendido = vendas.Sum(v => v.VlTotal);
+
+                // 3. Obter todos os recebimentos do evento
+                var recebimentos = _recebimentoRepository.ObterRecebimentosPorEvento(idEvento);
+
+                // 4. Calcular valor total recebido e troco
+                decimal valorTotalRecebido = recebimentos.Sum(r => r.VlRecebimento);
+                resultado.ValorTotalTroco = valorTotalRecebido - resultado.ValorTotalVendido;
+
+                // 5. Agrupar dados por forma de pagamento
+                var recebimentosAgrupados = recebimentos
+                    .GroupBy(r => r.IdFormaPagamento)
+                    .ToList();
+
+                foreach (var grupo in recebimentosAgrupados)
+                {
+                    var idFormaPagamento = grupo.Key;
+                    var formaPagamento = _formaPagamentoRepository.GetFormaPagamentoById(idFormaPagamento);
+                    var totalPagamento = grupo.Sum(r => r.VlRecebimento);
+                    var quantidadeRecebimentos = grupo.Count();
+
+                    if (formaPagamento != null)
+                    {
+                        resultado.DadosPorFormaPagamento.Add(new DadosPagamento
+                        {
+                            NomeFormaPagamento = formaPagamento.NmFormaPagamento,
+                            ValorTotal = totalPagamento,
+                            Quantidade = quantidadeRecebimentos
+                        });
+                    }
+                }
+
+                // 6. Agrupar dados por ponto de venda (caixa)
+                var vendasAgrupadas = vendas
+                    .GroupBy(v => v.IdPontoVenda)
+                    .ToList();
+
+                foreach (var grupo in vendasAgrupadas)
+                {
+                    var idPontoVenda = grupo.Key;
+                    var pontoVenda = _pontoVendaRepository.GetPontoVendaById(idPontoVenda);
+                    var totalCaixa = grupo.Sum(v => v.VlTotal);
+                    var quantidadeCaixa = grupo.Count();
+
+                    if (pontoVenda != null)
+                    {
+                        resultado.DadosPorCaixa.Add(new DadosCaixa
+                        {
+                            IdCaixa = pontoVenda.IdPontoVenda,
+                            NomeCaixa = pontoVenda.DsPontoVenda ?? $"Caixa {pontoVenda.NoPontoVenda}",
+                            NumeroCaixa = pontoVenda.NoPontoVenda,
+                            ValorTotal = totalCaixa,
+                            QuantidadeVendas = quantidadeCaixa
+                        });
+                    }
+                }
+
+                // 7. Ordenar dados para melhor visualização
+                resultado.DadosPorFormaPagamento = resultado.DadosPorFormaPagamento
+                    .OrderByDescending(d => d.ValorTotal)
+                    .ToList();
+
+                resultado.DadosPorCaixa = resultado.DadosPorCaixa
+                    .OrderBy(d => d.NumeroCaixa)
+                    .ToList();
+
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter dados do relatório: {ex.Message}", ex);
+            }
+        }
+    }
+}

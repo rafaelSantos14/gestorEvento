@@ -302,5 +302,65 @@ namespace GestorEvento.Repositories
                 throw;
             }
         }
+
+        /// <summary>
+        /// Obtém todos os recebimentos de um evento
+        /// </summary>
+        public List<Recebimento> ObterRecebimentosPorEvento(int idEvento)
+        {
+            var recebimentos = new List<Recebimento>();
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"SELECT r.id_recebimento_venda, r.id_venda, r.id_forma_pagamento, r.vl_recebimento_venda, r.dt_recebimento_venda
+                                     FROM RECEBIMENTO_VENDA r
+                                     INNER JOIN VENDA v ON r.id_venda = v.id_venda
+                                     INNER JOIN PONTO_VENDA pv ON v.id_ponto_venda = pv.id_ponto_venda
+                                     WHERE pv.id_evento = @idEvento
+                                     ORDER BY r.dt_recebimento_venda DESC";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@idEvento", idEvento);
+
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                recebimentos.Add(new Recebimento
+                                {
+                                    IdRecebimento = Convert.ToInt32(reader["id_recebimento_venda"]),
+                                    IdVenda = Convert.ToInt32(reader["id_venda"]),
+                                    IdFormaPagamento = Convert.ToInt32(reader["id_forma_pagamento"]),
+                                    VlRecebimento = Convert.ToDecimal(reader["vl_recebimento_venda"]),
+                                    DtRecebimento = Convert.ToDateTime(reader["dt_recebimento_venda"])
+                                });
+                            }
+                        }
+                    }
+
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter recebimentos por evento: {ex.Message}");
+                throw;
+            }
+
+            return recebimentos;
+        }
+
+        /// <summary>
+        /// Obtém todos os recebimentos de uma venda específica
+        /// </summary>
+        public List<Recebimento> ObterRecebimentosPorVenda(int idVenda)
+        {
+            return GetRecebimentosByVendaId(idVenda);
+        }
     }
 }

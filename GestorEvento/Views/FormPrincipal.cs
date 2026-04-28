@@ -35,7 +35,7 @@ namespace GestorEvento.Views
             // Aplicar estilos aos botões
             EstiloManager.AplicarEstiloInfo(btnProdutos);
             EstiloManager.AplicarEstiloInfo(btnEventos);
-            EstiloManager.AplicarEstiloInfo(btnVincular);
+            EstiloManager.AplicarEstiloInfo(btnRelatorios);
             EstiloManager.AplicarEstiloInfo(btnCaixa);            
             EstiloManager.AplicarEstiloAviso(btnSair);
         }
@@ -102,11 +102,6 @@ namespace GestorEvento.Views
             }
         }
 
-        private void btnVincular_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Produto-Evento - em desenvolvimento", "Info");
-        }
-
         private void btnCaixa_Click(object sender, EventArgs e)
         {
             try
@@ -140,7 +135,52 @@ namespace GestorEvento.Views
 
         private void btnRelatorios_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Relatórios - em desenvolvimento", "Info");
+            // Criar o menu de contexto dinamicamente
+            ContextMenuStrip menuRelatorios = new ContextMenuStrip();
+            
+            // Adicionar item Relatório de Vendas
+            ToolStripMenuItem itemVendas = new ToolStripMenuItem("📊 Vendas");
+            itemVendas.Click += (s, args) => AbrirRelatorioVendas();
+            menuRelatorios.Items.Add(itemVendas);
+            
+            // adicionar mais relatórios no futuro:
+            // ToolStripMenuItem itemTeste = new ToolStripMenuItem("📦 Estoque");
+            // itemTeste.Click += (s, args) => AbrirRelatorioTeste();
+            // menuRelatorios.Items.Add(itemTeste);
+            
+            // Mostrar o menu na frente do botão (ao lado direito)
+            menuRelatorios.Show(btnRelatorios, new Point(btnRelatorios.Width, 0));
+        }
+
+        private void AbrirRelatorioVendas()
+        {
+            try
+            {
+                // Verifica se já existe uma janela aberta
+                foreach (Form f in this.MdiChildren)
+                {
+                    if (f is FormRelatorioVenda)
+                    {
+                        f.Activate();
+                        return;
+                    }
+                }
+                
+                // Abre uma nova instância
+                FormRelatorioVenda form = new FormRelatorioVenda();
+                form.Text = "Relatório de Vendas";
+                form.MdiParent = this;
+                form.Show();
+                
+                // Dimensionar DEPOIS de Show() para resetar qualquer configuração anterior
+                // Desconta: panelMenu (202px) + barra de título (40px) + espaço abas (35px)
+                form.Location = new Point(0, 0);
+                form.Size = new Size(this.ClientSize.Width - panelMenu.Width - 5, this.ClientSize.Height - panelTitulo.Height - 35);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao abrir FormRelatorioVenda: " + ex.Message + "\n" + ex.StackTrace, "Erro");
+            }
         }
 
         private void btnSair_Click(object sender, EventArgs e)

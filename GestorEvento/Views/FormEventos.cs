@@ -23,8 +23,6 @@ namespace GestorEvento.Views
         // Vincular Produtos
         private List<int> _produtosVinculados = new List<int>();
         private int _eventoIdSelecionado = 0;
-        private DataGridViewRow _draggingRow = null;
-        private bool _isDraggingFromLeft = false;
 
         public FormEventos()
         {

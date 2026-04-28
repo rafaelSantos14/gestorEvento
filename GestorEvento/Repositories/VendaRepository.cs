@@ -289,5 +289,89 @@ namespace GestorEvento.Repositories
 
             return vendas;
         }
+
+        /// <summary>
+        /// Obtém todas as vendas de um evento (por ponto de venda do evento)
+        /// </summary>
+        public List<Venda> ObterVendasPorEvento(int idEvento)
+        {
+            var vendas = new List<Venda>();
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"SELECT v.id_venda, v.id_ponto_venda, v.dt_venda, v.vl_total, v.cd_status 
+                                     FROM VENDA v
+                                     INNER JOIN PONTO_VENDA pv ON v.id_ponto_venda = pv.id_ponto_venda
+                                     WHERE pv.id_evento = @idEvento
+                                     ORDER BY v.dt_venda DESC";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@idEvento", idEvento);
+
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var venda = new Venda
+                                {
+                                    IdVenda = Convert.ToInt32(reader["id_venda"]),
+                                    IdPontoVenda = Convert.ToInt32(reader["id_ponto_venda"]),
+                                    DtVenda = Convert.ToDateTime(reader["dt_venda"]),
+                                    VlTotal = Convert.ToDecimal(reader["vl_total"]),
+                                    CdStatus = reader["cd_status"].ToString()
+                                };
+                                vendas.Add(venda);
+                            }
+                        }
+                    }
+
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter vendas por evento: {ex.Message}");
+                throw;
+            }
+
+            return vendas;
+        }
+
+        /// <summary>
+        /// Obtém total de vendas de um evento
+        /// </summary>
+        public int ObterTotalVendasPorEvento(int idEvento)
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"SELECT COUNT(*) as total 
+                                     FROM VENDA v
+                                     INNER JOIN PONTO_VENDA pv ON v.id_ponto_venda = pv.id_ponto_venda
+                                     WHERE pv.id_evento = @idEvento";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@idEvento", idEvento);
+                        int total = Convert.ToInt32(command.ExecuteScalar());
+                        connection.Close();
+                        return total;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter total de vendas por evento: {ex.Message}");
+                throw;
+            }
+        }
     }
 }

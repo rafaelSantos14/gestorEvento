@@ -31,10 +31,8 @@ namespace GestorEvento.Views
         private Label lblTotalDinheiro;
         private Label lblTotalEsperado;
         private Label lblTotalVendas;
-        private Label lblValorContado;
         private Label lblDiferenca;
         
-        private Label lblTituloFormasPagamento;
         private DataGridView dgvFormasPagamento;
         
         private Label lblObservacoes;
