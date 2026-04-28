@@ -90,7 +90,7 @@ namespace GestorEvento.Views
             int larguraDisponivel = telaAtiva.WorkingArea.Width;
 
             // Definir tamanho com margem de segurança (100px para taskbar do Windows)
-            int alturaPadrao = 860;
+            int alturaPadrao = 700;
             int larguraPadrao = 850;
             int margemSeguranca = 100;
 
@@ -215,7 +215,7 @@ namespace GestorEvento.Views
             {
                 Text = "FECHAMENTO",
                 Location = new Point(20, 450),
-                Size = new Size(this.ClientSize.Width - 40, 220),
+                Size = new Size(this.ClientSize.Width - 40, 200),
                 Font = new Font("Segoe UI", 10F)
             };
 
@@ -263,7 +263,7 @@ namespace GestorEvento.Views
             this.Controls.Add(gbContagem);
 
             // Resize form antes de criar botões (para calcular posição correta)
-            this.ClientSize = new Size(Math.Max(850, this.ClientSize.Width), 860);
+            this.ClientSize = new Size(Math.Max(850, this.ClientSize.Width), 700);
 
             // Botões
             Button btnFecharCaixa = new Button
