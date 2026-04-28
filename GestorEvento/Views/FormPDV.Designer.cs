@@ -26,6 +26,7 @@ namespace GestorEvento.Views
             this.panelConteudo = new System.Windows.Forms.Panel();
             this.panelTotalizacao = new System.Windows.Forms.Panel();
             this.lblTrocoValor = new System.Windows.Forms.Label();
+            this.btnConfirmarVenda = new System.Windows.Forms.Button();
             this.lblTroco = new System.Windows.Forms.Label();
             this.lblTotalValor = new System.Windows.Forms.Label();
             this.lblTotal = new System.Windows.Forms.Label();
@@ -33,7 +34,6 @@ namespace GestorEvento.Views
             this.panelProdutos = new System.Windows.Forms.Panel();
             this.panelBotoes = new System.Windows.Forms.Panel();
             this.btnCancelar = new System.Windows.Forms.Button();
-            this.btnConfirmarVenda = new System.Windows.Forms.Button();
             this.panelTitulo.SuspendLayout();
             this.panelInfoCaixa.SuspendLayout();
             this.panelConteudo.SuspendLayout();
@@ -159,6 +159,22 @@ namespace GestorEvento.Views
             this.lblTrocoValor.Text = "R$ 0";
             this.lblTrocoValor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // btnConfirmarVenda
+            // 
+            this.btnConfirmarVenda.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnConfirmarVenda.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnConfirmarVenda.FlatAppearance.BorderSize = 0;
+            this.btnConfirmarVenda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnConfirmarVenda.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnConfirmarVenda.ForeColor = System.Drawing.Color.White;
+            this.btnConfirmarVenda.Location = new System.Drawing.Point(5, 195);
+            this.btnConfirmarVenda.Name = "btnConfirmarVenda";
+            this.btnConfirmarVenda.Size = new System.Drawing.Size(319, 84);
+            this.btnConfirmarVenda.TabIndex = 0;
+            this.btnConfirmarVenda.Text = "✅ CONFIRMAR";
+            this.btnConfirmarVenda.UseVisualStyleBackColor = false;
+            this.btnConfirmarVenda.Click += new System.EventHandler(this.BtnConfirmarVenda_Click);
+            // 
             // lblTroco
             // 
             this.lblTroco.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
@@ -242,22 +258,6 @@ namespace GestorEvento.Views
             this.btnCancelar.UseVisualStyleBackColor = false;
             this.btnCancelar.Click += new System.EventHandler(this.BtnCancelar_Click);
             // 
-            // btnConfirmarVenda
-            // 
-            this.btnConfirmarVenda.AutoSize = true;
-            this.btnConfirmarVenda.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.btnConfirmarVenda.FlatAppearance.BorderSize = 0;
-            this.btnConfirmarVenda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnConfirmarVenda.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.btnConfirmarVenda.ForeColor = System.Drawing.Color.White;
-            this.btnConfirmarVenda.Location = new System.Drawing.Point(5, 209);
-            this.btnConfirmarVenda.Name = "btnConfirmarVenda";
-            this.btnConfirmarVenda.Size = new System.Drawing.Size(319, 84);
-            this.btnConfirmarVenda.TabIndex = 0;
-            this.btnConfirmarVenda.Text = "✅ CONFIRMAR";
-            this.btnConfirmarVenda.UseVisualStyleBackColor = false;
-            this.btnConfirmarVenda.Click += new System.EventHandler(this.BtnConfirmarVenda_Click);
-            // 
             // FormPDV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -279,7 +279,6 @@ namespace GestorEvento.Views
             this.panelInfoCaixa.PerformLayout();
             this.panelConteudo.ResumeLayout(false);
             this.panelTotalizacao.ResumeLayout(false);
-            this.panelTotalizacao.PerformLayout();
             this.panelBotoes.ResumeLayout(false);
             this.ResumeLayout(false);
 

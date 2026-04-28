@@ -81,6 +81,9 @@ namespace GestorEvento.Views
                     // Ajustar layout responsivo para maximized
                     AjustarLayoutPaineis();
                     
+                    // Posicionar botão próximo à label de total
+                    PosicionarBotaoProximoAoTotal();
+                    
                     // Carregar produtos e formas de pagamento
                     CarregarProdutos();
                     CarregarFormasPagamento();
@@ -111,14 +114,26 @@ namespace GestorEvento.Views
             int larguraDisponivel = panelConteudo.Width;
             
             // Distribuir: Produtos (60%) | Pagamento (20%) | Totalizacao (20%)
-            int larguraProdutos = (int)(larguraDisponivel * 0.60);
-            int larguraPagamento = (int)(larguraDisponivel * 0.20);
+            int larguraProdutos = (int)(larguraDisponivel * 0.70);
+            int larguraPagamento = (int)(larguraDisponivel * 0.15);
             
             // Definir largura dos painéis de esquerda
             panelProdutos.Width = larguraProdutos;
             panelPagamento.Width = larguraPagamento;
             
             // panelTotalizacao preencherá o resto automaticamente (Dock=Fill)
+        }
+
+        // Posicionar botão Confirmar próximo à label de total
+        private void PosicionarBotaoProximoAoTotal()
+        {
+            // Calcular posição Y baseado na label lblTotalValor
+            int yLabel = lblTotalValor.Location.Y;
+            int alturaLabel = lblTotalValor.Height;
+            int espacamento = 8; // Pequeno espaçamento entre label e botão
+            
+            // Definir nova posição Y do botão
+            btnConfirmarVenda.Location = new Point(btnConfirmarVenda.Location.X, yLabel + alturaLabel + espacamento);
         }
 
         private void CarregarProdutos()
@@ -128,8 +143,10 @@ namespace GestorEvento.Views
             
             try
             {
-                // Obter produtos vinculados ao evento
-                var produtosEvento = _produtoEventoService.GetProdutosVinculados(_eventoIdSelecionado);
+                // Obter produtos vinculados ao evento e ordenar alfabeticamente
+                var produtosEvento = _produtoEventoService.GetProdutosVinculados(_eventoIdSelecionado)
+                    .OrderBy(p => _produtoService.GetProductById(p.IdProduto)?.Nome ?? "")
+                    .ToList();
                 
                 if (produtosEvento.Count == 0)
                 {
@@ -162,7 +179,7 @@ namespace GestorEvento.Views
                         // Se atingiu o limite de produtos na coluna, passar para próxima coluna
                         if (produtoAtual > 0 && produtoAtual % produtosPorColuna == 0)
                         {
-                            xPosition += 400; // Largura de uma coluna (aumentado para mais espaço entre colunas)
+                            xPosition += 240; // Largura de uma coluna (aumentado para mais espaço entre colunas)
                             yPosition = 10;
                         }
                         
@@ -645,6 +662,7 @@ namespace GestorEvento.Views
         {
             base.OnResize(e);
             AjustarLayoutPaineis();
+            PosicionarBotaoProximoAoTotal();
         }
 
         // ==================== CLASSES INTERNAS ====================
@@ -675,10 +693,10 @@ namespace GestorEvento.Views
                 // Criar label com nome do produto, valor e quantidade disponível - NO TOPO
                 _lblProduto = new Label
                 {
-                    Text = $"{nomeProduto} - R$ {valorPadrao.ToString("F2")} - Disp. ({quantidadeDisponivel})",
+                    Text = $"{nomeProduto} - R$ {valorPadrao.ToString("F2")} - ({quantidadeDisponivel})",
                     Location = new Point(xPosition, yPosition),
-                    Size = new Size(340, 30),
-                    Font = new Font("Segoe UI", 12F),
+                    Size = new Size(240, 30),
+                    Font = new Font("Segoe UI", 10F),
                     AutoSize = false,
                     TextAlign = ContentAlignment.TopLeft
                 };
@@ -699,22 +717,24 @@ namespace GestorEvento.Views
                 // Criar Botão + (mais)
                 _btnMais = new Button
                 {
-                    Location = new Point(xPosition + 90, yPosition + 35),
+                    Location = new Point(xPosition + 90, yPosition + 32),
                     Size = new Size(40, 35),
                     Text = "+",
-                    Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                    FlatStyle = FlatStyle.Flat
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    FlatStyle = FlatStyle.Flat,
+                    TextAlign = ContentAlignment.MiddleCenter
                 };
                 _btnMais.Click += BtnMais_Click;
 
                 // Criar Botão - (menos)
                 _btnMenos = new Button
                 {
-                    Location = new Point(xPosition + 140, yPosition + 35),
+                    Location = new Point(xPosition + 135, yPosition + 32),
                     Size = new Size(40, 35),
                     Text = "−",
-                    Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                    FlatStyle = FlatStyle.Flat
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    FlatStyle = FlatStyle.Flat,
+                    TextAlign = ContentAlignment.MiddleCenter
                 };
                 _btnMenos.Click += BtnMenos_Click;
             }
@@ -858,7 +878,7 @@ namespace GestorEvento.Views
                     Text = nomeFormaPagamento,
                     Location = new Point(10, yPosition),
                     Size = new Size(280, 45),
-                    Font = new Font("Segoe UI", 20F),
+                    Font = new Font("Segoe UI", 15F),
                     AutoSize = false
                 };
 
@@ -866,9 +886,9 @@ namespace GestorEvento.Views
                 _txtValor = new TextBox
                 {
                     Location = new Point(10, yPosition + 50),
-                    Size = new Size(180, 50),
+                    Size = new Size(150, 50),
                     Enabled = true,
-                    Font = new Font("Segoe UI", 20F),
+                    Font = new Font("Segoe UI", 16F),
                     Text = ""
                 };
                 _txtValor.Leave += TxtValor_Leave;
