@@ -56,7 +56,7 @@ namespace GestorEvento.Models
     {
         public int IdItemVenda { get; set; }
         public int IdVenda { get; set; }
-        public int IdProduto { get; set; }
+        public int IdProdutoEvento { get; set; }
         public string NomeProduto { get; set; }
         public int Quantidade { get; set; }
         public decimal VlUnitario { get; set; }
@@ -65,9 +65,9 @@ namespace GestorEvento.Models
         // Constructors
         public ItemVenda() { }
 
-        public ItemVenda(int idProduto, string nomeProduto, int quantidade, decimal vlUnitario)
+        public ItemVenda(int idProdutoEvento, string nomeProduto, int quantidade, decimal vlUnitario)
         {
-            IdProduto = idProduto;
+            IdProdutoEvento = idProdutoEvento;
             NomeProduto = nomeProduto;
             Quantidade = quantidade;
             VlUnitario = vlUnitario;

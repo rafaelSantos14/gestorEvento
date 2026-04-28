@@ -345,6 +345,26 @@ namespace GestorEvento.Views
                     return;
                 }
 
+                // ======== VALIDAÇÃO 3: VERIFICAR ESTOQUE ANTES DE REGISTRAR ========
+                List<ProdutoEvento> produtosAtualizados = _produtoEventoService.GetProdutosVinculados(_eventoIdSelecionado);
+                string erroEstoque = ValidarEstoqueDisponivel(produtosAtualizados);
+                
+                if (!string.IsNullOrEmpty(erroEstoque))
+                {
+                    // Mostrar qual produto acabou
+                    DialogoCustomizado aviso = new DialogoCustomizado(
+                        "Estoque Insuficiente",
+                        $"⚠️ PRODUTO SEM ESTOQUE SUFICIENTE:\n\n{erroEstoque}\n\nAtualizando quantidades disponíveis...",
+                        TipoDialogo.Aviso,
+                        TipoButton.Ok
+                    );
+                    aviso.ShowDialog();
+                    
+                    // Atualizar APENAS as quantidades na tela sem limpar dados
+                    AtualizarQuantidadesNaTela(produtosAtualizados);
+                    return; // Não registra venda
+                }
+
                 // Criar venda com itens que têm quantidade > 0
                 var venda = new Venda(_caixaIdSelecionado);
                 
@@ -356,7 +376,7 @@ namespace GestorEvento.Views
                         decimal valor = linha.GetValor();
                         
                         venda.AdicionarItem(new ItemVenda(
-                            linha.IdProduto,
+                            linha.IdProdutoEvento,
                             linha.NomeProduto,
                             qtde,
                             valor
@@ -396,7 +416,7 @@ namespace GestorEvento.Views
                         }
                         catch (Exception exEstoque)
                         {
-                            System.Diagnostics.Debug.WriteLine($"Aviso ao registrar estoque: {exEstoque.Message}");
+                            System.Diagnostics.Debug.WriteLine($"✗ Erro ao registrar estoque: {exEstoque.Message}");
                         }
                     }
                 }
@@ -478,6 +498,67 @@ namespace GestorEvento.Views
                 );
                 erro.ShowDialog();
             }
+        }
+
+        // Validar se todos os produtos têm estoque suficiente
+        private string ValidarEstoqueDisponivel(List<ProdutoEvento> produtosAtualizados)
+        {
+            foreach (var linha in _produtosLinhas)
+            {
+                int qtdeSolicitada = linha.GetQuantidade();
+                if (qtdeSolicitada > 0)
+                {
+                    // Buscar produto atualizado do banco
+                    var produtoAtualizado = produtosAtualizados.FirstOrDefault(p => p.Id == linha.IdProdutoEvento);
+                    
+                    if (produtoAtualizado == null)
+                    {
+                        return $"{linha.NomeProduto}: Produto não encontrado no banco de dados";
+                    }
+
+                    int quantidadeDisponivel = produtoAtualizado.QuantidadeDisponivel;
+
+                    if (qtdeSolicitada > quantidadeDisponivel)
+                    {
+                        return $"{linha.NomeProduto}:\nDisponível: {quantidadeDisponivel}\nSolicitado: {qtdeSolicitada}";
+                    }
+                }
+            }
+
+            return null; // Tudo ok
+        }
+
+        // Atualizar apenas as quantidades na tela (sem limpar dados preenchidos)
+        private void AtualizarQuantidadesNaTela(List<ProdutoEvento> produtosAtualizados)
+        {
+            foreach (var linha in _produtosLinhas)
+            {
+                var produtoAtualizado = produtosAtualizados.FirstOrDefault(p => p.Id == linha.IdProdutoEvento);
+                
+                if (produtoAtualizado != null)
+                {
+                    int novaQuantidade = produtoAtualizado.QuantidadeDisponivel;
+                    
+                    // Se a quantidade solicitada for maior que a disponível, reduzir a solicitação
+                    int qtdeSolicitada = linha.GetQuantidade();
+                    if (qtdeSolicitada > novaQuantidade)
+                    {
+                        // Ajustar para a máxima disponível (mantém o restante preenchido)
+                        linha.AtualizarQuantidadeDisponivel(novaQuantidade);
+                        linha.SetQuantidade(novaQuantidade); // Define a quantidade para a disponível
+                        
+                        System.Diagnostics.Debug.WriteLine($"⚠️ {linha.NomeProduto}: Qtde ajustada de {qtdeSolicitada} para {novaQuantidade}");
+                    }
+                    else
+                    {
+                        // Atualizar a quantidade disponível exibida
+                        linha.AtualizarQuantidadeDisponivel(novaQuantidade);
+                    }
+                }
+            }
+
+            // Recalcular total com novas quantidades
+            AtualizarTotalVenda();
         }
 
         private void BtnCancelar_Click(object sender, EventArgs e)
@@ -739,6 +820,18 @@ namespace GestorEvento.Views
             public void Limpar()
             {
                 _txtQuantidade.Text = "";
+            }
+
+            public void AtualizarQuantidadeDisponivel(int novaQuantidade)
+            {
+                _quantidadeDisponivel = novaQuantidade;
+                // Atualizar o label para refletir a nova quantidade disponível
+                _lblProduto.Text = $"{NomeProduto} - R$ {_valorPadrao.ToString("F2")} - Disp. ({novaQuantidade})";
+            }
+
+            public void SetQuantidade(int quantidade)
+            {
+                _txtQuantidade.Text = quantidade.ToString();
             }
         }
 

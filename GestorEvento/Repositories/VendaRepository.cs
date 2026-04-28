@@ -59,7 +59,7 @@ namespace GestorEvento.Repositories
                     using (MySqlCommand command = new MySqlCommand(queryItem, connection, transaction))
                     {
                         command.Parameters.AddWithValue("@idVenda", idVenda);
-                        command.Parameters.AddWithValue("@idProdutoEvento", item.IdProduto);
+                        command.Parameters.AddWithValue("@idProdutoEvento", item.IdProdutoEvento);
                         command.Parameters.AddWithValue("@qtdeVendida", item.Quantidade);
                         command.Parameters.AddWithValue("@vlUnitario", item.VlUnitario);
                         command.Parameters.AddWithValue("@vlSubtotal", item.Subtotal);
@@ -171,7 +171,7 @@ namespace GestorEvento.Repositories
                                 {
                                     IdItemVenda = Convert.ToInt32(reader["id_item_venda"]),
                                     IdVenda = Convert.ToInt32(reader["id_venda"]),
-                                    IdProduto = Convert.ToInt32(reader["id_produto_evento"]),
+                                    IdProdutoEvento = Convert.ToInt32(reader["id_produto_evento"]),
                                     Quantidade = Convert.ToInt32(reader["qtde_vendida"]),
                                     VlUnitario = Convert.ToDecimal(reader["vl_unitario"]),
                                     Subtotal = Convert.ToDecimal(reader["vl_subtotal"])

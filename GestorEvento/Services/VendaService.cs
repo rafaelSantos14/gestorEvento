@@ -41,8 +41,8 @@ namespace GestorEvento.Services
                 // Validar cada item
                 foreach (var item in venda.Itens)
                 {
-                    if (item.IdProduto <= 0)
-                        throw new ArgumentException($"ID do produto inválido no item");
+                    if (item.IdProdutoEvento <= 0)
+                        throw new ArgumentException($"ID do produto-evento inválido no item");
 
                     if (string.IsNullOrWhiteSpace(item.NomeProduto))
                         throw new ArgumentException($"Nome do produto não pode estar vazio");

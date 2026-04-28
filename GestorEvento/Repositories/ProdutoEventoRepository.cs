@@ -215,6 +215,7 @@ namespace GestorEvento.Repositories
 
         /// <summary>
         /// Reduz a quantidade vendida de um produto em um evento (ao confirmar venda)
+        /// COM VALIDAÇÃO: Impede vender mais do que está disponível
         /// </summary>
         public bool ReduzirQuantidadeVendida(int idProdutoEvento, int quantidade)
         {
@@ -224,21 +225,65 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = "UPDATE PRODUTO_EVENTO SET qtde_vendida = COALESCE(qtde_vendida, 0) + @quantidade WHERE id_produto_evento = @idProdutoEvento";
+                    // 1. PRIMEIRO: Verificar se há quantidade suficiente
+                    string selectQuery = "SELECT qtde_produto, COALESCE(qtde_vendida, 0) as qtde_vendida FROM PRODUTO_EVENTO WHERE id_produto_evento = @idProdutoEvento";
+                    
+                    int qtdeTotal = 0;
+                    int qtdeJaVendida = 0;
 
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    using (MySqlCommand selectCommand = new MySqlCommand(selectQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@idProdutoEvento", idProdutoEvento);
-                        command.Parameters.AddWithValue("@quantidade", quantidade);
+                        selectCommand.Parameters.AddWithValue("@idProdutoEvento", idProdutoEvento);
 
-                        int rowsAffected = command.ExecuteNonQuery();
-                        return rowsAffected > 0;
+                        using (MySqlDataReader reader = selectCommand.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                qtdeTotal = Convert.ToInt32(reader["qtde_produto"]);
+                                qtdeJaVendida = Convert.ToInt32(reader["qtde_vendida"]);
+                            }
+                            else
+                            {
+                                throw new Exception($"Produto evento ID {idProdutoEvento} não encontrado");
+                            }
+                        }
+                    }
+
+                    // 2. Calcular quantidade disponível (estoque real no banco)
+                    int quantidadeDisponivel = qtdeTotal - qtdeJaVendida;
+
+                    // 3. VALIDAR: Quantidade solicitada não pode exceder o disponível
+                    if (quantidade > quantidadeDisponivel)
+                    {
+                        throw new Exception($"Estoque insuficiente! Disponível: {quantidadeDisponivel}, Solicitado: {quantidade}");
+                    }
+
+                    // 4. UPDATE seguro - agora sabemos que há estoque
+                    string updateQuery = "UPDATE PRODUTO_EVENTO SET qtde_vendida = COALESCE(qtde_vendida, 0) + @quantidade WHERE id_produto_evento = @idProdutoEvento";
+
+                    using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@idProdutoEvento", idProdutoEvento);
+                        updateCommand.Parameters.AddWithValue("@quantidade", quantidade);
+
+                        int rowsAffected = updateCommand.ExecuteNonQuery();
+                        
+                        if (rowsAffected > 0)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"✓ Estoque reduzido: ID={idProdutoEvento}, Qtde Vendida: {qtdeJaVendida} → {qtdeJaVendida + quantidade} de {qtdeTotal}");
+                            return true;
+                        }
+                        else
+                        {
+                            throw new Exception($"Falha ao atualizar estoque para ID {idProdutoEvento}");
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao reduzir quantidade vendida: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"✗ Erro ao reduzir quantidade vendida: {ex.Message}");
+                throw new Exception($"Erro ao registrar estoque: {ex.Message}");
             }
         }
     }
