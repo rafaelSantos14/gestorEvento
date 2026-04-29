@@ -50,7 +50,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter formas de pagamento: {ex.Message}");
+                throw new Exception($"Erro ao obter formas de pagamento: {ex.Message}", ex);
             }
 
             return formas;
@@ -91,7 +91,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter forma de pagamento: {ex.Message}");
+                throw new Exception($"Erro ao obter forma de pagamento: {ex.Message}", ex);
             }
 
             return null;

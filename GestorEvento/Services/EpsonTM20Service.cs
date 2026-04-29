@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Drawing;
 using System.IO;
+using GestorEvento.Utilities;
 
 namespace GestorEvento.Services
 {
@@ -52,12 +53,12 @@ namespace GestorEvento.Services
                 Thread.Sleep(500);
                 
                 _isConnected = true;
-                System.Diagnostics.Debug.WriteLine($"✓ Conectado em {_portName}");
+                // System.Diagnostics.Debug.WriteLine($"✓ Conectado em {_portName}");
                 return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"✗ Erro ao conectar: {ex.Message}");
+                UiHelper.ExibirErro("Erro", $"Erro ao conectar na porta {_portName}: {ex.Message}");
                 return false;
             }
         }
@@ -178,7 +179,7 @@ namespace GestorEvento.Services
             {
                 if (!System.IO.File.Exists(caminhoImagem))
                 {
-                    System.Diagnostics.Debug.WriteLine($"Imagem não encontrada: {caminhoImagem}");
+                    UiHelper.ExibirAviso("Aviso", $"Imagem não encontrada: {caminhoImagem}");
                     return false;
                 }
 
@@ -223,13 +224,13 @@ namespace GestorEvento.Services
 
                     monoBitmap.Dispose();
                     resizedBitmap.Dispose();
-                    System.Diagnostics.Debug.WriteLine("✓ Imagem impressa com sucesso");
+                    // System.Diagnostics.Debug.WriteLine("✓ Imagem impressa com sucesso");
                     return true;
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Erro ao imprimir imagem: {ex.Message}");
+                UiHelper.ExibirErro("Erro", $"Erro ao imprimir imagem: {ex.Message}");
                 return false;
             }
         }
@@ -298,9 +299,9 @@ namespace GestorEvento.Services
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("═══════════════════════════════════════");
-                System.Diagnostics.Debug.WriteLine($"INICIANDO CUPOM: {nomeProduto}");
-                System.Diagnostics.Debug.WriteLine("═══════════════════════════════════════");
+                // System.Diagnostics.Debug.WriteLine("═══════════════════════════════════════");
+                // System.Diagnostics.Debug.WriteLine($"INICIANDO CUPOM: {nomeProduto}");
+                // System.Diagnostics.Debug.WriteLine("═══════════════════════════════════════");
 
                 // Garantir conexão aberta
                 if (!_isConnected)
@@ -316,26 +317,26 @@ namespace GestorEvento.Services
                 }
 
                 // ============ FASE 1: RESET E INICIALIZAÇÃO ============
-                System.Diagnostics.Debug.WriteLine("\n[FASE 1] Reset da impressora");
+                // System.Diagnostics.Debug.WriteLine("\n[FASE 1] Reset da impressora");
                 byte[] reset = { 0x1B, 0x40 }; // ESC @
                 _serialPort.Write(reset, 0, reset.Length);
                 _serialPort.BaseStream.Flush();
                 Thread.Sleep(100); // Reduzido de 200ms
-                System.Diagnostics.Debug.WriteLine("✓ Reset enviado");
+                // System.Diagnostics.Debug.WriteLine("✓ Reset enviado");
 
                 // ============ FASE 1.1: CONFIGURAR CODE PAGE ============
-                System.Diagnostics.Debug.WriteLine("[FASE 1.1] Configurando code page para Windows-1252");
+                // System.Diagnostics.Debug.WriteLine("[FASE 1.1] Configurando code page para Windows-1252");
                 byte[] setCodePage = { 0x1B, 0x74, 0x10 }; // ESC t 16 (Windows-1252 com acentuação)
                 _serialPort.Write(setCodePage, 0, setCodePage.Length);
                 _serialPort.BaseStream.Flush();
                 // Sem delay aqui - consolidado
-                System.Diagnostics.Debug.WriteLine("✓ Code page configurado");
+                // System.Diagnostics.Debug.WriteLine("✓ Code page configurado");
 
                 // Declarar variáveis de uso frequente
                 byte[] lineFeed = { 0x0A };
 
                 // ============ FASE 2: CONFIGURAÇÕES ============
-                System.Diagnostics.Debug.WriteLine("\n[FASE 2] Configurando formatação");
+                // System.Diagnostics.Debug.WriteLine("\n[FASE 2] Configurando formatação");
 
                 // Align center
                 byte[] alignCenter = { 0x1B, 0x61, 0x01 };
@@ -350,25 +351,24 @@ namespace GestorEvento.Services
                 _serialPort.Write(font2x, 0, font2x.Length);
                 _serialPort.BaseStream.Flush();
                 Thread.Sleep(30); // Reduzido de 50ms
-                System.Diagnostics.Debug.WriteLine("✓ Configurações enviadas");
+                // System.Diagnostics.Debug.WriteLine("✓ Configurações enviadas");
 
                 // ============ FASE 3: IMPRIMIR TEXTO ============
-                System.Diagnostics.Debug.WriteLine("\n[FASE 3] Imprimindo texto");
+                // System.Diagnostics.Debug.WriteLine("\n[FASE 3] Imprimindo texto");
                 byte[] productBytes = Encoding.GetEncoding(1252).GetBytes(nomeProduto);
                 _serialPort.Write(productBytes, 0, productBytes.Length);
                 _serialPort.BaseStream.Flush();
                 Thread.Sleep(50); // Reduzido de 100ms
-                System.Diagnostics.Debug.WriteLine($"✓ Texto enviado: {nomeProduto}");
+                // System.Diagnostics.Debug.WriteLine($"✓ Texto enviado: {nomeProduto}");
 
                 // ============ FASE 3.5: IMPRIMIR DATA E HORA ============
-                System.Diagnostics.Debug.WriteLine("\n[FASE 3.5] Imprimindo data e hora");
+                // System.Diagnostics.Debug.WriteLine("\n[FASE 3.5] Imprimindo data e hora");
                 
                 // 3 linhas vazias entre produto e data
                 for (int i = 0; i < 3; i++)
                 {
                     _serialPort.Write(lineFeed, 0, lineFeed.Length);
-                }
-                // Sem delay aqui - consolidado
+                }                
                 
                 // Reduzir tamanho da fonte
                 byte[] fontSmall = { 0x1D, 0x21, 0x00 }; // Fonte pequena
@@ -380,16 +380,16 @@ namespace GestorEvento.Services
                 _serialPort.Write(dataHoraBytes, 0, dataHoraBytes.Length);
                 _serialPort.BaseStream.Flush();
                 Thread.Sleep(50); // Reduzido de 100ms
-                System.Diagnostics.Debug.WriteLine($"✓ Data/Hora enviada: {dataHora}");
+                // System.Diagnostics.Debug.WriteLine($"✓ Data/Hora enviada: {dataHora}");
                 
                 // Voltar para fonte normal
                 byte[] fontNormalSmall = { 0x1D, 0x21, 0x00 };
                 _serialPort.Write(fontNormalSmall, 0, fontNormalSmall.Length);
                 _serialPort.BaseStream.Flush();
-                System.Diagnostics.Debug.WriteLine($"✓ Data/Hora enviada: {dataHora}");
+                // System.Diagnostics.Debug.WriteLine($"✓ Data/Hora enviada: {dataHora}");
 
                 // ============ FASE 3.6: LOGO (IMAGEM) - DESATIVADO PARA TESTES ============
-                //System.Diagnostics.Debug.WriteLine("\n[FASE 3.6] Imprimindo logos");
+                // System.Diagnostics.Debug.WriteLine("\n[FASE 3.6] Imprimindo logos");
                 //
                 //// 2 quebras de linha
                 //for (int i = 0; i < 2; i++)
@@ -406,19 +406,19 @@ namespace GestorEvento.Services
                 //
                 //// Imprimir dois logos lado a lado
                 //bool logosImpressos = ImprimirDoisLogos();
-                //if (!logosImpressos)
-                //{
-                //    System.Diagnostics.Debug.WriteLine("⚠ Logos não encontrados, continuando sem logos");
+                // if (!logosImpressos)
+                // {
+                //     // System.Diagnostics.Debug.WriteLine("⚠ Logos não encontrados, continuando sem logos");
                 //}
                 //
                 //// Quebra de linha
                 //_serialPort.Write(lineFeed, 0, lineFeed.Length);
                 //_serialPort.BaseStream.Flush();
                 //Thread.Sleep(100);
-                //System.Diagnostics.Debug.WriteLine("✓ Logos processados");
+                // System.Diagnostics.Debug.WriteLine("✓ Logos processados");
 
                 // ============ FASE 4: RESET DE FORMATAÇÃO ============
-                System.Diagnostics.Debug.WriteLine("\n[FASE 4] Resetando formatação");
+                // System.Diagnostics.Debug.WriteLine("\n[FASE 4] Resetando formatação");
 
                 // Bold OFF
                 byte[] boldOff = { 0x1B, 0x45, 0x00 };
@@ -432,11 +432,11 @@ namespace GestorEvento.Services
                 byte[] alignLeft = { 0x1B, 0x61, 0x00 };
                 _serialPort.Write(alignLeft, 0, alignLeft.Length);
                 _serialPort.BaseStream.Flush();
-                // Sem delay aqui - consolidado
-                System.Diagnostics.Debug.WriteLine("✓ Formatação resetada");
+                
+                // System.Diagnostics.Debug.WriteLine("✓ Formatação resetada");
 
                 // ============ FASE 5: AVANÇAR PAPEL ============
-                System.Diagnostics.Debug.WriteLine("\n[FASE 5] Avançando papel");
+                // System.Diagnostics.Debug.WriteLine("\n[FASE 5] Avançando papel");
                 
                 // Enviar 2 quebras de linha (reduzido de 5)
                 for (int i = 0; i < 2; i++)
@@ -444,52 +444,52 @@ namespace GestorEvento.Services
                     _serialPort.Write(lineFeed, 0, lineFeed.Length);
                 }
                 _serialPort.BaseStream.Flush();
-                System.Diagnostics.Debug.WriteLine("✓ 2 quebras de linha enviadas");
+                // System.Diagnostics.Debug.WriteLine("✓ 2 quebras de linha enviadas");
 
                 // ============ FASE 6: ESPERAR IMPRESSÃO TERMINAR ============
-                System.Diagnostics.Debug.WriteLine("\n[FASE 6] Aguardando impressão");
-                System.Diagnostics.Debug.WriteLine("Esperando 300ms...");
+                // System.Diagnostics.Debug.WriteLine("\n[FASE 6] Aguardando impressão");
+                // System.Diagnostics.Debug.WriteLine("Esperando 300ms...");
                 Thread.Sleep(300); // Reduzido de 500ms
-                System.Diagnostics.Debug.WriteLine("✓ Tempo de impressão decorrido");
+                // System.Diagnostics.Debug.WriteLine("✓ Tempo de impressão decorrido");
 
                 // ============ FASE 7: MAIS FEEDS ANTES DE CORTAR ============
-                System.Diagnostics.Debug.WriteLine("\n[FASE 7] Enviando feeds extras antes do corte");
+                // System.Diagnostics.Debug.WriteLine("\n[FASE 7] Enviando feeds extras antes do corte");
                 _serialPort.Write(lineFeed, 0, lineFeed.Length); // 1 quebra de linha apenas
                 _serialPort.BaseStream.Flush();
                 Thread.Sleep(100); // Reduzido de 200ms
-                System.Diagnostics.Debug.WriteLine("✓ 1 feed extra enviado");
-                System.Diagnostics.Debug.WriteLine("✓ 3 feeds extras enviados");
+                // System.Diagnostics.Debug.WriteLine("✓ 1 feed extra enviado");
+                // System.Diagnostics.Debug.WriteLine("✓ 3 feeds extras enviados");
 
                 // ============ FASE 8: CORTE (FINAL) ============
-                System.Diagnostics.Debug.WriteLine("\n[FASE 8] ENVIANDO CORTE");
+                // System.Diagnostics.Debug.WriteLine("\n[FASE 8] ENVIANDO CORTE");
                 
                 // Tentar comando full cut
                 byte[] paperCutFull = { 0x1D, 0x56, 0x41 }; // GS V A
-                System.Diagnostics.Debug.WriteLine("Enviando: 0x1D 0x56 0x41 (Full Cut)");
+                // System.Diagnostics.Debug.WriteLine("Enviando: 0x1D 0x56 0x41 (Full Cut)");
                 _serialPort.Write(paperCutFull, 0, paperCutFull.Length);
                 _serialPort.BaseStream.Flush();
                 
-                System.Diagnostics.Debug.WriteLine("Aguardando 150ms para execução...");
+                // System.Diagnostics.Debug.WriteLine("Aguardando 150ms para execução...");
                 Thread.Sleep(150); // Reduzido de 300ms
                 
                 // Se não funcionou, tentar partial cut
                 byte[] paperCutPartial = { 0x1D, 0x56, 0x00 }; // GS V 0
-                System.Diagnostics.Debug.WriteLine("Enviando fallback: 0x1D 0x56 0x00 (Partial Cut)");
+                // System.Diagnostics.Debug.WriteLine("Enviando fallback: 0x1D 0x56 0x00 (Partial Cut)");
                 _serialPort.Write(paperCutPartial, 0, paperCutPartial.Length);
                 _serialPort.BaseStream.Flush();
                 
                 Thread.Sleep(500); // Reduzido de 800ms
-                System.Diagnostics.Debug.WriteLine("✓ Comandos de corte enviados");
+                // System.Diagnostics.Debug.WriteLine("✓ Comandos de corte enviados");
 
-                System.Diagnostics.Debug.WriteLine("\n═══════════════════════════════════════");
-                System.Diagnostics.Debug.WriteLine($"✓✓✓ CUPOM COMPLETO: {nomeProduto}");
-                System.Diagnostics.Debug.WriteLine("═══════════════════════════════════════\n");
+                // System.Diagnostics.Debug.WriteLine("\n═══════════════════════════════════════");
+                // System.Diagnostics.Debug.WriteLine($"✓✓✓ CUPOM COMPLETO: {nomeProduto}");
+                // System.Diagnostics.Debug.WriteLine("═══════════════════════════════════════\n");
                 
                 return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"\n✗✗✗ ERRO: {ex.Message}\n");
+                UiHelper.ExibirErro("Erro de Impressão", $"Erro ao imprimir cupom: {ex.Message}");
                 return false;
             }
         }
@@ -502,12 +502,12 @@ namespace GestorEvento.Services
                 {
                     _serialPort.Close();
                     _isConnected = false;
-                    System.Diagnostics.Debug.WriteLine("Desconectado da impressora");
+                    // System.Diagnostics.Debug.WriteLine("Desconectado da impressora");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Erro ao desconectar: {ex.Message}");
+                UiHelper.ExibirErro("Erro", $"Erro ao desconectar da impressora: {ex.Message}");
             }
         }
 

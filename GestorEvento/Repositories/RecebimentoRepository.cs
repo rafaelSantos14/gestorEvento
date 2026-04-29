@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using GestorEvento.Models;
 
@@ -46,8 +45,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao registrar recebimento: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao registrar recebimento: {ex.Message}", ex);
             }
         }
 
@@ -89,8 +87,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter recebimento: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter recebimento: {ex.Message}", ex);
             }
 
             return null;
@@ -137,8 +134,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter recebimentos da venda: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter recebimentos da venda: {ex.Message}", ex);
             }
 
             return recebimentos;
@@ -187,8 +183,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter resumo de recebimentos: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter resumo de recebimentos: {ex.Message}", ex);
             }
 
             return resumo;
@@ -227,8 +222,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter total de recebimento: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter total de recebimento: {ex.Message}", ex);
             }
         }
 
@@ -267,8 +261,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter total dinheiro: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter total dinheiro: {ex.Message}", ex);
             }
         }
 
@@ -298,8 +291,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao registrar recebimento em transação: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao registrar recebimento em transação: {ex.Message}", ex);
             }
         }
 
@@ -348,8 +340,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter recebimentos por evento: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter recebimentos por evento: {ex.Message}", ex);
             }
 
             return recebimentos;

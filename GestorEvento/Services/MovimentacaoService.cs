@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GestorEvento.Models;
 using GestorEvento.Repositories;
+using GestorEvento.Utilities;
 
 namespace GestorEvento.Services
 {
@@ -19,19 +20,26 @@ namespace GestorEvento.Services
         /// </summary>
         public int RegistrarMovimentacao(Movimentacao movimentacao)
         {
+            if (movimentacao.IdPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return 0;
+            }
+
+            if (movimentacao.VlMovimento <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "Valor da movimentação deve ser maior que zero");
+                return 0;
+            }
+
             try
             {
-                if (movimentacao.IdPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
-                if (movimentacao.VlMovimento <= 0)
-                    throw new ArgumentException("Valor da movimentação deve ser maior que zero");
-
                 return _repository.RegistrarMovimentacao(movimentacao);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao registrar movimentação: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao registrar movimentação: {ex.Message}");
+                return 0;
             }
         }
 
@@ -40,22 +48,32 @@ namespace GestorEvento.Services
         /// </summary>
         public int RegistrarTroco(int idPontoVenda, int idVenda, decimal vlTroco)
         {
+            if (idPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return 0;
+            }
+
+            if (idVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID da venda inválido");
+                return 0;
+            }
+
+            if (vlTroco <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "Valor do troco deve ser maior que zero");
+                return 0;
+            }
+
             try
             {
-                if (idPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
-                if (idVenda <= 0)
-                    throw new ArgumentException("ID da venda inválido");
-
-                if (vlTroco <= 0)
-                    throw new ArgumentException("Valor do troco deve ser maior que zero");
-
                 return _repository.RegistrarTroco(idPontoVenda, idVenda, vlTroco);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao registrar troco: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao registrar troco: {ex.Message}");
+                return 0;
             }
         }
 
@@ -64,19 +82,26 @@ namespace GestorEvento.Services
         /// </summary>
         public int RegistrarSangria(int idPontoVenda, decimal vlSangria, string descricao = null)
         {
+            if (idPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return 0;
+            }
+
+            if (vlSangria <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "Valor da sangria deve ser maior que zero");
+                return 0;
+            }
+
             try
             {
-                if (idPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
-                if (vlSangria <= 0)
-                    throw new ArgumentException("Valor da sangria deve ser maior que zero");
-
                 return _repository.RegistrarSangria(idPontoVenda, vlSangria, descricao);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao registrar sangria: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao registrar sangria: {ex.Message}");
+                return 0;
             }
         }
 
@@ -85,19 +110,26 @@ namespace GestorEvento.Services
         /// </summary>
         public int RegistrarEntradaTroco(int idPontoVenda, decimal vlEntrada, string descricao = null)
         {
+            if (idPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return 0;
+            }
+
+            if (vlEntrada <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "Valor da entrada deve ser maior que zero");
+                return 0;
+            }
+
             try
             {
-                if (idPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
-                if (vlEntrada <= 0)
-                    throw new ArgumentException("Valor da entrada deve ser maior que zero");
-
                 return _repository.RegistrarEntradaTroco(idPontoVenda, vlEntrada, descricao);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao registrar entrada de troco: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao registrar entrada de troco: {ex.Message}");
+                return 0;
             }
         }
 
@@ -106,16 +138,20 @@ namespace GestorEvento.Services
         /// </summary>
         public List<Movimentacao> GetMovimentacoesByPontoVenda(int idPontoVenda)
         {
+            if (idPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return new List<Movimentacao>();
+            }
+
             try
             {
-                if (idPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
                 return _repository.GetMovimentacoesByPontoVenda(idPontoVenda);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter movimentações: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao obter movimentações: {ex.Message}");
+                return new List<Movimentacao>();
             }
         }
 
@@ -124,16 +160,20 @@ namespace GestorEvento.Services
         /// </summary>
         public decimal GetTotalMovimentacaoPorTipo(int idPontoVenda, TipoMovimento tipo)
         {
+            if (idPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return 0;
+            }
+
             try
             {
-                if (idPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
                 return _repository.GetTotalMovimentacaoPorTipo(idPontoVenda, tipo);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter total de movimentação: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao obter total de movimentação: {ex.Message}");
+                return 0;
             }
         }
     }

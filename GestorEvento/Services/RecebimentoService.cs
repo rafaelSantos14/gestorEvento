@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GestorEvento.Models;
 using GestorEvento.Repositories;
+using GestorEvento.Utilities;
 
 namespace GestorEvento.Services
 {
@@ -20,13 +21,34 @@ namespace GestorEvento.Services
         /// </summary>
         public int RegistrarRecebimento(int idVenda, int idFormaPagamento, decimal vlRecebimento)
         {
-            if (vlRecebimento <= 0)
+            if (idVenda <= 0)
             {
-                throw new ArgumentException("O valor do recebimento deve ser maior que zero");
+                UiHelper.ExibirAviso("Aviso", "ID da venda inválido");
+                return 0;
             }
 
-            var recebimento = new Recebimento(idVenda, idFormaPagamento, vlRecebimento);
-            return _repository.RegistrarRecebimento(recebimento);
+            if (idFormaPagamento <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID da forma de pagamento inválido");
+                return 0;
+            }
+
+            if (vlRecebimento <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "O valor do recebimento deve ser maior que zero");
+                return 0;
+            }
+
+            try
+            {
+                var recebimento = new Recebimento(idVenda, idFormaPagamento, vlRecebimento);
+                return _repository.RegistrarRecebimento(recebimento);
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao registrar recebimento: {ex.Message}");
+                return 0;
+            }
         }
 
         /// <summary>
@@ -34,7 +56,21 @@ namespace GestorEvento.Services
         /// </summary>
         public Recebimento GetRecebimentoById(int id)
         {
-            return _repository.GetRecebimentoById(id);
+            if (id <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do recebimento inválido");
+                return null;
+            }
+
+            try
+            {
+                return _repository.GetRecebimentoById(id);
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao obter recebimento: {ex.Message}");
+                return null;
+            }
         }
 
         /// <summary>
@@ -42,7 +78,21 @@ namespace GestorEvento.Services
         /// </summary>
         public List<Recebimento> GetRecebimentosByVendaId(int idVenda)
         {
-            return _repository.GetRecebimentosByVendaId(idVenda);
+            if (idVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID da venda inválido");
+                return new List<Recebimento>();
+            }
+
+            try
+            {
+                return _repository.GetRecebimentosByVendaId(idVenda);
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao obter recebimentos da venda: {ex.Message}");
+                return new List<Recebimento>();
+            }
         }
 
         /// <summary>
@@ -50,16 +100,20 @@ namespace GestorEvento.Services
         /// </summary>
         public List<(int idFormaPagamento, string nomeFormaPagamento, decimal totalRecebimento)> GetResumoRecebimentosByPontoVenda(int idPontoVenda)
         {
+            if (idPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return new List<(int, string, decimal)>();
+            }
+
             try
             {
-                if (idPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
                 return _repository.GetResumoRecebimentosByPontoVenda(idPontoVenda);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter resumo de recebimentos: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao obter resumo de recebimentos: {ex.Message}");
+                return new List<(int, string, decimal)>();
             }
         }
 
@@ -68,16 +122,20 @@ namespace GestorEvento.Services
         /// </summary>
         public decimal GetTotalRecebimentoDinheiro(int idPontoVenda)
         {
+            if (idPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return 0;
+            }
+
             try
             {
-                if (idPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
                 return _repository.GetTotalRecebimentoDinheiro(idPontoVenda);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter total dinheiro: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao obter total dinheiro: {ex.Message}");
+                return 0;
             }
         }
     }

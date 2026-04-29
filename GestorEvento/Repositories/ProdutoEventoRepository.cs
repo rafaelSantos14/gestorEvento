@@ -54,7 +54,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter produtos do evento: {ex.Message}");
+                throw new Exception($"Erro ao obter produtos do evento: {ex.Message}", ex);
             }
 
             return produtos;
@@ -77,7 +77,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter produtos do evento: {ex.Message}");
+                throw new Exception($"Erro ao obter produtos do evento: {ex.Message}", ex);
             }
 
             return produtoIds;
@@ -152,7 +152,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao vincular produto ao evento: {ex.Message}");
+                throw new Exception($"Erro ao vincular produto ao evento: {ex.Message}", ex);
             }
         }
 
@@ -181,7 +181,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao remover vinculação: {ex.Message}");
+                throw new Exception($"Erro ao remover vinculação: {ex.Message}", ex);
             }
         }
 
@@ -209,7 +209,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao remover vinculações do evento: {ex.Message}");
+                throw new Exception($"Erro ao remover vinculações do evento: {ex.Message}", ex);
             }
         }
 
@@ -270,7 +270,6 @@ namespace GestorEvento.Repositories
                         
                         if (rowsAffected > 0)
                         {
-                            System.Diagnostics.Debug.WriteLine($"✓ Estoque reduzido: ID={idProdutoEvento}, Qtde Vendida: {qtdeJaVendida} → {qtdeJaVendida + quantidade} de {qtdeTotal}");
                             return true;
                         }
                         else
@@ -282,8 +281,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"✗ Erro ao reduzir quantidade vendida: {ex.Message}");
-                throw new Exception($"Erro ao registrar estoque: {ex.Message}");
+                throw new Exception($"Erro ao registrar estoque: {ex.Message}", ex);
             }
         }
     }

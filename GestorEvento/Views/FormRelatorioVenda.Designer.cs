@@ -41,6 +41,15 @@ namespace GestorEvento.Views
             this.lblEvento = new System.Windows.Forms.Label();
             this.lblResultados = new System.Windows.Forms.Label();
             this.panelCards = new System.Windows.Forms.Panel();
+            this.pnlCardTroco = new GestorEvento.Components.ModernCard();
+            this.lblTrocoValor = new System.Windows.Forms.Label();
+            this.lblTrocoLabel = new System.Windows.Forms.Label();
+            this.pnlCardValor = new GestorEvento.Components.ModernCard();
+            this.lblValorVendidoValor = new System.Windows.Forms.Label();
+            this.lblValorVendidoLabel = new System.Windows.Forms.Label();
+            this.pnlCardQtde = new GestorEvento.Components.ModernCard();
+            this.lblQtdeValor = new System.Windows.Forms.Label();
+            this.lblQtdeLabel = new System.Windows.Forms.Label();
             this.panelGraficos = new System.Windows.Forms.Panel();
             this.panelGraficoPizza = new System.Windows.Forms.Panel();
             this.lblGraficoPizza = new System.Windows.Forms.Label();
@@ -48,24 +57,15 @@ namespace GestorEvento.Views
             this.panelGraficoBarras = new System.Windows.Forms.Panel();
             this.lblGraficoBarras = new System.Windows.Forms.Label();
             this.chartBarras = new LiveCharts.WinForms.CartesianChart();
-            this.pnlCardTroco = new ModernCard();
-            this.lblTrocoValor = new System.Windows.Forms.Label();
-            this.lblTrocoLabel = new System.Windows.Forms.Label();
-            this.pnlCardValor = new ModernCard();
-            this.lblValorVendidoValor = new System.Windows.Forms.Label();
-            this.lblValorVendidoLabel = new System.Windows.Forms.Label();
-            this.pnlCardQtde = new ModernCard();
-            this.lblQtdeValor = new System.Windows.Forms.Label();
-            this.lblQtdeLabel = new System.Windows.Forms.Label();
             this.panelTitulo.SuspendLayout();
             this.panelFiltro.SuspendLayout();
             this.panelCards.SuspendLayout();
-            this.panelGraficos.SuspendLayout();
-            this.panelGraficoPizza.SuspendLayout();
-            this.panelGraficoBarras.SuspendLayout();
             this.pnlCardTroco.SuspendLayout();
             this.pnlCardValor.SuspendLayout();
             this.pnlCardQtde.SuspendLayout();
+            this.panelGraficos.SuspendLayout();
+            this.panelGraficoPizza.SuspendLayout();
+            this.panelGraficoBarras.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelTitulo
@@ -208,82 +208,6 @@ namespace GestorEvento.Views
             this.panelCards.Size = new System.Drawing.Size(1000, 140);
             this.panelCards.TabIndex = 2;
             // 
-            // panelGraficos
-            // 
-            this.panelGraficos.BackColor = System.Drawing.Color.White;
-            this.panelGraficos.Controls.Add(this.panelGraficoPizza);
-            this.panelGraficos.Controls.Add(this.panelGraficoBarras);
-            this.panelGraficos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelGraficos.Location = new System.Drawing.Point(0, 290);
-            this.panelGraficos.Name = "panelGraficos";
-            this.panelGraficos.Padding = new System.Windows.Forms.Padding(15);
-            this.panelGraficos.Size = new System.Drawing.Size(1000, 410);
-            this.panelGraficos.TabIndex = 3;
-            // 
-            // panelGraficoPizza
-            // 
-            this.panelGraficoPizza.Controls.Add(this.lblGraficoPizza);
-            this.panelGraficoPizza.Controls.Add(this.chartPizza);
-            this.panelGraficoPizza.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelGraficoPizza.Location = new System.Drawing.Point(510, 15);
-            this.panelGraficoPizza.Name = "panelGraficoPizza";
-            this.panelGraficoPizza.Size = new System.Drawing.Size(475, 380);
-            this.panelGraficoPizza.TabIndex = 1;
-            // 
-            // lblGraficoPizza
-            // 
-            this.lblGraficoPizza.AutoSize = true;
-            this.lblGraficoPizza.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblGraficoPizza.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblGraficoPizza.ForeColor = System.Drawing.Color.Black;
-            this.lblGraficoPizza.Location = new System.Drawing.Point(0, 0);
-            this.lblGraficoPizza.Name = "lblGraficoPizza";
-            this.lblGraficoPizza.Size = new System.Drawing.Size(242, 20);
-            this.lblGraficoPizza.TabIndex = 0;
-            this.lblGraficoPizza.Text = "Valores por Forma de Pagamento";
-            // 
-            // chartPizza
-            // 
-            this.chartPizza.BackColor = System.Drawing.Color.White;
-            this.chartPizza.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chartPizza.Location = new System.Drawing.Point(0, 0);
-            this.chartPizza.Name = "chartPizza";
-            this.chartPizza.Size = new System.Drawing.Size(475, 380);
-            this.chartPizza.TabIndex = 1;
-            this.chartPizza.Text = "pieChart1";
-            // 
-            // panelGraficoBarras
-            // 
-            this.panelGraficoBarras.Controls.Add(this.lblGraficoBarras);
-            this.panelGraficoBarras.Controls.Add(this.chartBarras);
-            this.panelGraficoBarras.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelGraficoBarras.Location = new System.Drawing.Point(15, 15);
-            this.panelGraficoBarras.Name = "panelGraficoBarras";
-            this.panelGraficoBarras.Size = new System.Drawing.Size(490, 380);
-            this.panelGraficoBarras.TabIndex = 0;
-            // 
-            // lblGraficoBarras
-            // 
-            this.lblGraficoBarras.AutoSize = true;
-            this.lblGraficoBarras.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblGraficoBarras.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblGraficoBarras.ForeColor = System.Drawing.Color.Black;
-            this.lblGraficoBarras.Location = new System.Drawing.Point(0, 0);
-            this.lblGraficoBarras.Name = "lblGraficoBarras";
-            this.lblGraficoBarras.Size = new System.Drawing.Size(214, 20);
-            this.lblGraficoBarras.TabIndex = 0;
-            this.lblGraficoBarras.Text = "Valor Total Vendido por Caixa";
-            // 
-            // chartBarras
-            // 
-            this.chartBarras.BackColor = System.Drawing.Color.White;
-            this.chartBarras.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chartBarras.Location = new System.Drawing.Point(0, 0);
-            this.chartBarras.Name = "chartBarras";
-            this.chartBarras.Size = new System.Drawing.Size(490, 380);
-            this.chartBarras.TabIndex = 1;
-            this.chartBarras.Text = "cartesianChart1";
-            // 
             // pnlCardTroco
             // 
             this.pnlCardTroco.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(230)))));
@@ -392,6 +316,82 @@ namespace GestorEvento.Views
             this.lblQtdeLabel.TabIndex = 0;
             this.lblQtdeLabel.Text = "Quantidade Total de Vendas";
             // 
+            // panelGraficos
+            // 
+            this.panelGraficos.BackColor = System.Drawing.Color.White;
+            this.panelGraficos.Controls.Add(this.panelGraficoPizza);
+            this.panelGraficos.Controls.Add(this.panelGraficoBarras);
+            this.panelGraficos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelGraficos.Location = new System.Drawing.Point(0, 290);
+            this.panelGraficos.Name = "panelGraficos";
+            this.panelGraficos.Padding = new System.Windows.Forms.Padding(15);
+            this.panelGraficos.Size = new System.Drawing.Size(1000, 410);
+            this.panelGraficos.TabIndex = 3;
+            // 
+            // panelGraficoPizza
+            // 
+            this.panelGraficoPizza.Controls.Add(this.lblGraficoPizza);
+            this.panelGraficoPizza.Controls.Add(this.chartPizza);
+            this.panelGraficoPizza.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panelGraficoPizza.Location = new System.Drawing.Point(510, 15);
+            this.panelGraficoPizza.Name = "panelGraficoPizza";
+            this.panelGraficoPizza.Size = new System.Drawing.Size(475, 380);
+            this.panelGraficoPizza.TabIndex = 1;
+            // 
+            // lblGraficoPizza
+            // 
+            this.lblGraficoPizza.AutoSize = true;
+            this.lblGraficoPizza.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblGraficoPizza.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblGraficoPizza.ForeColor = System.Drawing.Color.Black;
+            this.lblGraficoPizza.Location = new System.Drawing.Point(0, 0);
+            this.lblGraficoPizza.Name = "lblGraficoPizza";
+            this.lblGraficoPizza.Size = new System.Drawing.Size(242, 20);
+            this.lblGraficoPizza.TabIndex = 0;
+            this.lblGraficoPizza.Text = "Valores por Forma de Pagamento";
+            // 
+            // chartPizza
+            // 
+            this.chartPizza.BackColor = System.Drawing.Color.White;
+            this.chartPizza.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chartPizza.Location = new System.Drawing.Point(0, 0);
+            this.chartPizza.Name = "chartPizza";
+            this.chartPizza.Size = new System.Drawing.Size(475, 380);
+            this.chartPizza.TabIndex = 1;
+            this.chartPizza.Text = "pieChart1";
+            // 
+            // panelGraficoBarras
+            // 
+            this.panelGraficoBarras.Controls.Add(this.lblGraficoBarras);
+            this.panelGraficoBarras.Controls.Add(this.chartBarras);
+            this.panelGraficoBarras.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panelGraficoBarras.Location = new System.Drawing.Point(15, 15);
+            this.panelGraficoBarras.Name = "panelGraficoBarras";
+            this.panelGraficoBarras.Size = new System.Drawing.Size(490, 380);
+            this.panelGraficoBarras.TabIndex = 0;
+            // 
+            // lblGraficoBarras
+            // 
+            this.lblGraficoBarras.AutoSize = true;
+            this.lblGraficoBarras.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblGraficoBarras.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblGraficoBarras.ForeColor = System.Drawing.Color.Black;
+            this.lblGraficoBarras.Location = new System.Drawing.Point(0, 0);
+            this.lblGraficoBarras.Name = "lblGraficoBarras";
+            this.lblGraficoBarras.Size = new System.Drawing.Size(214, 20);
+            this.lblGraficoBarras.TabIndex = 0;
+            this.lblGraficoBarras.Text = "Valor Total Vendido por Caixa";
+            // 
+            // chartBarras
+            // 
+            this.chartBarras.BackColor = System.Drawing.Color.White;
+            this.chartBarras.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chartBarras.Location = new System.Drawing.Point(0, 0);
+            this.chartBarras.Name = "chartBarras";
+            this.chartBarras.Size = new System.Drawing.Size(490, 380);
+            this.chartBarras.TabIndex = 1;
+            this.chartBarras.Text = "cartesianChart1";
+            // 
             // FormRelatorioVenda
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -410,17 +410,17 @@ namespace GestorEvento.Views
             this.panelFiltro.ResumeLayout(false);
             this.panelFiltro.PerformLayout();
             this.panelCards.ResumeLayout(false);
-            this.panelGraficos.ResumeLayout(false);
-            this.panelGraficoPizza.ResumeLayout(false);
-            this.panelGraficoPizza.PerformLayout();
-            this.panelGraficoBarras.ResumeLayout(false);
-            this.panelGraficoBarras.PerformLayout();
             this.pnlCardTroco.ResumeLayout(false);
             this.pnlCardTroco.PerformLayout();
             this.pnlCardValor.ResumeLayout(false);
             this.pnlCardValor.PerformLayout();
             this.pnlCardQtde.ResumeLayout(false);
             this.pnlCardQtde.PerformLayout();
+            this.panelGraficos.ResumeLayout(false);
+            this.panelGraficoPizza.ResumeLayout(false);
+            this.panelGraficoPizza.PerformLayout();
+            this.panelGraficoBarras.ResumeLayout(false);
+            this.panelGraficoBarras.PerformLayout();
             this.ResumeLayout(false);
 
         }

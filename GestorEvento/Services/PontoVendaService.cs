@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GestorEvento.Models;
 using GestorEvento.Repositories;
+using GestorEvento.Utilities;
 
 namespace GestorEvento.Services
 {
@@ -25,19 +26,26 @@ namespace GestorEvento.Services
         /// </summary>
         public int AbrirPontoVenda(int eventoId, decimal valorInicial, string descricao = null)
         {
+            if (eventoId <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do evento inválido");
+                return 0;
+            }
+
+            if (valorInicial < 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "Valor inicial não pode ser negativo");
+                return 0;
+            }
+
             try
             {
-                if (eventoId <= 0)
-                    throw new ArgumentException("ID do evento inválido");
-
-                if (valorInicial < 0)
-                    throw new ArgumentException("Valor inicial não pode ser negativo");
-
                 return _repository.AbrirPontoVenda(eventoId, valorInicial, descricao);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao abrir ponto de venda: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao abrir ponto de venda: {ex.Message}");
+                return 0;
             }
         }
 
@@ -46,16 +54,20 @@ namespace GestorEvento.Services
         /// </summary>
         public PontoVenda GetPontoVendaById(int id)
         {
+            if (id <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return null;
+            }
+
             try
             {
-                if (id <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
                 return _repository.GetPontoVendaById(id);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter ponto de venda: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao obter ponto de venda: {ex.Message}");
+                return null;
             }
         }
 
@@ -64,16 +76,20 @@ namespace GestorEvento.Services
         /// </summary>
         public List<PontoVenda> GetCaixasAbertas(int eventoId)
         {
+            if (eventoId <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do evento inválido");
+                return new List<PontoVenda>();
+            }
+
             try
             {
-                if (eventoId <= 0)
-                    throw new ArgumentException("ID do evento inválido");
-
                 return _repository.GetCaixasAbertas(eventoId);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter caixas abertas: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao obter caixas abertas: {ex.Message}");
+                return new List<PontoVenda>();
             }
         }
 
@@ -82,19 +98,26 @@ namespace GestorEvento.Services
         /// </summary>
         public bool FecharPontoVenda(int id, decimal valorFinal, string observacoes)
         {
+            if (id <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return false;
+            }
+
+            if (valorFinal < 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "Valor final não pode ser negativo");
+                return false;
+            }
+
             try
             {
-                if (id <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
-                if (valorFinal < 0)
-                    throw new ArgumentException("Valor final não pode ser negativo");
-
                 return _repository.FecharPontoVenda(id, valorFinal, observacoes);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao fechar ponto de venda: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao fechar ponto de venda: {ex.Message}");
+                return false;
             }
         }
 
@@ -103,15 +126,21 @@ namespace GestorEvento.Services
         /// </summary>
         public ResumoFechamentoCaixa GetResumoFechamento(int idPontoVenda)
         {
+            if (idPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return null;
+            }
+
             try
             {
-                if (idPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
                 // Obter dados básicos do ponto de venda
                 var pontoVenda = GetPontoVendaById(idPontoVenda);
                 if (pontoVenda == null)
-                    throw new ArgumentException("Ponto de venda não encontrado");
+                {
+                    UiHelper.ExibirAviso("Aviso", "Ponto de venda não encontrado");
+                    return null;
+                }
 
                 // Calcular total de vendas em dinheiro
                 decimal totalVendasDinheiro = _recebimentoService.GetTotalRecebimentoDinheiro(idPontoVenda);
@@ -196,7 +225,8 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter resumo de fechamento: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao obter resumo de fechamento: {ex.Message}");
+                return null;
             }
         }
     }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using GestorEvento.Models;
 
@@ -78,8 +77,7 @@ namespace GestorEvento.Repositories
                 if (transaction != null)
                     transaction.Rollback();
 
-                Debug.WriteLine($"Erro ao registrar venda: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao registrar venda: {ex.Message}", ex);
             }
             finally
             {
@@ -135,8 +133,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter venda: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter venda: {ex.Message}", ex);
             }
 
             return null;
@@ -186,8 +183,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter itens da venda: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter itens da venda: {ex.Message}", ex);
             }
 
             return itens;
@@ -237,8 +233,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter vendas: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter vendas: {ex.Message}", ex);
             }
 
             return vendas;
@@ -283,8 +278,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter resumo de vendas: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter resumo de vendas: {ex.Message}", ex);
             }
 
             return vendas;
@@ -335,8 +329,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter vendas por evento: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter vendas por evento: {ex.Message}", ex);
             }
 
             return vendas;
@@ -369,8 +362,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter total de vendas por evento: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter total de vendas por evento: {ex.Message}", ex);
             }
         }
     }

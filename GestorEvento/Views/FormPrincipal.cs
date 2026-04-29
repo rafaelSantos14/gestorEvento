@@ -241,5 +241,20 @@ namespace GestorEvento.Views
                 MessageBox.Show("Erro ao abrir FormSelecionarPDV: " + ex.Message + "\n" + ex.StackTrace, "Erro");
             }
         }
+
+        private void btnFechar_Click(object sender, EventArgs e)
+        {
+            DialogoCustomizado dialogo = new DialogoCustomizado(
+                 "Confirmação",
+                 "Deseja realmente sair da aplicação?",
+                 TipoDialogo.Aviso,
+                 TipoButton.SimNao
+             );
+
+            if (dialogo.ShowDialog() == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
+        }
     }
 }

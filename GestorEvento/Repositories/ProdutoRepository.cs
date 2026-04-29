@@ -48,7 +48,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Erro ao obter todos os produtos: {ex.Message}");
+                throw new Exception($"Erro ao obter todos os produtos: {ex.Message}", ex);
             }
 
             return produtos;
@@ -89,7 +89,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Erro ao obter produto por ID: {ex.Message}");
+                throw new Exception($"Erro ao obter produto por ID: {ex.Message}", ex);
             }
 
             return produto;
@@ -121,8 +121,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Erro ao criar produto: {ex.Message}");
-                throw; // Lança exceção para o Service capturar
+                throw new Exception($"Erro ao criar produto: {ex.Message}", ex);
             }
         }
 
@@ -153,8 +152,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Erro ao atualizar produto: {ex.Message}");
-                throw; // Lança exceção para o Service capturar
+                throw new Exception($"Erro ao atualizar produto: {ex.Message}", ex);
             }
         }
 
@@ -184,8 +182,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Erro ao deletar produto: {ex.Message}");
-                throw; // Lança exceção para o Service capturar
+                throw new Exception($"Erro ao deletar produto: {ex.Message}", ex);
             }
         }
 
@@ -228,7 +225,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Erro ao buscar produtos: {ex.Message}");
+                throw new Exception($"Erro ao buscar produtos: {ex.Message}", ex);
             }
 
             return produtos;

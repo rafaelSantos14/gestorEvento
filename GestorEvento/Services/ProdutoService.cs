@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using GestorEvento.Models;
 using GestorEvento.Repositories;
-using GestorEvento.Views;
+using GestorEvento.Utilities;
 
 namespace GestorEvento.Services
 {
@@ -28,15 +27,7 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao obter todos os produtos: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao obter todos os produtos: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao obter todos os produtos: {ex.Message}");
                 return new List<Produto>();
             }
         }
@@ -48,15 +39,7 @@ namespace GestorEvento.Services
         {
             if (id <= 0)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "ID do produto inválido", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("ID do produto inválido", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "ID do produto inválido");
                 return null;
             }
 
@@ -66,15 +49,7 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao obter produto por ID: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao obter produto por ID: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao obter produto por ID: {ex.Message}");
                 return null;
             }
         }
@@ -87,43 +62,19 @@ namespace GestorEvento.Services
             // Validações
             if (produto == null)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Produto não pode ser nulo", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Produto não pode ser nulo", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Produto não pode ser nulo");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(produto.Nome))
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Nome do produto não pode ser vazio", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Nome do produto não pode ser vazio", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Nome do produto não pode ser vazio");
                 return false;
             }
 
             if (produto.Nome.Length > 255)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Nome do produto não pode ter mais de 255 caracteres", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Nome do produto não pode ter mais de 255 caracteres", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Nome do produto não pode ter mais de 255 caracteres");
                 return false;
             }
 
@@ -136,41 +87,17 @@ namespace GestorEvento.Services
                 // Erro 1062 = Duplicate Entry (chave única violada)
                 if (mySqlEx.Number == 1062)
                 {
-                    try
-                    {
-                        var dialogo = new DialogoCustomizado("Aviso", "Já existe um produto com esse nome. Por favor, escolha outro nome.", TipoDialogo.Aviso, TipoButton.Ok);
-                        dialogo.ShowDialog();
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Já existe um produto com esse nome. Por favor, escolha outro nome.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+                    UiHelper.ExibirAviso("Aviso", "Já existe um produto com esse nome. Por favor, escolha outro nome.");
                 }
                 else
                 {
-                    try
-                    {
-                        var dialogo = new DialogoCustomizado("Erro", $"Erro ao criar produto: {mySqlEx.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                        dialogo.ShowDialog();
-                    }
-                    catch
-                    {
-                        MessageBox.Show($"Erro ao criar produto: {mySqlEx.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    UiHelper.ExibirErro("Erro", $"Erro ao criar produto: {mySqlEx.Message}");
                 }
                 return false;
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao criar produto: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao criar produto: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao criar produto: {ex.Message}");
                 return false;
             }
         }
@@ -183,57 +110,25 @@ namespace GestorEvento.Services
             // Validações
             if (produto == null)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Produto não pode ser nulo", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Produto não pode ser nulo", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Produto não pode ser nulo");
                 return false;
             }
 
             if (produto.Id <= 0)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "ID do produto inválido", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("ID do produto inválido", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "ID do produto inválido");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(produto.Nome))
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Nome do produto não pode ser vazio", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Nome do produto não pode ser vazio", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Nome do produto não pode ser vazio");
                 return false;
             }
 
             if (produto.Nome.Length > 255)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Nome do produto não pode ter mais de 255 caracteres", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Nome do produto não pode ter mais de 255 caracteres", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Nome do produto não pode ter mais de 255 caracteres");
                 return false;
             }
 
@@ -246,41 +141,17 @@ namespace GestorEvento.Services
                 // Erro 1062 = Duplicate Entry (chave única violada)
                 if (mySqlEx.Number == 1062)
                 {
-                    try
-                    {
-                        var dialogo = new DialogoCustomizado("Aviso", "Já existe um produto com esse nome. Por favor, escolha outro nome.", TipoDialogo.Aviso, TipoButton.Ok);
-                        dialogo.ShowDialog();
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Já existe um produto com esse nome. Por favor, escolha outro nome.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+                    UiHelper.ExibirAviso("Aviso", "Já existe um produto com esse nome. Por favor, escolha outro nome.");
                 }
                 else
                 {
-                    try
-                    {
-                        var dialogo = new DialogoCustomizado("Erro", $"Erro ao atualizar produto: {mySqlEx.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                        dialogo.ShowDialog();
-                    }
-                    catch
-                    {
-                        MessageBox.Show($"Erro ao atualizar produto: {mySqlEx.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    UiHelper.ExibirErro("Erro", $"Erro ao atualizar produto: {mySqlEx.Message}");
                 }
                 return false;
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao atualizar produto: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao atualizar produto: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao atualizar produto: {ex.Message}");
                 return false;
             }
         }
@@ -292,15 +163,7 @@ namespace GestorEvento.Services
         {
             if (id <= 0)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "ID do produto inválido", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("ID do produto inválido", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "ID do produto inválido");
                 return false;
             }
 
@@ -310,15 +173,7 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao deletar produto: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao deletar produto: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao deletar produto: {ex.Message}");
                 return false;
             }
         }
@@ -339,15 +194,7 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao buscar produtos: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao buscar produtos: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao buscar produtos: {ex.Message}");
                 return new List<Produto>();
             }
         }

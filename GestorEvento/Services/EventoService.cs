@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using GestorEvento.Models;
 using GestorEvento.Repositories;
-using GestorEvento.Views;
+using GestorEvento.Utilities;
 
 namespace GestorEvento.Services
 {
@@ -28,15 +27,7 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao obter todos os eventos: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao obter todos os eventos: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao obter todos os eventos: {ex.Message}");
                 return new List<Evento>();
             }
         }
@@ -48,15 +39,7 @@ namespace GestorEvento.Services
         {
             if (id <= 0)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "ID do evento inválido", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("ID do evento inválido", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "ID do evento inválido");
                 return null;
             }
 
@@ -66,15 +49,7 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao obter evento por ID: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao obter evento por ID: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao obter evento por ID: {ex.Message}");
                 return null;
             }
         }
@@ -87,57 +62,25 @@ namespace GestorEvento.Services
             // Validações
             if (evento == null)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Evento não pode ser nulo", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Evento não pode ser nulo", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Evento não pode ser nulo");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(evento.Nome))
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Nome do evento não pode ser vazio", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Nome do evento não pode ser vazio", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Nome do evento não pode ser vazio");
                 return false;
             }
 
             if (evento.Nome.Length > 255)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Nome do evento não pode ter mais de 255 caracteres", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Nome do evento não pode ter mais de 255 caracteres", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Nome do evento não pode ter mais de 255 caracteres");
                 return false;
             }
 
             if (evento.DataEvento == null || evento.DataEvento == default(DateTime))
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Data do evento é obrigatória", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Data do evento é obrigatória", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Data do evento é obrigatória");
                 return false;
             }
 
@@ -150,41 +93,17 @@ namespace GestorEvento.Services
                 // Erro 1062 = Duplicate Entry (chave única violada)
                 if (mySqlEx.Number == 1062)
                 {
-                    try
-                    {
-                        var dialogo = new DialogoCustomizado("Aviso", "Já existe um evento com esse nome na mesma data. Por favor, escolha outro nome ou data.", TipoDialogo.Aviso, TipoButton.Ok);
-                        dialogo.ShowDialog();
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Já existe um evento com esse nome na mesma data. Por favor, escolha outro nome ou data.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+                    UiHelper.ExibirAviso("Aviso", "Já existe um evento com esse nome na mesma data. Por favor, escolha outro nome ou data.");
                 }
                 else
                 {
-                    try
-                    {
-                        var dialogo = new DialogoCustomizado("Erro", $"Erro ao criar evento: {mySqlEx.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                        dialogo.ShowDialog();
-                    }
-                    catch
-                    {
-                        MessageBox.Show($"Erro ao criar evento: {mySqlEx.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    UiHelper.ExibirErro("Erro", $"Erro ao criar evento: {mySqlEx.Message}");
                 }
                 return false;
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao criar evento: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao criar evento: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao criar evento: {ex.Message}");
                 return false;
             }
         }
@@ -197,71 +116,31 @@ namespace GestorEvento.Services
             // Validações
             if (evento == null)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Evento não pode ser nulo", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Evento não pode ser nulo", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Evento não pode ser nulo");
                 return false;
             }
 
             if (evento.Id <= 0)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "ID do evento inválido", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("ID do evento inválido", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "ID do evento inválido");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(evento.Nome))
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Nome do evento não pode ser vazio", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Nome do evento não pode ser vazio", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Nome do evento não pode ser vazio");
                 return false;
             }
 
             if (evento.Nome.Length > 255)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Nome do evento não pode ter mais de 255 caracteres", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Nome do evento não pode ter mais de 255 caracteres", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Nome do evento não pode ter mais de 255 caracteres");
                 return false;
             }
 
             if (evento.DataEvento == null || evento.DataEvento == default(DateTime))
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Data do evento é obrigatória", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Data do evento é obrigatória", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Data do evento é obrigatória");
                 return false;
             }
 
@@ -274,41 +153,17 @@ namespace GestorEvento.Services
                 // Erro 1062 = Duplicate Entry (chave única violada)
                 if (mySqlEx.Number == 1062)
                 {
-                    try
-                    {
-                        var dialogo = new DialogoCustomizado("Aviso", "Já existe um evento com esse nome na mesma data. Por favor, escolha outro nome ou data.", TipoDialogo.Aviso, TipoButton.Ok);
-                        dialogo.ShowDialog();
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Já existe um evento com esse nome na mesma data. Por favor, escolha outro nome ou data.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+                    UiHelper.ExibirAviso("Aviso", "Já existe um evento com esse nome na mesma data. Por favor, escolha outro nome ou data.");
                 }
                 else
                 {
-                    try
-                    {
-                        var dialogo = new DialogoCustomizado("Erro", $"Erro ao atualizar evento: {mySqlEx.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                        dialogo.ShowDialog();
-                    }
-                    catch
-                    {
-                        MessageBox.Show($"Erro ao atualizar evento: {mySqlEx.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    UiHelper.ExibirErro("Erro", $"Erro ao atualizar evento: {mySqlEx.Message}");
                 }
                 return false;
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao atualizar evento: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao atualizar evento: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao atualizar evento: {ex.Message}");
                 return false;
             }
         }
@@ -320,15 +175,7 @@ namespace GestorEvento.Services
         {
             if (id <= 0)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "ID do evento inválido", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("ID do evento inválido", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "ID do evento inválido");
                 return false;
             }
 
@@ -338,15 +185,7 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao deletar evento: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao deletar evento: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao deletar evento: {ex.Message}");
                 return false;
             }
         }
@@ -358,15 +197,7 @@ namespace GestorEvento.Services
         {
             if (string.IsNullOrWhiteSpace(nome))
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Digite um nome para buscar", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Digite um nome para buscar", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Digite um nome para buscar");
                 return new List<Evento>();
             }
 
@@ -376,15 +207,7 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao buscar eventos: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao buscar eventos: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao buscar eventos: {ex.Message}");
                 return new List<Evento>();
             }
         }
@@ -397,15 +220,7 @@ namespace GestorEvento.Services
             // Se ambos estão vazios, avisar
             if (string.IsNullOrWhiteSpace(nome) && !data.HasValue)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Aviso", "Preencha ao menos um filtro (nome ou data)", TipoDialogo.Aviso, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show("Preencha ao menos um filtro (nome ou data)", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                UiHelper.ExibirAviso("Aviso", "Preencha ao menos um filtro (nome ou data)");
                 return new List<Evento>();
             }
 
@@ -415,15 +230,7 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var dialogo = new DialogoCustomizado("Erro", $"Erro ao buscar eventos: {ex.Message}", TipoDialogo.Erro, TipoButton.Ok);
-                    dialogo.ShowDialog();
-                }
-                catch
-                {
-                    MessageBox.Show($"Erro ao buscar eventos: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UiHelper.ExibirErro("Erro", $"Erro ao buscar eventos: {ex.Message}");
                 return new List<Evento>();
             }
         }

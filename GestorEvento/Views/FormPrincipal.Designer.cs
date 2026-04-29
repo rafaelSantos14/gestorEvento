@@ -39,6 +39,7 @@ namespace GestorEvento.Views
             this.btnEventos = new System.Windows.Forms.Button();
             this.btnProdutos = new System.Windows.Forms.Button();
             this.lblTitulo = new System.Windows.Forms.Label();
+            this.btnFechar = new System.Windows.Forms.Button();
             this.panelTitulo.SuspendLayout();
             this.panelMenu.SuspendLayout();
             this.SuspendLayout();
@@ -47,6 +48,7 @@ namespace GestorEvento.Views
             // 
             this.panelTitulo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
             this.panelTitulo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelTitulo.Controls.Add(this.btnFechar);
             this.panelTitulo.Controls.Add(this.btnMinimizar);
             this.panelTitulo.Controls.Add(this.lblTituloTela);
             this.panelTitulo.Dock = System.Windows.Forms.DockStyle.Top;
@@ -213,6 +215,22 @@ namespace GestorEvento.Views
             this.lblTitulo.TabIndex = 0;
             this.lblTitulo.Text = "MENU";
             // 
+            // btnFechar
+            // 
+            this.btnFechar.BackColor = System.Drawing.Color.Transparent;
+            this.btnFechar.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnFechar.FlatAppearance.BorderSize = 0;
+            this.btnFechar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFechar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnFechar.ForeColor = System.Drawing.Color.White;
+            this.btnFechar.Location = new System.Drawing.Point(1108, 0);
+            this.btnFechar.Name = "btnFechar";
+            this.btnFechar.Size = new System.Drawing.Size(45, 38);
+            this.btnFechar.TabIndex = 3;
+            this.btnFechar.Text = "✕";
+            this.btnFechar.UseVisualStyleBackColor = false;
+            this.btnFechar.Click += new System.EventHandler(this.btnFechar_Click);
+            // 
             // FormPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -244,5 +262,6 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Button btnRelatorios;
         private System.Windows.Forms.Button btnSair;
         private System.Windows.Forms.Button btnPdv;
+        private System.Windows.Forms.Button btnFechar;
     }
 }

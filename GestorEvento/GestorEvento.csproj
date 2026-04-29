@@ -185,6 +185,7 @@
     <Compile Include="Services\RelatorioVendaService.cs" />
     <Compile Include="Services\EpsonTM20Service.cs" />
     <Compile Include="Utilities\EstiloManager.cs" />
+    <Compile Include="Utilities\UiHelper.cs" />
     <Compile Include="Views\DialogoCustomizado.cs">
       <SubType>Form</SubType>
     </Compile>

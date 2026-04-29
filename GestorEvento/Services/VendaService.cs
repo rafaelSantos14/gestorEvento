@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using GestorEvento.Models;
 using GestorEvento.Repositories;
+using GestorEvento.Utilities;
 
 namespace GestorEvento.Services
 {
@@ -24,44 +25,72 @@ namespace GestorEvento.Services
         /// </summary>
         public int RegistrarVenda(Venda venda)
         {
-            try
+            if (venda == null)
             {
-                if (venda == null)
-                    throw new ArgumentNullException("Venda não pode ser nula");
+                UiHelper.ExibirAviso("Aviso", "Venda não pode ser nula");
+                return 0;
+            }
 
-                if (venda.IdPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
+            if (venda.IdPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return 0;
+            }
 
-                if (venda.Itens == null || venda.Itens.Count == 0)
-                    throw new ArgumentException("Venda deve ter pelo menos um item");
+            if (venda.Itens == null || venda.Itens.Count == 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "Venda deve ter pelo menos um item");
+                return 0;
+            }
 
-                if (venda.VlTotal <= 0)
-                    throw new ArgumentException("Valor total da venda deve ser maior que zero");
+            if (venda.VlTotal <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "Valor total da venda deve ser maior que zero");
+                return 0;
+            }
 
-                // Validar cada item
-                foreach (var item in venda.Itens)
+            // Validar cada item
+            foreach (var item in venda.Itens)
+            {
+                if (item.IdProdutoEvento <= 0)
                 {
-                    if (item.IdProdutoEvento <= 0)
-                        throw new ArgumentException($"ID do produto-evento inválido no item");
-
-                    if (string.IsNullOrWhiteSpace(item.NomeProduto))
-                        throw new ArgumentException($"Nome do produto não pode estar vazio");
-
-                    if (item.Quantidade <= 0)
-                        throw new ArgumentException($"Quantidade deve ser maior que zero");
-
-                    if (item.VlUnitario < 0)
-                        throw new ArgumentException($"Valor unitário não pode ser negativo");
-
-                    if (item.Subtotal <= 0)
-                        throw new ArgumentException($"Subtotal do item deve ser maior que zero");
+                    UiHelper.ExibirAviso("Aviso", "ID do produto-evento inválido no item");
+                    return 0;
                 }
 
+                if (string.IsNullOrWhiteSpace(item.NomeProduto))
+                {
+                    UiHelper.ExibirAviso("Aviso", "Nome do produto não pode estar vazio");
+                    return 0;
+                }
+
+                if (item.Quantidade <= 0)
+                {
+                    UiHelper.ExibirAviso("Aviso", "Quantidade deve ser maior que zero");
+                    return 0;
+                }
+
+                if (item.VlUnitario < 0)
+                {
+                    UiHelper.ExibirAviso("Aviso", "Valor unitário não pode ser negativo");
+                    return 0;
+                }
+
+                if (item.Subtotal <= 0)
+                {
+                    UiHelper.ExibirAviso("Aviso", "Subtotal do item deve ser maior que zero");
+                    return 0;
+                }
+            }
+
+            try
+            {
                 return _repository.RegistrarVenda(venda);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao registrar venda: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao registrar venda: {ex.Message}");
+                return 0;
             }
         }
 
@@ -70,16 +99,20 @@ namespace GestorEvento.Services
         /// </summary>
         public Venda GetVendaById(int id)
         {
+            if (id <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID da venda inválido");
+                return null;
+            }
+
             try
             {
-                if (id <= 0)
-                    throw new ArgumentException("ID da venda inválido");
-
                 return _repository.GetVendaById(id);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter venda: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao obter venda: {ex.Message}");
+                return null;
             }
         }
 
@@ -88,16 +121,20 @@ namespace GestorEvento.Services
         /// </summary>
         public List<Venda> GetVendasByPontoVenda(int idPontoVenda)
         {
+            if (idPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return new List<Venda>();
+            }
+
             try
             {
-                if (idPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
                 return _repository.GetVendasByPontoVenda(idPontoVenda);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter vendas: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao obter vendas: {ex.Message}");
+                return new List<Venda>();
             }
         }
 
@@ -106,16 +143,20 @@ namespace GestorEvento.Services
         /// </summary>
         public List<(int idVenda, DateTime dtVenda, decimal vlTotal)> GetResumoVendasByPontoVenda(int idPontoVenda)
         {
+            if (idPontoVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                return new List<(int, DateTime, decimal)>();
+            }
+
             try
             {
-                if (idPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
-
                 return _repository.GetResumoVendasByPontoVenda(idPontoVenda);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter resumo de vendas: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao obter resumo de vendas: {ex.Message}");
+                return new List<(int, DateTime, decimal)>();
             }
         }
 
@@ -187,11 +228,9 @@ namespace GestorEvento.Services
                     try
                     {
                         transaction.Rollback();
-                        System.Diagnostics.Debug.WriteLine($"[TRANSAÇÃO] Rollback executado: {ex.Message}");
                     }
                     catch (Exception exRollback)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Erro ao fazer rollback: {exRollback.Message}");
                     }
                 }
 

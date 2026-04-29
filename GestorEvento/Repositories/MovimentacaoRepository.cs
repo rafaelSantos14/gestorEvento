@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using GestorEvento.Models;
 
@@ -51,8 +50,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao registrar movimentação: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao registrar movimentação: {ex.Message}", ex);
             }
         }
 
@@ -160,8 +158,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter movimentações: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter movimentações: {ex.Message}", ex);
             }
 
             return movimentacoes;
@@ -199,8 +196,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter total de movimentação: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter total de movimentação: {ex.Message}", ex);
             }
         }
 
@@ -232,8 +228,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao registrar troco em transação: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao registrar troco em transação: {ex.Message}", ex);
             }
         }
     }

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using GestorEvento.Models;
-using GestorEvento.Repositories;
 
 namespace GestorEvento.Repositories
 {
@@ -53,8 +51,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter eventos: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter eventos: {ex.Message}", ex);
             }
 
             return eventos;
@@ -99,8 +96,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter evento por ID: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter evento por ID: {ex.Message}", ex);
             }
 
             return null;
@@ -134,8 +130,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao criar evento: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao criar evento: {ex.Message}", ex);
             }
         }
 
@@ -168,8 +163,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao atualizar evento: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao atualizar evento: {ex.Message}", ex);
             }
         }
 
@@ -199,8 +193,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao deletar evento: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao deletar evento: {ex.Message}", ex);
             }
         }
 
@@ -243,8 +236,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao buscar eventos: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao buscar eventos: {ex.Message}", ex);
             }
 
             return eventos;
@@ -310,8 +302,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao buscar eventos: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao buscar eventos: {ex.Message}", ex);
             }
 
             return eventos;

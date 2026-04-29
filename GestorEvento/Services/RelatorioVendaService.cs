@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GestorEvento.Models;
 using GestorEvento.Repositories;
+using GestorEvento.Utilities;
 
 namespace GestorEvento.Services
 {
@@ -26,6 +27,12 @@ namespace GestorEvento.Services
         /// </summary>
         public RelatorioVendaData ObterDadosRelatorio(int idEvento)
         {
+            if (idEvento <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do evento inválido");
+                return new RelatorioVendaData();
+            }
+
             try
             {
                 var resultado = new RelatorioVendaData();
@@ -105,7 +112,8 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter dados do relatório: {ex.Message}", ex);
+                UiHelper.ExibirErro("Erro", $"Erro ao obter dados do relatório: {ex.Message}");
+                return new RelatorioVendaData();
             }
         }
     }

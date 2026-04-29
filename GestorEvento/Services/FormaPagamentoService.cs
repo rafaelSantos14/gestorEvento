@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GestorEvento.Models;
 using GestorEvento.Repositories;
+using GestorEvento.Utilities;
 
 namespace GestorEvento.Services
 {
@@ -25,7 +26,8 @@ namespace GestorEvento.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter formas de pagamento: {ex.Message}");
+                UiHelper.ExibirErro("Erro", $"Erro ao obter formas de pagamento: {ex.Message}");
+                return new List<FormaPagamento>();
             }
         }
 
@@ -34,16 +36,20 @@ namespace GestorEvento.Services
         /// </summary>
         public FormaPagamento GetFormaPagamentoById(int id)
         {
+            if (id <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID da forma de pagamento inválido");
+                return null;
+            }
+
             try
             {
-                if (id <= 0)
-                    throw new Exception("ID da forma de pagamento inválido");
-
                 return _repository.GetFormaPagamentoById(id);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao obter forma de pagamento: {ex.Message}");
+                UiHelper.ExibirErro("Erro", $"Erro ao obter forma de pagamento: {ex.Message}");
+                return null;
             }
         }
     }

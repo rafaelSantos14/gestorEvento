@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using GestorEvento.Models;
 
@@ -59,8 +58,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao abrir ponto de venda: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao abrir ponto de venda: {ex.Message}", ex);
             }
         }
 
@@ -113,8 +111,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter ponto de venda: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter ponto de venda: {ex.Message}", ex);
             }
 
             return null;
@@ -170,8 +167,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter caixas abertas: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao obter caixas abertas: {ex.Message}", ex);
             }
 
             return pontos;
@@ -209,8 +205,7 @@ namespace GestorEvento.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao fechar ponto de venda: {ex.Message}");
-                throw;
+                throw new Exception($"Erro ao fechar ponto de venda: {ex.Message}", ex);
             }
         }
     }
