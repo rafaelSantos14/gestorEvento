@@ -17,6 +17,8 @@ namespace GestorEvento.Views
     {
         private int _caixaIdSelecionado = 0;
         private int _eventoIdSelecionado = 0;
+        private int _numeroCaixa = 0;
+        private string _descricaoCaixa = "";
         private decimal _totalVenda = 0m;
         private List<VendaItem> _itensVenda = new List<VendaItem>();
         private List<ProdutoLinhaVenda> _produtosLinhas = new List<ProdutoLinhaVenda>();
@@ -30,7 +32,6 @@ namespace GestorEvento.Views
         private FormaPagamentoService _formaPagamentoService;
         private RecebimentoService _recebimentoService;
         private MovimentacaoService _movimentacaoService;
-        private EpsonTM20Service _epsonService;
 
         public FormPDV(int caixaId)
         {
@@ -43,20 +44,6 @@ namespace GestorEvento.Views
             _formaPagamentoService = new FormaPagamentoService();
             _recebimentoService = new RecebimentoService();
             _movimentacaoService = new MovimentacaoService();
-            _epsonService = new EpsonTM20Service("COM2", 9600);
-            
-            // Conectar à impressora no início
-            if (!_epsonService.Conectar())
-            {
-                System.Diagnostics.Debug.WriteLine("Aviso: Não foi possível conectar à impressora térmica");
-                // Mostrar alerta mas não impede o uso do PDV
-                MessageBox.Show(
-                    "Aviso: Não foi possível conectar à impressora térmica.\n\nVerifique:\n• Cabo USB conectado\n• Impressora ligada\n• COM2 disponível",
-                    "Aviso - Impressora",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-            }
         }
 
         private void FormPDV_Load(object sender, EventArgs e)
@@ -70,13 +57,14 @@ namespace GestorEvento.Views
                 var pontoVenda = _pontoVendaService.GetPontoVendaById(_caixaIdSelecionado);
                 if (pontoVenda != null)
                 {
-                    int noCaixa = pontoVenda.NoPontoVenda;
+                    _numeroCaixa = pontoVenda.NoPontoVenda;
+                    _descricaoCaixa = pontoVenda.DsPontoVenda ?? "";
                     _eventoIdSelecionado = pontoVenda.IdEvento;
                     
                     // Concatenar número com descrição se houver
-                    string textoDescricao = string.IsNullOrWhiteSpace(pontoVenda.DsPontoVenda) ? 
-                        "" : $" - {pontoVenda.DsPontoVenda}";
-                    lblInfoCaixa.Text = $"Caixa: {noCaixa}{textoDescricao}";
+                    string textoDescricao = string.IsNullOrWhiteSpace(_descricaoCaixa) ? 
+                        "" : $" - {_descricaoCaixa}";
+                    lblInfoCaixa.Text = $"Caixa: {_numeroCaixa}{textoDescricao}";
                     
                     // Ajustar layout responsivo para maximized
                     AjustarLayoutPaineis();
@@ -438,57 +426,36 @@ namespace GestorEvento.Views
                     }
                 }
 
-                // ============ IMPRIMIR CUPONS NA IMPRESSORA TÉRMICA ============
-                System.Diagnostics.Debug.WriteLine($"\n[IMPRESSÃO] Iniciando impressão de cupons para venda #{idVenda}");
-                int cupomsPrintados = 0;
-                int cupomsFalhados = 0;
+                // ============ IMPRIMIR VENDA COMPLETA NA IMPRESSORA TÉRMICA ============
+                System.Diagnostics.Debug.WriteLine($"\n[IMPRESSÃO] Enviando venda #{idVenda} para impressão");
 
+                // Coletar TODOS os itens em uma lista
+                List<string> itensPorImprimir = new List<string>();
                 foreach (var linha in _produtosLinhas)
                 {
                     int qtde = linha.GetQuantidade();
-                    if (qtde > 0)
+                    for (int i = 0; i < qtde; i++)
                     {
-                        for (int i = 0; i < qtde; i++)
-                        {
-                            try
-                            {
-                                // Imprimir um cupom por unidade vendida
-                                bool sucesso_impressao = _epsonService.ImprimirCupom(linha.NomeProduto);
-                                if (sucesso_impressao)
-                                {
-                                    cupomsPrintados++;
-                                    System.Diagnostics.Debug.WriteLine($"✓ Cupom {cupomsPrintados} impresso: {linha.NomeProduto}");
-                                }
-                                else
-                                {
-                                    cupomsFalhados++;
-                                    System.Diagnostics.Debug.WriteLine($"✗ Falha ao imprimir cupom para: {linha.NomeProduto}");
-                                }
-                                
-                                // Pequeno delay entre cupons para não sobrecarregar a impressora
-                                System.Threading.Thread.Sleep(500);
-                            }
-                            catch (Exception exImpressao)
-                            {
-                                cupomsFalhados++;
-                                System.Diagnostics.Debug.WriteLine($"Erro ao imprimir cupom: {exImpressao.Message}");
-                            }
-                        }
+                        itensPorImprimir.Add(linha.NomeProduto);
                     }
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[IMPRESSÃO] Resumo: {cupomsPrintados} cupom(ns) impresso(s), {cupomsFalhados} falha(s)");
+                // Enviar TUDO em UMA requisição (evita race condition entre máquinas)
+                bool sucessoVenda = PrinterServiceFactory.ImprimirVenda(idVenda, itensPorImprimir, _numeroCaixa, _descricaoCaixa);
 
-                // Exibir alerta se houver falhas na impressão
-                if (cupomsFalhados > 0)
+                if (!sucessoVenda)
                 {
                     DialogoCustomizado aviso = new DialogoCustomizado(
                         "Aviso - Impressão",
-                        $"Impressão parcial!\n\n✓ Cupons impressos: {cupomsPrintados}\n✗ Falhas: {cupomsFalhados}\n\nVerifique se a impressora está conectada e ligada.",
+                        $"Erro ao enviar venda #{idVenda} para impressão.\n\nVerifique se a impressora está conectada e ligada.",
                         TipoDialogo.Aviso,
                         TipoButton.Ok
                     );
                     aviso.ShowDialog();
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"✓ Venda #{idVenda} enviada com sucesso ({itensPorImprimir.Count} itens)");
                 }
 
                 DialogoCustomizado sucesso = new DialogoCustomizado(
@@ -615,20 +582,16 @@ namespace GestorEvento.Views
             this.WindowState = FormWindowState.Minimized;
         }
 
-        // Desconectar da impressora térmica ao fechar o formulário
+        // Desconexão de impressora agora é gerenciada pelo PrinterServiceFactory
         private void FormPDV_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
             {
-                if (_epsonService != null)
-                {
-                    _epsonService.Desconectar();
-                    System.Diagnostics.Debug.WriteLine("✓ Desconectado da impressora térmica");
-                }
+                System.Diagnostics.Debug.WriteLine("✓ FormPDV fechado - PrinterServiceFactory gerencia conexão");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Erro ao desconectar: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Erro ao fechar: {ex.Message}");
             }
         }
 

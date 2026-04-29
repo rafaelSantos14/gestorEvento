@@ -19,7 +19,6 @@ namespace GestorEvento
     public partial class Form1 : MaterialForm
     {
         private FormaPagamentoService _formaPagamentoService;
-        private EpsonTM20Service _epsonService;
 
         public Form1()
         {
@@ -34,7 +33,6 @@ namespace GestorEvento
 
             // Inicializar serviços
             _formaPagamentoService = new FormaPagamentoService();
-            _epsonService = new EpsonTM20Service("COM2", 9600);
 
             // Configurar DataGridView
             ConfigurarDataGridView();
@@ -66,7 +64,7 @@ namespace GestorEvento
             // Loop para imprimir 3 vezes
             for (int i = 1; i <= 1; i++)
             {
-                bool sucesso = _epsonService.ImprimirCupom($"REFRIGERANTE #{i}");
+                bool sucesso = PrinterServiceFactory.ImprimirCupom($"REFRIGERANTE #{i}");
                 if (sucesso)
                 {
                     sucessos++;

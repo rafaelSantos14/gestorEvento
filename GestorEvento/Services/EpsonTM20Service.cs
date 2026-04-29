@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Drawing;
 using System.IO;
+using System.Configuration;
 using GestorEvento.Utilities;
 
 namespace GestorEvento.Services
@@ -24,8 +25,22 @@ namespace GestorEvento.Services
         private readonly int _baudRate;
         private bool _isConnected = false;
 
-        public EpsonTM20Service(string portName = "COM2", int baudRate = 9600)
+        public EpsonTM20Service(string portName = null, int baudRate = -1)
         {
+            // Ler do App.config se não for passado valor
+            if (string.IsNullOrWhiteSpace(portName))
+            {
+                portName = ConfigurationManager.AppSettings["PrinterPortName"] ?? "COM2";
+            }
+            
+            if (baudRate <= 0)
+            {
+                if (!int.TryParse(ConfigurationManager.AppSettings["PrinterBaudRate"] ?? "9600", out baudRate))
+                {
+                    baudRate = 9600;
+                }
+            }
+
             _portName = portName;
             _baudRate = baudRate;
             _serialPort = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One)
@@ -295,7 +310,7 @@ namespace GestorEvento.Services
         /// REFATORADO COMPLETAMENTE
         /// Estratégia: Imprimir primeiro, DEPOIS cortar
         /// </summary>
-        public bool ImprimirCupom(string nomeProduto)
+        public bool ImprimirCupom(string nomeProduto, int numeroCaixa = 0, string descricaoCaixa = "")
         {
             try
             {
@@ -361,17 +376,46 @@ namespace GestorEvento.Services
                 Thread.Sleep(50); // Reduzido de 100ms
                 // System.Diagnostics.Debug.WriteLine($"✓ Texto enviado: {nomeProduto}");
 
-                // ============ FASE 3.5: IMPRIMIR DATA E HORA ============
-                // System.Diagnostics.Debug.WriteLine("\n[FASE 3.5] Imprimindo data e hora");
+                // ============ FASE 3.5: IMPRIMIR INFORMAÇÕES DE CAIXA ============
+                // 1 linha vazia entre produto e caixa
+                _serialPort.Write(lineFeed, 0, lineFeed.Length);
                 
-                // 3 linhas vazias entre produto e data
+                // Voltar para font normal e align center
+                byte[] fontNormalCaixa = { 0x1D, 0x21, 0x00 };
+                _serialPort.Write(fontNormalCaixa, 0, fontNormalCaixa.Length);
+                
+                byte[] alignCenterCaixa = { 0x1B, 0x61, 0x01 };
+                _serialPort.Write(alignCenterCaixa, 0, alignCenterCaixa.Length);
+                _serialPort.BaseStream.Flush();
+                
+                // Imprimir informação de caixa se disponível
+                if (numeroCaixa > 0)
+                {
+                    string infoCaixa = $"Caixa #{numeroCaixa}";
+                    if (!string.IsNullOrWhiteSpace(descricaoCaixa))
+                    {
+                        infoCaixa += $" - {descricaoCaixa}";
+                    }
+                    
+                    byte[] caixaBytes = Encoding.GetEncoding(1252).GetBytes(infoCaixa);
+                    _serialPort.Write(caixaBytes, 0, caixaBytes.Length);
+                    _serialPort.BaseStream.Flush();
+                    Thread.Sleep(30);
+                }
+
+                // ============ FASE 3.6: IMPRIMIR DATA E HORA ============
+                // 3 linhas vazias entre caixa e data (rodapé)
                 for (int i = 0; i < 3; i++)
                 {
                     _serialPort.Write(lineFeed, 0, lineFeed.Length);
-                }                
+                }
                 
-                // Reduzir tamanho da fonte
-                byte[] fontSmall = { 0x1D, 0x21, 0x00 }; // Fonte pequena
+                // Align right para data/hora
+                byte[] alignRight = { 0x1B, 0x61, 0x02 };
+                _serialPort.Write(alignRight, 0, alignRight.Length);
+                
+                // Fonte pequena para data
+                byte[] fontSmall = { 0x1D, 0x21, 0x00 };
                 _serialPort.Write(fontSmall, 0, fontSmall.Length);
                 
                 // Data e hora
@@ -379,14 +423,13 @@ namespace GestorEvento.Services
                 byte[] dataHoraBytes = Encoding.GetEncoding(1252).GetBytes(dataHora);
                 _serialPort.Write(dataHoraBytes, 0, dataHoraBytes.Length);
                 _serialPort.BaseStream.Flush();
-                Thread.Sleep(50); // Reduzido de 100ms
+                Thread.Sleep(50);
                 // System.Diagnostics.Debug.WriteLine($"✓ Data/Hora enviada: {dataHora}");
                 
                 // Voltar para fonte normal
                 byte[] fontNormalSmall = { 0x1D, 0x21, 0x00 };
                 _serialPort.Write(fontNormalSmall, 0, fontNormalSmall.Length);
                 _serialPort.BaseStream.Flush();
-                // System.Diagnostics.Debug.WriteLine($"✓ Data/Hora enviada: {dataHora}");
 
                 // ============ FASE 3.6: LOGO (IMAGEM) - DESATIVADO PARA TESTES ============
                 // System.Diagnostics.Debug.WriteLine("\n[FASE 3.6] Imprimindo logos");
