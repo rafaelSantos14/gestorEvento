@@ -1,0 +1,161 @@
+{
+  "info": {
+    "_postman_id": "0fb01669-b315-45ec-81b4-4a4735acb772",
+    "name": "GestorEvento-PrintServer",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "43135759"
+  },
+  "item": [
+    {
+      "name": "imprimirCupom - Individual (único produto)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{PrintServerIp}}:{{PrintServerPort}}/imprimir?produto=ProdutoExemplo&numeroCaixa=1&descricaoCaixa=Bar",
+          "protocol": "http",
+          "host": [
+            "{{PrintServerIp}}"
+          ],
+          "port": "{{PrintServerPort}}",
+          "path": [
+            "imprimir"
+          ],
+          "query": [
+            {
+              "key": "produto",
+              "value": "ProdutoExemplo"
+            },
+            {
+              "key": "numeroCaixa",
+              "value": "1"
+            },
+            {
+              "key": "descricaoCaixa",
+              "value": "Bar"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "imprimirVenda - Lista de produtos",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"vendaId\": 42,\r\n  \"numeroCaixa\": 1,\r\n  \"descricaoCaixa\": \"PDV A\",\r\n  \"itens\": [\r\n    \"REFRIGERANTE 2L\",\r\n    \"CERVEJA 350ML\",\r\n    \"AGUA MINERAL 1.5L\"\r\n  ]  \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{PrintServerIp}}:{{PrintServerPort}}/imprimir-venda",
+          "protocol": "http",
+          "host": [
+            "{{PrintServerIp}}"
+          ],
+          "port": "{{PrintServerPort}}",
+          "path": [
+            "imprimir-venda"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "limpar - Limpa a fila de impressão",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"vendaId\": 42,\r\n  \"numeroCaixa\": 1,\r\n  \"descricaoCaixa\": \"PDV A\",\r\n  \"itens\": [\r\n    \"REFRIGERANTE 2L\",\r\n    \"CERVEJA 350ML\",\r\n    \"AGUA MINERAL 1.5L\"\r\n  ]  \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{PrintServerIp}}:{{PrintServerPort}}/limpar",
+          "protocol": "http",
+          "host": [
+            "{{PrintServerIp}}"
+          ],
+          "port": "{{PrintServerPort}}",
+          "path": [
+            "limpar"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "status - Obtêm Impressora e Fila",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{{PrintServerIp}}:{{PrintServerPort}}/status",
+          "protocol": "http",
+          "host": [
+            "{{PrintServerIp}}"
+          ],
+          "port": "{{PrintServerPort}}",
+          "path": [
+            "status"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "PrintServerIp",
+      "value": ""
+    },
+    {
+      "key": "PrintServerPort",
+      "value": ""
+    }
+  ]
+}
