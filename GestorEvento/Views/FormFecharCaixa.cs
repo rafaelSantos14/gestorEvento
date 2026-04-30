@@ -29,6 +29,9 @@ namespace GestorEvento.Views
         private Label lblTituloResumo;
         private Label lblAbertura;
         private Label lblTotalDinheiro;
+        private Label lblTotalTroco;
+        private Label lblTotalEntradaTroco;
+        private Label lblTotalSangria;
         private Label lblTotalEsperado;
         private Label lblTotalVendas;
         private Label lblDiferenca;
@@ -38,7 +41,6 @@ namespace GestorEvento.Views
         private Label lblObservacoes;
         private TextBox txtObservacoes;
         private TextBox txtValorContado;
-        private Label lblTotalTroco;
 
         public FormFecharCaixa(int caixaId)
         {
@@ -170,7 +172,7 @@ namespace GestorEvento.Views
             {
                 Text = "RESUMO EXECUTIVO",
                 Location = new Point(20, 60),
-                Size = new Size(this.ClientSize.Width - 40, 190),
+                Size = new Size(this.ClientSize.Width - 40, 200),
                 Font = new Font("Segoe UI", 10F)
             };
 
@@ -178,17 +180,19 @@ namespace GestorEvento.Views
             lblAbertura = new Label { Location = new Point(10, 60), AutoSize = true, Font = new Font("Consolas", 10F) };
             lblTotalDinheiro = new Label { Location = new Point(10, 78), AutoSize = true, Font = new Font("Consolas", 10F) };
             lblTotalTroco = new Label { Location = new Point(10, 96), AutoSize = true, Font = new Font("Consolas", 10F) };
-            lblTotalEsperado = new Label { Location = new Point(10, 114), AutoSize = true, Font = new Font("Consolas", 10F) };
-            lblTotalVendas = new Label { Location = new Point(10, 132), AutoSize = true, Font = new Font("Consolas", 10F) };
+            lblTotalEntradaTroco = new Label { Location = new Point(10, 114), AutoSize = true, Font = new Font("Consolas", 10F) };
+            lblTotalSangria = new Label { Location = new Point(10, 132), AutoSize = true, Font = new Font("Consolas", 10F) };
+            lblTotalEsperado = new Label { Location = new Point(10, 150), AutoSize = true, Font = new Font("Consolas", 10F, FontStyle.Bold) };
+            lblTotalVendas = new Label { Location = new Point(10, 168), AutoSize = true, Font = new Font("Consolas", 10F, FontStyle.Bold) };
 
-            gbResumo.Controls.AddRange(new Control[] { lblTituloResumo, lblAbertura, lblTotalDinheiro, lblTotalTroco, lblTotalEsperado, lblTotalVendas });
+            gbResumo.Controls.AddRange(new Control[] { lblTituloResumo, lblAbertura, lblTotalDinheiro, lblTotalTroco, lblTotalEntradaTroco, lblTotalSangria, lblTotalEsperado, lblTotalVendas });
             this.Controls.Add(gbResumo);
 
             // Panel para Formas de Pagamento
             GroupBox gbFormas = new GroupBox
             {
                 Text = "RESUMO POR FORMA DE PAGAMENTO",
-                Location = new Point(20, 260),
+                Location = new Point(20, 270),
                 Size = new Size(this.ClientSize.Width - 40, 180),
                 Font = new Font("Segoe UI", 10F)
             };
@@ -212,7 +216,7 @@ namespace GestorEvento.Views
             GroupBox gbContagem = new GroupBox
             {
                 Text = "FECHAMENTO",
-                Location = new Point(20, 450),
+                Location = new Point(20, 460),
                 Size = new Size(this.ClientSize.Width - 40, 200),
                 Font = new Font("Segoe UI", 10F)
             };
@@ -267,7 +271,7 @@ namespace GestorEvento.Views
             Button btnFecharCaixa = new Button
             {
                 Text = "FECHAR CAIXA",
-                Location = new Point(20, this.ClientSize.Height - 45),
+                Location = new Point(20, this.ClientSize.Height - 35),
                 Size = new Size(150, 35),
                 Font = new Font("Segoe UI", 11F, FontStyle.Bold),
                 BackColor = Color.FromArgb(76, 175, 80),
@@ -279,7 +283,7 @@ namespace GestorEvento.Views
             Button btnCancelar = new Button
             {
                 Text = "CANCELAR",
-                Location = new Point(180, this.ClientSize.Height - 45),
+                Location = new Point(180, this.ClientSize.Height - 35),
                 Size = new Size(150, 35),
                 Font = new Font("Segoe UI", 11F),
                 BackColor = Color.FromArgb(244, 67, 54),
@@ -304,7 +308,19 @@ namespace GestorEvento.Views
             decimal totalTroco = _resumoFechamento.Movimentacoes
                 .Where(m => m.TipoMovimento == "TROCO")
                 .Sum(m => m.VlMovimento);
-            lblTotalTroco.Text = AlinharComPontos("Total Troco", $"R$ {totalTroco:F2}", comprimentoBase);
+            lblTotalTroco.Text = AlinharComPontos("Total Troco", $"R$ -{totalTroco:F2}", comprimentoBase);
+            
+            // Calcular total de entrada de troco
+            decimal totalEntradaTroco = _resumoFechamento.Movimentacoes
+                .Where(m => m.TipoMovimento == "ENTRADA_TROCO")
+                .Sum(m => m.VlMovimento);
+            lblTotalEntradaTroco.Text = AlinharComPontos("Total Entrada de Troco", $"R$ {totalEntradaTroco:F2}", comprimentoBase);
+            
+            // Calcular total de sangria
+            decimal totalSangria = _resumoFechamento.Movimentacoes
+                .Where(m => m.TipoMovimento == "SANGRIA")
+                .Sum(m => m.VlMovimento);
+            lblTotalSangria.Text = AlinharComPontos("Total Sangria", $"R$ -{totalSangria:F2}", comprimentoBase);
             
             lblTotalEsperado.Text = AlinharComPontos("TOTAL ESPERADO", $"R$ {_resumoFechamento.TotalEsperado:F2}", comprimentoBase);
             lblTotalVendas.Text = AlinharComPontos("Total de Vendas", $"{_resumoFechamento.Vendas.Count}", comprimentoBase);

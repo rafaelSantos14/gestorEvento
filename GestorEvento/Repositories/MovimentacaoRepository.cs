@@ -37,9 +37,8 @@ namespace GestorEvento.Repositories
                         command.Parameters.AddWithValue("@tipoMovimento", movimentacao.TipoMovimento.ToString());
                         command.Parameters.AddWithValue("@vlMovimento", movimentacao.VlMovimento);
                         command.Parameters.AddWithValue("@dtMovimento", movimentacao.DtMovimento);
-                        command.Parameters.AddWithValue("@descricao", movimentacao.Descricao ?? "");
+                        command.Parameters.AddWithValue("@descricao", movimentacao.Descricao ?? "");                        
                         
-                        // Tratamento de IdVenda nullable (compatível com C# 7.3)
                         object idVendaValue = movimentacao.IdVenda.HasValue ? (object)movimentacao.IdVenda.Value : DBNull.Value;
                         command.Parameters.AddWithValue("@idVenda", idVendaValue);
 

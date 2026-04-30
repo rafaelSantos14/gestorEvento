@@ -114,6 +114,18 @@ namespace GestorEvento.Views
             };
             dgvCaixas.Columns.Add(colRegistrarVenda);
 
+            // Coluna Ação: Movimentação Caixa
+            var colMovimentacao = new DataGridViewButtonColumn
+            {
+                Name = "Movimentacao",
+                HeaderText = "",
+                Text = "💸",
+                UseColumnTextForButtonValue = true,
+                Width = 50,
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+            };
+            dgvCaixas.Columns.Add(colMovimentacao);
+
             // Coluna Ação: Fechar Caixa
             var colFecharCaixa = new DataGridViewButtonColumn
             {
@@ -239,6 +251,16 @@ namespace GestorEvento.Views
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
+                // Ação: Movimentação Caixa
+                else if (e.ColumnIndex == dgvCaixas.Columns["Movimentacao"].Index)
+                {
+                    // Abrir FormMovimentacaoCaixa como dialog
+                    FormMovimentacaoCaixa formMovimentacao = new FormMovimentacaoCaixa(caixaId);
+                    formMovimentacao.ShowDialog();
+
+                    // Recarregar caixas após movimentação
+                    CarregarCaixasAbertas();
+                }
             }
             catch (Exception ex)
             {
@@ -272,6 +294,14 @@ namespace GestorEvento.Views
                 e.CellStyle.ForeColor = Color.FromArgb(244, 67, 54);
                 e.CellStyle.SelectionBackColor = Color.White;
                 e.CellStyle.SelectionForeColor = Color.FromArgb(244, 67, 54);
+            }
+            // Colorir botão Movimentação em Verde
+            else if (dgvCaixas.Columns[e.ColumnIndex].Name == "Movimentacao")
+            {
+                e.CellStyle.BackColor = Color.White;
+                e.CellStyle.ForeColor = Color.FromArgb(76, 175, 80);
+                e.CellStyle.SelectionBackColor = Color.White;
+                e.CellStyle.SelectionForeColor = Color.FromArgb(76, 175, 80);
             }
         }
 

@@ -901,11 +901,6 @@ namespace GestorEvento.Views
                 _txtValor.SelectionStart = _txtValor.Text.Length;
             }
 
-            public bool IsDinheiro()
-            {
-                return NomeFormaPagamento.ToUpper().Contains("DINHEIRO");
-            }
-
             public void AddToPanel(Panel panel)
             {
                 panel.Controls.Add(_lblForma);
