@@ -96,6 +96,7 @@ namespace PrintServer
             {
                 Console.WriteLine($"✗ Erro ao iniciar API: {ex.Message}");
                 Console.WriteLine($"  StackTrace: {ex.StackTrace}");
+                throw;  // Relançar para Program.cs tratar com logs específicos
             }
         }
 
