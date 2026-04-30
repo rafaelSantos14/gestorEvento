@@ -16,9 +16,10 @@ namespace PrintServer
         private bool _isProcessing = false;
         private Task _processingTask;
 
-        public PrintQueueManager(string portName = "COM2", int baudRate = 9600)
+        public PrintQueueManager(string portName = null, int baudRate = -1)
         {
             _printQueue = new Queue<PrintJob>();
+            // EpsonTM20Service lê do App.config automaticamente se portName/baudRate forem null/-1
             _printerService = new EpsonTM20Service(portName, baudRate);
         }
 

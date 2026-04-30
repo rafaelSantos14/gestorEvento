@@ -71,7 +71,6 @@ tmp/
 
 # Database backups
 *.bak
-*.sql
 
 # IDE files to ignore but keep config
 !.vscode/settings.json

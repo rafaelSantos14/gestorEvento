@@ -14,13 +14,28 @@ namespace PrintServer
             Console.WriteLine("         PRINT SERVER - Epson TM-T20 Network Print Service");
             Console.WriteLine("═══════════════════════════════════════════════════════════════\n");
 
-            // Configuração
-            string portName = "COM2";           // Porta serial da impressora
-            int baudRate = 9600;                // Taxa de transmissão
+            // Configuração (sempre lír de App.config)
+            string portName = ConfigurationManager.AppSettings["PrinterPortName"];
+            string baudRateStr = ConfigurationManager.AppSettings["PrinterBaudRate"];
+            
+            // Validar configurações da impressora (obrigatórias)
+            if (string.IsNullOrWhiteSpace(portName))
+                throw new ConfigurationErrorsException("PrinterPortName não configurado em App.config. Exemplo: <add key=\"PrinterPortName\" value=\"COM2\" />");
+            
+            if (string.IsNullOrWhiteSpace(baudRateStr))
+                throw new ConfigurationErrorsException("PrinterBaudRate não configurado em App.config. Exemplo: <add key=\"PrinterBaudRate\" value=\"9600\" />");
+            
+            int baudRate = 9600;
+            if (!int.TryParse(baudRateStr, out baudRate))
+                throw new ConfigurationErrorsException($"PrinterBaudRate inválido: '{baudRateStr}'. Deve ser um número inteiro (ex: 9600)");
+            
+            if (baudRate <= 0)
+                throw new ConfigurationErrorsException($"PrinterBaudRate deve ser maior que 0. Valor informado: {baudRate}");
+            
             string ipAddress = ConfigurationManager.AppSettings["PrintServerIp"];     // IP do App.config
             string portString = ConfigurationManager.AppSettings["PrintServerPort"];  // Porta do App.config
             
-            // Validar configurações obrigatórias
+            // Validar configurações obrigatórias do Print Server
             if (string.IsNullOrWhiteSpace(ipAddress))
                 throw new ConfigurationErrorsException("PrintServerIp não configurado em App.config");
             
