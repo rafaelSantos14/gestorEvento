@@ -1,11 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using GestorEvento.Utilities;
 using GestorEvento.Services;
@@ -23,14 +17,10 @@ namespace GestorEvento.Views
         public FormEventosAtivos()
         {
             InitializeComponent();
-            
-            // Inicializar serviços
+
             _eventoService = new EventoService();
-            
-            // Configurar componentes
             ConfigurarDataGridView();
-            
-            // Carregar dados
+            dgvEventos.SelectionChanged += DgvEventos_SelectionChanged;
             CarregarEventos();
         }
 
@@ -38,53 +28,44 @@ namespace GestorEvento.Views
         {
             dgvEventos.Columns.Clear();
 
-            // Coluna ID (hidden)
-            var colId = new DataGridViewTextBoxColumn
+            dgvEventos.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "ID",
                 HeaderText = "ID",
                 Width = 50,
                 Visible = false,
                 ReadOnly = true
-            };
-            dgvEventos.Columns.Add(colId);
+            });
 
-            // Coluna Nome
-            var colNome = new DataGridViewTextBoxColumn
+            dgvEventos.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "Nome",
                 HeaderText = "Evento",
                 Width = 250,
                 ReadOnly = true
-            };
-            dgvEventos.Columns.Add(colNome);
+            });
 
-            // Coluna Data
-            var colData = new DataGridViewTextBoxColumn
+            dgvEventos.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "DataEvento",
                 HeaderText = "Data",
                 Width = 120,
                 ReadOnly = true
-            };
-            dgvEventos.Columns.Add(colData);
+            });
 
-            // Coluna Status
-            var colStatus = new DataGridViewTextBoxColumn
+            dgvEventos.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "Status",
                 HeaderText = "Status",
-                Width = 100,
+                Width = 120,
                 ReadOnly = true
-            };
-            dgvEventos.Columns.Add(colStatus);
+            });
 
-            // Configurar cores
             dgvEventos.DefaultCellStyle.ForeColor = Color.Black;
             dgvEventos.DefaultCellStyle.BackColor = Color.White;
             dgvEventos.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvEventos.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(25, 118, 210); // Azul Material
-            dgvEventos.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245); // Cinza claro
+            dgvEventos.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(25, 118, 210);
+            dgvEventos.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
             dgvEventos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvEventos.AllowUserToAddRows = false;
             dgvEventos.ReadOnly = true;
@@ -99,17 +80,24 @@ namespace GestorEvento.Views
                 var eventos = _eventoService.GetAllEventos();
                 foreach (var evento in eventos)
                 {
-                    dgvEventos.Rows.Add(
+                    int rowIndex = dgvEventos.Rows.Add(
                         evento.Id,
                         evento.Nome,
                         evento.DataEvento.ToString("dd/MM/yyyy"),
-                        "Ativo" // TODO: substituir por campo de status quando houver
+                        string.IsNullOrWhiteSpace(evento.CdStatus) ? Evento.StatusAtivo : evento.CdStatus
                     );
+
+                    if (evento.IsEncerrado)
+                    {
+                        dgvEventos.Rows[rowIndex].DefaultCellStyle.ForeColor = Color.FromArgb(183, 28, 28);
+                    }
                 }
+
+                AtualizarEstadoBotoes();
             }
             catch (Exception ex)
             {
-                DialogoCustomizado dialogo = new DialogoCustomizado(
+                var dialogo = new DialogoCustomizado(
                     "Erro",
                     $"Erro ao carregar eventos: {ex.Message}",
                     TipoDialogo.Erro,
@@ -119,13 +107,49 @@ namespace GestorEvento.Views
             }
         }
 
-        // ==================== EVENT HANDLERS ====================
+        private void DgvEventos_SelectionChanged(object sender, EventArgs e)
+        {
+            AtualizarEstadoBotoes();
+        }
 
-        private void btnAbrirCaixa_Click(object sender, EventArgs e)
+        private Evento GetEventoSelecionado()
         {
             if (dgvEventos.SelectedRows.Count == 0)
             {
-                DialogoCustomizado dialogo = new DialogoCustomizado(
+                return null;
+            }
+
+            var row = dgvEventos.SelectedRows[0];
+            return new Evento
+            {
+                Id = Convert.ToInt32(row.Cells["ID"].Value),
+                Nome = row.Cells["Nome"].Value?.ToString(),
+                DataEvento = DateTime.TryParse(row.Cells["DataEvento"].Value?.ToString(), out DateTime dt) ? dt : DateTime.MinValue,
+                CdStatus = row.Cells["Status"].Value?.ToString()
+            };
+        }
+
+        private bool EventoSelecionadoEstaEncerrado()
+        {
+            var evento = GetEventoSelecionado();
+            return evento != null && evento.IsEncerrado;
+        }
+
+        private void AtualizarEstadoBotoes()
+        {
+            bool temSelecao = dgvEventos.SelectedRows.Count > 0;
+            bool encerrado = EventoSelecionadoEstaEncerrado();
+
+            btnAbrirCaixa.Enabled = temSelecao && !encerrado;
+            btnCaixas.Enabled = temSelecao;
+        }
+
+        private void btnAbrirCaixa_Click(object sender, EventArgs e)
+        {
+            var evento = GetEventoSelecionado();
+            if (evento == null)
+            {
+                var dialogo = new DialogoCustomizado(
                     "Aviso",
                     "Selecione um evento para abrir caixa",
                     TipoDialogo.Aviso,
@@ -135,14 +159,24 @@ namespace GestorEvento.Views
                 return;
             }
 
-            _eventoIdSelecionado = (int)dgvEventos.SelectedRows[0].Cells["ID"].Value;
+            if (evento.IsEncerrado)
+            {
+                var dialogo = new DialogoCustomizado(
+                    "Aviso",
+                    "Evento encerrado. Não é possível abrir caixa.",
+                    TipoDialogo.Aviso,
+                    TipoButton.Ok
+                );
+                dialogo.ShowDialog();
+                return;
+            }
 
-            // Abrir FormAbrirCaixa como dialog
-            FormAbrirCaixa formAbrirCaixa = new FormAbrirCaixa(_eventoIdSelecionado);
+            _eventoIdSelecionado = evento.Id;
+
+            var formAbrirCaixa = new FormAbrirCaixa(_eventoIdSelecionado);
             if (formAbrirCaixa.ShowDialog() == DialogResult.OK)
             {
-                // Caixa aberto com sucesso
-                DialogoCustomizado sucesso = new DialogoCustomizado(
+                var sucesso = new DialogoCustomizado(
                     "Sucesso",
                     "Caixa aberto com sucesso!",
                     TipoDialogo.Sucesso,
@@ -154,11 +188,12 @@ namespace GestorEvento.Views
 
         private void btnRegistrarVenda_Click(object sender, EventArgs e)
         {
-            if (dgvEventos.SelectedRows.Count == 0)
+            var evento = GetEventoSelecionado();
+            if (evento == null)
             {
-                DialogoCustomizado dialogo = new DialogoCustomizado(
+                var dialogo = new DialogoCustomizado(
                     "Aviso",
-                    "Selecione um evento para registrar venda",
+                    "Selecione um evento para acessar os caixas",
                     TipoDialogo.Aviso,
                     TipoButton.Ok
                 );
@@ -166,39 +201,24 @@ namespace GestorEvento.Views
                 return;
             }
 
-            _eventoIdSelecionado = (int)dgvEventos.SelectedRows[0].Cells["ID"].Value;
-
-            // Abrir FormSelecionarPontoVenda como dialog
-            FormSelecionarPontoVenda formSelecionarPontoVenda = new FormSelecionarPontoVenda(_eventoIdSelecionado);
+            _eventoIdSelecionado = evento.Id;
+            var formSelecionarPontoVenda = new FormSelecionarPontoVenda(_eventoIdSelecionado);
             formSelecionarPontoVenda.ShowDialog();
-            /*if (formSelecionarPontoVenda.ShowDialog() == DialogResult.OK)
-            {
-                // Venda registrada com sucesso
-                DialogoCustomizado sucesso = new DialogoCustomizado(
-                    "Sucesso",
-                    "Venda registrada com sucesso!",
-                    TipoDialogo.Sucesso,
-                    TipoButton.Ok
-                );
-                sucesso.ShowDialog();
-            }*/
         }
-
-        // ==================== TITLE BAR HANDLERS ====================
 
         private void BtnFechar_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void BtnMinimizar_Click(object sender, EventArgs e)
         {
-            this.WindowState = FormWindowState.Minimized;
+            WindowState = FormWindowState.Minimized;
         }
 
         private void PanelTitulo_MouseDown(object sender, MouseEventArgs e)
         {
-            if (this.WindowState != FormWindowState.Maximized)
+            if (WindowState != FormWindowState.Maximized)
             {
                 _isDragging = true;
                 _dragPoint = e.Location;
@@ -209,10 +229,10 @@ namespace GestorEvento.Views
         {
             if (_isDragging)
             {
-                Point novaLocacao = this.Location;
+                Point novaLocacao = Location;
                 novaLocacao.X += e.X - _dragPoint.X;
                 novaLocacao.Y += e.Y - _dragPoint.Y;
-                this.Location = novaLocacao;
+                Location = novaLocacao;
             }
         }
 

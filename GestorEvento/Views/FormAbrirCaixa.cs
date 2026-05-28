@@ -16,12 +16,14 @@ namespace GestorEvento.Views
     {
         private int _eventoIdSelecionado = 0;
         private PontoVendaService _pontoVendaService;
+        private EventoService _eventoService;
 
         public FormAbrirCaixa(int eventoId)
         {
             InitializeComponent();
             _eventoIdSelecionado = eventoId;
             _pontoVendaService = new PontoVendaService();
+            _eventoService = new EventoService();
         }
 
         private void BtnAbrir_Click(object sender, EventArgs e)
@@ -42,6 +44,18 @@ namespace GestorEvento.Views
 
             try
             {
+                if (_eventoService.EventoEstaEncerrado(_eventoIdSelecionado))
+                {
+                    DialogoCustomizado avisoEvento = new DialogoCustomizado(
+                        "Aviso",
+                        "Evento encerrado. Não é possível abrir caixa.",
+                        TipoDialogo.Aviso,
+                        TipoButton.Ok
+                    );
+                    avisoEvento.ShowDialog();
+                    return;
+                }
+
                 // Obter descrição do campo de texto (pode ser vazio/nulo)
                 string descricao = txtDescCaixa.Text.Trim();
                 if (string.IsNullOrEmpty(descricao))

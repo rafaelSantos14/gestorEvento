@@ -37,11 +37,18 @@ namespace GestorEvento.Views
             EstiloManager.AplicarEstiloSalvar(btnSalvar);           
             EstiloManager.AplicarEstiloDeletar(btnDeletar);
             EstiloManager.AplicarEstiloInfo(btnPesquisar);
+            EstiloManager.AplicarEstiloAviso(btnAlternarStatusEvento);
 
             // Configurar DateTimePicker para busca (inicialmente vazio)
             dtpDataPesquisa.Format = DateTimePickerFormat.Custom;
             dtpDataPesquisa.CustomFormat = " ";
             dtpDataPesquisa.Value = DateTime.Now;
+
+            cmbStatusPesquisa.Items.Clear();
+            cmbStatusPesquisa.Items.Add("Todos");
+            cmbStatusPesquisa.Items.Add(Evento.StatusAtivo);
+            cmbStatusPesquisa.Items.Add(Evento.StatusEncerrado);
+            cmbStatusPesquisa.SelectedIndex = 0;
             
             // Configurar MaskedTextBox com máscara de data
             mtbDataPesquisa.Mask = "00/00/0000";
@@ -68,6 +75,7 @@ namespace GestorEvento.Views
             ConfigurarDataGridView();
             ConfigurarDataGridViewDisponivel();
             ConfigurarDataGridViewVinculado();
+            dgvEventos.SelectionChanged += DgvEventos_SelectionChanged;
             
             // Carregar eventos para a aba VINCULAR
             CarregarEventosDropdown();
@@ -178,11 +186,19 @@ namespace GestorEvento.Views
             {
                 Name = "Data",
                 HeaderText = "Data",
-                Width = 100,
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                Width = 120,
                 ReadOnly = true
             };
             dgvEventos.Columns.Add(colData);
+
+            var colStatus = new DataGridViewTextBoxColumn
+            {
+                Name = "Status",
+                HeaderText = "Status",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                ReadOnly = true
+            };
+            dgvEventos.Columns.Add(colStatus);
 
             // Configurar cores do texto
             dgvEventos.DefaultCellStyle.ForeColor = Color.Black;
@@ -214,8 +230,15 @@ namespace GestorEvento.Views
 
                 foreach (var evento in eventos)
                 {
-                    dgvEventos.Rows.Add(evento.Id, evento.Nome, evento.DataEvento.ToString("dd/MM/yyyy"));
+                    dgvEventos.Rows.Add(
+                        evento.Id,
+                        evento.Nome,
+                        evento.DataEvento.ToString("dd/MM/yyyy"),
+                        string.IsNullOrWhiteSpace(evento.CdStatus) ? Evento.StatusAtivo : evento.CdStatus
+                    );
                 }
+
+                AtualizarTextoBotaoStatusEvento();
             }
             catch (Exception ex)
             {
@@ -243,6 +266,18 @@ namespace GestorEvento.Views
             }
 
             int eventoId = Convert.ToInt32(dgvEventos.Rows[e.RowIndex].Cells["ID"].Value);
+            string statusEvento = dgvEventos.Rows[e.RowIndex].Cells["Status"].Value?.ToString();
+            if (string.Equals(statusEvento, Evento.StatusEncerrado, StringComparison.OrdinalIgnoreCase))
+            {
+                DialogoCustomizado aviso = new DialogoCustomizado(
+                    "Aviso",
+                    "Evento encerrado não pode ser editado.",
+                    TipoDialogo.Aviso,
+                    TipoButton.Ok
+                );
+                aviso.ShowDialog();
+                return;
+            }
 
             // Abrir FormEditarEvento como dialog modal
             var formEditar = new FormEditarEvento(eventoId);
@@ -358,6 +393,19 @@ namespace GestorEvento.Views
                 if (dgvEventos.SelectedRows[0].Cells["ID"].Value == null)
                     return;
 
+                string statusEvento = dgvEventos.SelectedRows[0].Cells["Status"].Value?.ToString();
+                if (string.Equals(statusEvento, Evento.StatusEncerrado, StringComparison.OrdinalIgnoreCase))
+                {
+                    DialogoCustomizado aviso = new DialogoCustomizado(
+                        "Aviso",
+                        "Evento encerrado não pode ser deletado.",
+                        TipoDialogo.Aviso,
+                        TipoButton.Ok
+                    );
+                    aviso.ShowDialog();
+                    return;
+                }
+
                 int eventoId = Convert.ToInt32(dgvEventos.SelectedRows[0].Cells["ID"].Value);
                 int rowIndex = dgvEventos.SelectedRows[0].Index;
                 
@@ -386,6 +434,8 @@ namespace GestorEvento.Views
                     erro.ShowDialog();
                 }
             }
+
+            AtualizarTextoBotaoStatusEvento();
         }
 
         private void btnEditar_Click(object sender, EventArgs e)
@@ -409,6 +459,19 @@ namespace GestorEvento.Views
                 return;
             }
 
+            string statusEvento = dgvEventos.SelectedRows[0].Cells["Status"].Value?.ToString();
+            if (string.Equals(statusEvento, Evento.StatusEncerrado, StringComparison.OrdinalIgnoreCase))
+            {
+                DialogoCustomizado aviso = new DialogoCustomizado(
+                    "Aviso",
+                    "Evento encerrado não pode ser editado.",
+                    TipoDialogo.Aviso,
+                    TipoButton.Ok
+                );
+                aviso.ShowDialog();
+                return;
+            }
+
             // Abrir FormEditarEvento como dialog modal
             int eventoId = Convert.ToInt32(dgvEventos.SelectedRows[0].Cells["ID"].Value);
             var formEditar = new FormEditarEvento(eventoId);
@@ -422,6 +485,7 @@ namespace GestorEvento.Views
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
             string nome = txtPesquisar.Text.Trim();
+            string statusSelecionado = cmbStatusPesquisa.SelectedItem?.ToString() ?? "Todos";
             
             // Extrair data do MaskedTextBox
             DateTime? data = null;
@@ -434,7 +498,7 @@ namespace GestorEvento.Views
 
             try
             {
-                var eventos = _service.SearchEventosByNameAndDate(nome, data);
+                var eventos = _service.SearchEventosByNameDateAndStatus(nome, data, statusSelecionado);
                 
                 if (eventos.Count == 0)
                 {
@@ -446,6 +510,16 @@ namespace GestorEvento.Views
                         if (!string.IsNullOrWhiteSpace(filtroDesc))
                             filtroDesc += " e ";
                         filtroDesc += $"data: '{data.Value.ToString("dd/MM/yyyy")}'";
+                    }
+                    if (!string.Equals(statusSelecionado, "Todos", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!string.IsNullOrWhiteSpace(filtroDesc))
+                            filtroDesc += " e ";
+                        filtroDesc += $"status: '{statusSelecionado}'";
+                    }
+                    if (string.IsNullOrWhiteSpace(filtroDesc))
+                    {
+                        filtroDesc = "informados";
                     }
 
                     DialogoCustomizado info = new DialogoCustomizado(
@@ -460,8 +534,15 @@ namespace GestorEvento.Views
 
                 foreach (var evento in eventos)
                 {
-                    dgvEventos.Rows.Add(evento.Id, evento.Nome, evento.DataEvento.ToString("dd/MM/yyyy"));
+                    dgvEventos.Rows.Add(
+                        evento.Id,
+                        evento.Nome,
+                        evento.DataEvento.ToString("dd/MM/yyyy"),
+                        string.IsNullOrWhiteSpace(evento.CdStatus) ? Evento.StatusAtivo : evento.CdStatus
+                    );
                 }
+
+                AtualizarTextoBotaoStatusEvento();
             }
             catch (Exception ex)
             {
@@ -483,6 +564,70 @@ namespace GestorEvento.Views
             dtpDataPesquisa.Format = DateTimePickerFormat.Custom;
             dtpDataPesquisa.CustomFormat = " ";
             _dataPesquisaSelecionada = false;
+            cmbStatusPesquisa.SelectedIndex = 0;
+        }
+
+        private void DgvEventos_SelectionChanged(object sender, EventArgs e)
+        {
+            AtualizarTextoBotaoStatusEvento();
+        }
+
+        private void AtualizarTextoBotaoStatusEvento()
+        {
+            if (dgvEventos.SelectedRows.Count == 0)
+            {
+                btnAlternarStatusEvento.Text = "ENCERRAR EVENTO";
+                return;
+            }
+
+            string statusEvento = dgvEventos.SelectedRows[0].Cells["Status"].Value?.ToString();
+            bool encerrado = string.Equals(statusEvento, Evento.StatusEncerrado, StringComparison.OrdinalIgnoreCase);
+            btnAlternarStatusEvento.Text = encerrado ? "REABRIR EVENTO" : "ENCERRAR EVENTO";
+        }
+
+        private void btnAlternarStatusEvento_Click(object sender, EventArgs e)
+        {
+            if (dgvEventos.SelectedRows.Count == 0)
+            {
+                DialogoCustomizado aviso = new DialogoCustomizado(
+                    "Aviso",
+                    "Selecione um evento na lista para alterar status",
+                    TipoDialogo.Aviso,
+                    TipoButton.Ok
+                );
+                aviso.ShowDialog();
+                return;
+            }
+
+            int eventoId = Convert.ToInt32(dgvEventos.SelectedRows[0].Cells["ID"].Value);
+            string nomeEvento = dgvEventos.SelectedRows[0].Cells["Nome"].Value?.ToString();
+            string statusEvento = dgvEventos.SelectedRows[0].Cells["Status"].Value?.ToString();
+            bool encerrado = string.Equals(statusEvento, Evento.StatusEncerrado, StringComparison.OrdinalIgnoreCase);
+
+            string acao = encerrado ? "reabrir" : "encerrar";
+            DialogoCustomizado confirmacao = new DialogoCustomizado(
+                "Confirmação",
+                $"Deseja realmente {acao} o evento '{nomeEvento}'?",
+                TipoDialogo.Aviso,
+                TipoButton.SimNao
+            );
+
+            if (confirmacao.ShowDialog() != DialogResult.Yes)
+            {
+                return;
+            }
+
+            bool sucesso = encerrado
+                ? _service.ReabrirEvento(eventoId)
+                : _service.EncerrarEvento(eventoId);
+
+            if (!sucesso)
+            {
+                return;
+            }
+
+            CarregarEventosDoDb();
+            CarregarEventosDropdown();
         }
 
         // Eventos da barra de título customizada
@@ -647,6 +792,11 @@ namespace GestorEvento.Views
 
         private void DgvProdutosDisponiveis_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (EventoSelecionadoParaVinculoEstaEncerrado())
+            {
+                return;
+            }
+
             if (e.ColumnIndex == dgvProdutosDisponiveis.Columns["Acao"].Index && e.RowIndex >= 0)
             {
                 var row = dgvProdutosDisponiveis.Rows[e.RowIndex];
@@ -699,6 +849,11 @@ namespace GestorEvento.Views
 
         private void DgvProdutosVinculados_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (EventoSelecionadoParaVinculoEstaEncerrado())
+            {
+                return;
+            }
+
             if (e.ColumnIndex == dgvProdutosVinculados.Columns["Editar"].Index && e.RowIndex >= 0)
             {
                 var row = dgvProdutosVinculados.Rows[e.RowIndex];
@@ -803,7 +958,12 @@ namespace GestorEvento.Views
                 var eventos = _service.GetAllEventos();
                 foreach (var evento in eventos)
                 {
-                    string displayText = $"{evento.Nome} - {evento.DataEvento.ToString("dd/MM/yyyy")}";
+                    if (evento.IsEncerrado)
+                    {
+                        continue;
+                    }
+
+                    string displayText = $"{evento.Nome} - {evento.DataEvento:dd/MM/yyyy}";
                     ddlEvento.Items.Add(new Tuple<int, string>(evento.Id, displayText));
                 }
             }
@@ -857,6 +1017,29 @@ namespace GestorEvento.Views
         private void btnLimparVinculacao_Click(object sender, EventArgs e)
         {
             CarregarProdutosParaVinculacao();
+        }
+
+        private bool EventoSelecionadoParaVinculoEstaEncerrado()
+        {
+            if (_eventoIdSelecionado <= 0)
+            {
+                return false;
+            }
+
+            var evento = _service.GetEventoById(_eventoIdSelecionado);
+            if (evento != null && evento.IsEncerrado)
+            {
+                DialogoCustomizado aviso = new DialogoCustomizado(
+                    "Aviso",
+                    "Evento encerrado. Vinculação de produtos está bloqueada.",
+                    TipoDialogo.Aviso,
+                    TipoButton.Ok
+                );
+                aviso.ShowDialog();
+                return true;
+            }
+
+            return false;
         }
 
         private void btnFechar_Click_1(object sender, EventArgs e)

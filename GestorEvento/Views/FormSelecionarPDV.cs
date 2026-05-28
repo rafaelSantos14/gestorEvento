@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -59,14 +58,22 @@ namespace GestorEvento.Views
                 // Adicionar item de instrução
                 cmbEvento.Items.Add("Selecione um evento");
 
-                // Carregar todos os eventos
-                var eventos = _eventoService.GetAllEventos();
+                // Carregar apenas eventos ativos (sem LINQ)
+                var eventos = new List<Evento>();
+                var todosEventos = _eventoService.GetAllEventos();
+                foreach (var evento in todosEventos)
+                {
+                    if (!evento.IsEncerrado)
+                    {
+                        eventos.Add(evento);
+                    }
+                }
 
                 if (eventos.Count == 0)
                 {
                     DialogoCustomizado dialogo = new DialogoCustomizado(
                         "Aviso",
-                        "Nenhum evento disponível",
+                        "Nenhum evento ativo disponível",
                         TipoDialogo.Aviso,
                         TipoButton.Ok
                     );

@@ -42,17 +42,6 @@ namespace GestorEvento.Views
             this.panelBotoesCadastro = new System.Windows.Forms.Panel();
             this.btnSalvar = new System.Windows.Forms.Button();
             this.btnLimpar = new System.Windows.Forms.Button();
-            this.tabLista = new System.Windows.Forms.TabPage();
-            this.panelBotoes = new System.Windows.Forms.Panel();
-            this.btnDeletar = new System.Windows.Forms.Button();
-            this.btnEditar = new System.Windows.Forms.Button();
-            this.dgvEventos = new System.Windows.Forms.DataGridView();
-            this.panelPesquisa = new System.Windows.Forms.Panel();
-            this.btnLimparFiltroPesquisa = new System.Windows.Forms.Button();
-            this.btnPesquisar = new System.Windows.Forms.Button();
-            this.mtbDataPesquisa = new System.Windows.Forms.MaskedTextBox();
-            this.dtpDataPesquisa = new System.Windows.Forms.DateTimePicker();
-            this.txtPesquisar = new System.Windows.Forms.TextBox();
             this.tabVincular = new System.Windows.Forms.TabPage();
             this.panelVinculacao = new System.Windows.Forms.Panel();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
@@ -64,14 +53,23 @@ namespace GestorEvento.Views
             this.panelEventoSel = new System.Windows.Forms.Panel();
             this.lblEvento = new System.Windows.Forms.Label();
             this.ddlEvento = new System.Windows.Forms.ComboBox();
+            this.tabLista = new System.Windows.Forms.TabPage();
+            this.panelBotoes = new System.Windows.Forms.Panel();
+            this.btnAlternarStatusEvento = new System.Windows.Forms.Button();
+            this.btnDeletar = new System.Windows.Forms.Button();
+            this.btnEditar = new System.Windows.Forms.Button();
+            this.dgvEventos = new System.Windows.Forms.DataGridView();
+            this.panelPesquisa = new System.Windows.Forms.Panel();
+            this.cmbStatusPesquisa = new System.Windows.Forms.ComboBox();
+            this.btnLimparFiltroPesquisa = new System.Windows.Forms.Button();
+            this.btnPesquisar = new System.Windows.Forms.Button();
+            this.mtbDataPesquisa = new System.Windows.Forms.MaskedTextBox();
+            this.dtpDataPesquisa = new System.Windows.Forms.DateTimePicker();
+            this.txtPesquisar = new System.Windows.Forms.TextBox();
             this.panelTitulo.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabCadastro.SuspendLayout();
             this.panelBotoesCadastro.SuspendLayout();
-            this.tabLista.SuspendLayout();
-            this.panelBotoes.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvEventos)).BeginInit();
-            this.panelPesquisa.SuspendLayout();
             this.tabVincular.SuspendLayout();
             this.panelVinculacao.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -81,6 +79,10 @@ namespace GestorEvento.Views
             ((System.ComponentModel.ISupportInitialize)(this.dgvProdutosDisponiveis)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProdutosVinculados)).BeginInit();
             this.panelEventoSel.SuspendLayout();
+            this.tabLista.SuspendLayout();
+            this.panelBotoes.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEventos)).BeginInit();
+            this.panelPesquisa.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelTitulo
@@ -262,148 +264,6 @@ namespace GestorEvento.Views
             this.btnLimpar.UseVisualStyleBackColor = false;
             this.btnLimpar.Click += new System.EventHandler(this.btnLimpar_Click);
             // 
-            // tabLista
-            // 
-            this.tabLista.BackColor = System.Drawing.Color.White;
-            this.tabLista.Controls.Add(this.panelBotoes);
-            this.tabLista.Controls.Add(this.dgvEventos);
-            this.tabLista.Controls.Add(this.panelPesquisa);
-            this.tabLista.Location = new System.Drawing.Point(4, 26);
-            this.tabLista.Name = "tabLista";
-            this.tabLista.Padding = new System.Windows.Forms.Padding(10);
-            this.tabLista.Size = new System.Drawing.Size(1192, 630);
-            this.tabLista.TabIndex = 1;
-            this.tabLista.Text = "LISTA DE EVENTOS";
-            // 
-            // panelBotoes
-            // 
-            this.panelBotoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.panelBotoes.Controls.Add(this.btnDeletar);
-            this.panelBotoes.Controls.Add(this.btnEditar);
-            this.panelBotoes.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBotoes.Location = new System.Drawing.Point(10, 570);
-            this.panelBotoes.Name = "panelBotoes";
-            this.panelBotoes.Padding = new System.Windows.Forms.Padding(10);
-            this.panelBotoes.Size = new System.Drawing.Size(1172, 50);
-            this.panelBotoes.TabIndex = 2;
-            // 
-            // btnDeletar
-            // 
-            this.btnDeletar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnDeletar.FlatAppearance.BorderSize = 0;
-            this.btnDeletar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDeletar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnDeletar.ForeColor = System.Drawing.Color.White;
-            this.btnDeletar.Location = new System.Drawing.Point(120, 11);
-            this.btnDeletar.Name = "btnDeletar";
-            this.btnDeletar.Size = new System.Drawing.Size(100, 30);
-            this.btnDeletar.TabIndex = 4;
-            this.btnDeletar.Text = "DELETAR";
-            this.btnDeletar.UseVisualStyleBackColor = false;
-            this.btnDeletar.Click += new System.EventHandler(this.btnDeletar_Click);
-            // 
-            // btnEditar
-            // 
-            this.btnEditar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.btnEditar.FlatAppearance.BorderSize = 0;
-            this.btnEditar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnEditar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnEditar.ForeColor = System.Drawing.Color.White;
-            this.btnEditar.Location = new System.Drawing.Point(10, 11);
-            this.btnEditar.Name = "btnEditar";
-            this.btnEditar.Size = new System.Drawing.Size(100, 30);
-            this.btnEditar.TabIndex = 3;
-            this.btnEditar.Text = "EDITAR";
-            this.btnEditar.UseVisualStyleBackColor = false;
-            this.btnEditar.Click += new System.EventHandler(this.btnEditar_Click);
-            // 
-            // dgvEventos
-            // 
-            this.dgvEventos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvEventos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEventos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvEventos.Location = new System.Drawing.Point(10, 60);
-            this.dgvEventos.Name = "dgvEventos";
-            this.dgvEventos.ReadOnly = true;
-            this.dgvEventos.RowTemplate.Height = 25;
-            this.dgvEventos.Size = new System.Drawing.Size(1172, 560);
-            this.dgvEventos.TabIndex = 1;
-            // 
-            // panelPesquisa
-            // 
-            this.panelPesquisa.BackColor = System.Drawing.Color.White;
-            this.panelPesquisa.Controls.Add(this.btnLimparFiltroPesquisa);
-            this.panelPesquisa.Controls.Add(this.btnPesquisar);
-            this.panelPesquisa.Controls.Add(this.mtbDataPesquisa);
-            this.panelPesquisa.Controls.Add(this.dtpDataPesquisa);
-            this.panelPesquisa.Controls.Add(this.txtPesquisar);
-            this.panelPesquisa.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelPesquisa.Location = new System.Drawing.Point(10, 10);
-            this.panelPesquisa.Name = "panelPesquisa";
-            this.panelPesquisa.Padding = new System.Windows.Forms.Padding(10);
-            this.panelPesquisa.Size = new System.Drawing.Size(1172, 50);
-            this.panelPesquisa.TabIndex = 0;
-            // 
-            // btnLimparFiltroPesquisa
-            // 
-            this.btnLimparFiltroPesquisa.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(117)))), ((int)(((byte)(117)))), ((int)(((byte)(117)))));
-            this.btnLimparFiltroPesquisa.FlatAppearance.BorderSize = 0;
-            this.btnLimparFiltroPesquisa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLimparFiltroPesquisa.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.btnLimparFiltroPesquisa.ForeColor = System.Drawing.Color.White;
-            this.btnLimparFiltroPesquisa.Location = new System.Drawing.Point(524, 12);
-            this.btnLimparFiltroPesquisa.Name = "btnLimparFiltroPesquisa";
-            this.btnLimparFiltroPesquisa.Size = new System.Drawing.Size(100, 25);
-            this.btnLimparFiltroPesquisa.TabIndex = 7;
-            this.btnLimparFiltroPesquisa.Text = "LIMPAR";
-            this.btnLimparFiltroPesquisa.UseVisualStyleBackColor = false;
-            this.btnLimparFiltroPesquisa.Click += new System.EventHandler(this.btnLimparFiltroPesquisa_Click);
-            // 
-            // btnPesquisar
-            // 
-            this.btnPesquisar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.btnPesquisar.FlatAppearance.BorderSize = 0;
-            this.btnPesquisar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPesquisar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnPesquisar.ForeColor = System.Drawing.Color.White;
-            this.btnPesquisar.Location = new System.Drawing.Point(418, 12);
-            this.btnPesquisar.Name = "btnPesquisar";
-            this.btnPesquisar.Size = new System.Drawing.Size(100, 25);
-            this.btnPesquisar.TabIndex = 4;
-            this.btnPesquisar.Text = "PESQUISAR";
-            this.btnPesquisar.UseVisualStyleBackColor = false;
-            this.btnPesquisar.Click += new System.EventHandler(this.btnPesquisar_Click);
-            // 
-            // mtbDataPesquisa
-            // 
-            this.mtbDataPesquisa.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mtbDataPesquisa.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.mtbDataPesquisa.Location = new System.Drawing.Point(296, 12);
-            this.mtbDataPesquisa.Mask = "00/00/0000";
-            this.mtbDataPesquisa.Name = "mtbDataPesquisa";
-            this.mtbDataPesquisa.Size = new System.Drawing.Size(100, 25);
-            this.mtbDataPesquisa.TabIndex = 2;
-            this.mtbDataPesquisa.ValidatingType = typeof(System.DateTime);
-            // 
-            // dtpDataPesquisa
-            // 
-            this.dtpDataPesquisa.CustomFormat = " ";
-            this.dtpDataPesquisa.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.dtpDataPesquisa.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpDataPesquisa.Location = new System.Drawing.Point(365, 12);
-            this.dtpDataPesquisa.Name = "dtpDataPesquisa";
-            this.dtpDataPesquisa.Size = new System.Drawing.Size(47, 25);
-            this.dtpDataPesquisa.TabIndex = 3;
-            // 
-            // txtPesquisar
-            // 
-            this.txtPesquisar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtPesquisar.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtPesquisar.Location = new System.Drawing.Point(10, 12);
-            this.txtPesquisar.Name = "txtPesquisar";
-            this.txtPesquisar.Size = new System.Drawing.Size(280, 25);
-            this.txtPesquisar.TabIndex = 1;
-            // 
             // tabVincular
             // 
             this.tabVincular.BackColor = System.Drawing.Color.White;
@@ -535,6 +395,175 @@ namespace GestorEvento.Views
             this.ddlEvento.TabIndex = 1;
             this.ddlEvento.SelectedIndexChanged += new System.EventHandler(this.ddlEvento_SelectedIndexChanged);
             // 
+            // tabLista
+            // 
+            this.tabLista.BackColor = System.Drawing.Color.White;
+            this.tabLista.Controls.Add(this.panelBotoes);
+            this.tabLista.Controls.Add(this.dgvEventos);
+            this.tabLista.Controls.Add(this.panelPesquisa);
+            this.tabLista.Location = new System.Drawing.Point(4, 26);
+            this.tabLista.Name = "tabLista";
+            this.tabLista.Padding = new System.Windows.Forms.Padding(10);
+            this.tabLista.Size = new System.Drawing.Size(1192, 630);
+            this.tabLista.TabIndex = 1;
+            this.tabLista.Text = "LISTA DE EVENTOS";
+            // 
+            // panelBotoes
+            // 
+            this.panelBotoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.panelBotoes.Controls.Add(this.btnAlternarStatusEvento);
+            this.panelBotoes.Controls.Add(this.btnDeletar);
+            this.panelBotoes.Controls.Add(this.btnEditar);
+            this.panelBotoes.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelBotoes.Location = new System.Drawing.Point(10, 570);
+            this.panelBotoes.Name = "panelBotoes";
+            this.panelBotoes.Padding = new System.Windows.Forms.Padding(10);
+            this.panelBotoes.Size = new System.Drawing.Size(1172, 50);
+            this.panelBotoes.TabIndex = 2;
+            // 
+            // btnAlternarStatusEvento
+            // 
+            this.btnAlternarStatusEvento.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
+            this.btnAlternarStatusEvento.FlatAppearance.BorderSize = 0;
+            this.btnAlternarStatusEvento.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAlternarStatusEvento.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnAlternarStatusEvento.ForeColor = System.Drawing.Color.White;
+            this.btnAlternarStatusEvento.Location = new System.Drawing.Point(116, 11);
+            this.btnAlternarStatusEvento.Name = "btnAlternarStatusEvento";
+            this.btnAlternarStatusEvento.Size = new System.Drawing.Size(180, 30);
+            this.btnAlternarStatusEvento.TabIndex = 5;
+            this.btnAlternarStatusEvento.Text = "ENCERRAR EVENTO";
+            this.btnAlternarStatusEvento.UseVisualStyleBackColor = false;
+            this.btnAlternarStatusEvento.Click += new System.EventHandler(this.btnAlternarStatusEvento_Click);
+            // 
+            // btnDeletar
+            // 
+            this.btnDeletar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
+            this.btnDeletar.FlatAppearance.BorderSize = 0;
+            this.btnDeletar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDeletar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnDeletar.ForeColor = System.Drawing.Color.White;
+            this.btnDeletar.Location = new System.Drawing.Point(302, 11);
+            this.btnDeletar.Name = "btnDeletar";
+            this.btnDeletar.Size = new System.Drawing.Size(100, 30);
+            this.btnDeletar.TabIndex = 4;
+            this.btnDeletar.Text = "DELETAR";
+            this.btnDeletar.UseVisualStyleBackColor = false;
+            this.btnDeletar.Click += new System.EventHandler(this.btnDeletar_Click);
+            // 
+            // btnEditar
+            // 
+            this.btnEditar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.btnEditar.FlatAppearance.BorderSize = 0;
+            this.btnEditar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEditar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnEditar.ForeColor = System.Drawing.Color.White;
+            this.btnEditar.Location = new System.Drawing.Point(10, 11);
+            this.btnEditar.Name = "btnEditar";
+            this.btnEditar.Size = new System.Drawing.Size(100, 30);
+            this.btnEditar.TabIndex = 3;
+            this.btnEditar.Text = "EDITAR";
+            this.btnEditar.UseVisualStyleBackColor = false;
+            this.btnEditar.Click += new System.EventHandler(this.btnEditar_Click);
+            // 
+            // dgvEventos
+            // 
+            this.dgvEventos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvEventos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvEventos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvEventos.Location = new System.Drawing.Point(10, 60);
+            this.dgvEventos.Name = "dgvEventos";
+            this.dgvEventos.ReadOnly = true;
+            this.dgvEventos.RowTemplate.Height = 25;
+            this.dgvEventos.Size = new System.Drawing.Size(1172, 560);
+            this.dgvEventos.TabIndex = 1;
+            // 
+            // panelPesquisa
+            // 
+            this.panelPesquisa.BackColor = System.Drawing.Color.White;
+            this.panelPesquisa.Controls.Add(this.cmbStatusPesquisa);
+            this.panelPesquisa.Controls.Add(this.btnLimparFiltroPesquisa);
+            this.panelPesquisa.Controls.Add(this.btnPesquisar);
+            this.panelPesquisa.Controls.Add(this.mtbDataPesquisa);
+            this.panelPesquisa.Controls.Add(this.dtpDataPesquisa);
+            this.panelPesquisa.Controls.Add(this.txtPesquisar);
+            this.panelPesquisa.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelPesquisa.Location = new System.Drawing.Point(10, 10);
+            this.panelPesquisa.Name = "panelPesquisa";
+            this.panelPesquisa.Padding = new System.Windows.Forms.Padding(10);
+            this.panelPesquisa.Size = new System.Drawing.Size(1172, 50);
+            this.panelPesquisa.TabIndex = 0;
+            // 
+            // cmbStatusPesquisa
+            // 
+            this.cmbStatusPesquisa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatusPesquisa.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cmbStatusPesquisa.FormattingEnabled = true;
+            this.cmbStatusPesquisa.Location = new System.Drawing.Point(418, 13);
+            this.cmbStatusPesquisa.Name = "cmbStatusPesquisa";
+            this.cmbStatusPesquisa.Size = new System.Drawing.Size(140, 25);
+            this.cmbStatusPesquisa.TabIndex = 8;
+            // 
+            // btnLimparFiltroPesquisa
+            // 
+            this.btnLimparFiltroPesquisa.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(117)))), ((int)(((byte)(117)))), ((int)(((byte)(117)))));
+            this.btnLimparFiltroPesquisa.FlatAppearance.BorderSize = 0;
+            this.btnLimparFiltroPesquisa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLimparFiltroPesquisa.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnLimparFiltroPesquisa.ForeColor = System.Drawing.Color.White;
+            this.btnLimparFiltroPesquisa.Location = new System.Drawing.Point(670, 13);
+            this.btnLimparFiltroPesquisa.Name = "btnLimparFiltroPesquisa";
+            this.btnLimparFiltroPesquisa.Size = new System.Drawing.Size(100, 25);
+            this.btnLimparFiltroPesquisa.TabIndex = 7;
+            this.btnLimparFiltroPesquisa.Text = "LIMPAR";
+            this.btnLimparFiltroPesquisa.UseVisualStyleBackColor = false;
+            this.btnLimparFiltroPesquisa.Click += new System.EventHandler(this.btnLimparFiltroPesquisa_Click);
+            // 
+            // btnPesquisar
+            // 
+            this.btnPesquisar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.btnPesquisar.FlatAppearance.BorderSize = 0;
+            this.btnPesquisar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPesquisar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnPesquisar.ForeColor = System.Drawing.Color.White;
+            this.btnPesquisar.Location = new System.Drawing.Point(564, 13);
+            this.btnPesquisar.Name = "btnPesquisar";
+            this.btnPesquisar.Size = new System.Drawing.Size(100, 25);
+            this.btnPesquisar.TabIndex = 4;
+            this.btnPesquisar.Text = "PESQUISAR";
+            this.btnPesquisar.UseVisualStyleBackColor = false;
+            this.btnPesquisar.Click += new System.EventHandler(this.btnPesquisar_Click);
+            // 
+            // mtbDataPesquisa
+            // 
+            this.mtbDataPesquisa.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.mtbDataPesquisa.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.mtbDataPesquisa.Location = new System.Drawing.Point(296, 12);
+            this.mtbDataPesquisa.Mask = "00/00/0000";
+            this.mtbDataPesquisa.Name = "mtbDataPesquisa";
+            this.mtbDataPesquisa.Size = new System.Drawing.Size(100, 25);
+            this.mtbDataPesquisa.TabIndex = 2;
+            this.mtbDataPesquisa.ValidatingType = typeof(System.DateTime);
+            // 
+            // dtpDataPesquisa
+            // 
+            this.dtpDataPesquisa.CustomFormat = " ";
+            this.dtpDataPesquisa.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.dtpDataPesquisa.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpDataPesquisa.Location = new System.Drawing.Point(365, 12);
+            this.dtpDataPesquisa.Name = "dtpDataPesquisa";
+            this.dtpDataPesquisa.Size = new System.Drawing.Size(47, 25);
+            this.dtpDataPesquisa.TabIndex = 3;
+            // 
+            // txtPesquisar
+            // 
+            this.txtPesquisar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPesquisar.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtPesquisar.Location = new System.Drawing.Point(10, 12);
+            this.txtPesquisar.Name = "txtPesquisar";
+            this.txtPesquisar.Size = new System.Drawing.Size(280, 25);
+            this.txtPesquisar.TabIndex = 1;
+            // 
             // FormEventos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -554,11 +583,6 @@ namespace GestorEvento.Views
             this.tabCadastro.ResumeLayout(false);
             this.tabCadastro.PerformLayout();
             this.panelBotoesCadastro.ResumeLayout(false);
-            this.tabLista.ResumeLayout(false);
-            this.panelBotoes.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvEventos)).EndInit();
-            this.panelPesquisa.ResumeLayout(false);
-            this.panelPesquisa.PerformLayout();
             this.tabVincular.ResumeLayout(false);
             this.panelVinculacao.ResumeLayout(false);
             this.splitContainer.Panel1.ResumeLayout(false);
@@ -569,6 +593,11 @@ namespace GestorEvento.Views
             ((System.ComponentModel.ISupportInitialize)(this.dgvProdutosVinculados)).EndInit();
             this.panelEventoSel.ResumeLayout(false);
             this.panelEventoSel.PerformLayout();
+            this.tabLista.ResumeLayout(false);
+            this.panelBotoes.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEventos)).EndInit();
+            this.panelPesquisa.ResumeLayout(false);
+            this.panelPesquisa.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -590,6 +619,7 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Button btnSalvar;
         private System.Windows.Forms.Button btnLimpar;
         private System.Windows.Forms.Panel panelPesquisa;
+        private System.Windows.Forms.ComboBox cmbStatusPesquisa;
         private System.Windows.Forms.TextBox txtPesquisar;
         private System.Windows.Forms.MaskedTextBox mtbDataPesquisa;
         private System.Windows.Forms.DateTimePicker dtpDataPesquisa;
@@ -599,6 +629,7 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Panel panelBotoesCadastro;
         private System.Windows.Forms.Button btnEditar;
         private System.Windows.Forms.Button btnDeletar;
+        private System.Windows.Forms.Button btnAlternarStatusEvento;
         private System.Windows.Forms.Button btnLimparFiltroPesquisa;
         private System.Windows.Forms.Panel panelVinculacao;
         private System.Windows.Forms.Panel panelBotoesVinculacao;

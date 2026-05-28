@@ -60,6 +60,33 @@ namespace GestorEvento.Views
                     _numeroCaixa = pontoVenda.NoPontoVenda;
                     _descricaoCaixa = pontoVenda.DsPontoVenda ?? "";
                     _eventoIdSelecionado = pontoVenda.IdEvento;
+
+                    if (!string.Equals(pontoVenda.CdStatus, "Aberto", StringComparison.OrdinalIgnoreCase))
+                    {
+                        DialogoCustomizado caixaFechado = new DialogoCustomizado(
+                            "Aviso",
+                            "Caixa fechado. Não é possível registrar venda.",
+                            TipoDialogo.Aviso,
+                            TipoButton.Ok
+                        );
+                        caixaFechado.ShowDialog();
+                        this.Close();
+                        return;
+                    }
+
+                    var evento = new EventoService().GetEventoById(_eventoIdSelecionado);
+                    if (evento != null && evento.IsEncerrado)
+                    {
+                        DialogoCustomizado bloqueado = new DialogoCustomizado(
+                            "Aviso",
+                            "Evento encerrado. Vendas não podem ser registradas.",
+                            TipoDialogo.Aviso,
+                            TipoButton.Ok
+                        );
+                        bloqueado.ShowDialog();
+                        this.Close();
+                        return;
+                    }
                     
                     // Concatenar número com descrição se houver
                     string textoDescricao = string.IsNullOrWhiteSpace(_descricaoCaixa) ? 
@@ -322,6 +349,33 @@ namespace GestorEvento.Views
         {
             try
             {
+                var pontoVendaAtual = _pontoVendaService.GetPontoVendaById(_caixaIdSelecionado);
+                if (pontoVendaAtual == null || !string.Equals(pontoVendaAtual.CdStatus, "Aberto", StringComparison.OrdinalIgnoreCase))
+                {
+                    DialogoCustomizado caixaFechado = new DialogoCustomizado(
+                        "Aviso",
+                        "Caixa fechado. Não é possível confirmar venda.",
+                        TipoDialogo.Aviso,
+                        TipoButton.Ok
+                    );
+                    caixaFechado.ShowDialog();
+                    return;
+                }
+
+                // Validação de status do evento no momento da confirmação
+                var eventoAtual = new EventoService().GetEventoById(_eventoIdSelecionado);
+                if (eventoAtual != null && eventoAtual.IsEncerrado)
+                {
+                    DialogoCustomizado eventoEncerrado = new DialogoCustomizado(
+                        "Aviso",
+                        "Evento encerrado. Vendas não podem ser registradas.",
+                        TipoDialogo.Aviso,
+                        TipoButton.Ok
+                    );
+                    eventoEncerrado.ShowDialog();
+                    return;
+                }
+
                 // Validação 1: Existe pelo menos um produto com qtde > 0?
                 var produtosComQtde = _produtosLinhas.Where(p => p.GetQuantidade() > 0).ToList();
                 if (produtosComQtde.Count == 0)

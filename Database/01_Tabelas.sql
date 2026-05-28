@@ -22,6 +22,8 @@ CREATE TABLE EVENTO (
     id_evento INT AUTO_INCREMENT PRIMARY KEY,
     nm_evento VARCHAR(255) NOT NULL,
     dt_evento DATE NOT NULL,
+    cd_status VARCHAR(20) NOT NULL DEFAULT 'Ativo',
+    dt_encerramento DATETIME NULL,
     CONSTRAINT UQ_EVENTO_NM_EVENTO_DT_EVENTO UNIQUE (nm_evento, dt_evento)
 );
 

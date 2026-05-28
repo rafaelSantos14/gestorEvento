@@ -71,6 +71,23 @@ namespace GestorEvento.Views
                 mtbData.Text = evento.DataEvento.ToString("dd/MM/yyyy");
                 dtpData.Format = DateTimePickerFormat.Short;
 
+                if (evento.IsEncerrado)
+                {
+                    txtNome.Enabled = false;
+                    dtpData.Enabled = false;
+                    mtbData.Enabled = false;
+                    btnSalvar.Enabled = false;
+
+                    DialogoCustomizado aviso = new DialogoCustomizado(
+                        "Informação",
+                        "Este evento está encerrado e não pode ser editado.",
+                        TipoDialogo.Informacao,
+                        TipoButton.Ok
+                    );
+                    aviso.ShowDialog();
+                    return;
+                }
+
                 // Focar no campo Nome para edição imediata
                 txtNome.Focus();
                 txtNome.SelectAll();

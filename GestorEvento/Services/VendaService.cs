@@ -12,12 +12,16 @@ namespace GestorEvento.Services
         private readonly VendaRepository _repository;
         private readonly RecebimentoRepository _recebimentoRepository;
         private readonly MovimentacaoRepository _movimentacaoRepository;
+        private readonly PontoVendaRepository _pontoVendaRepository;
+        private readonly EventoRepository _eventoRepository;
 
         public VendaService()
         {
             _repository = new VendaRepository();
             _recebimentoRepository = new RecebimentoRepository();
             _movimentacaoRepository = new MovimentacaoRepository();
+            _pontoVendaRepository = new PontoVendaRepository();
+            _eventoRepository = new EventoRepository();
         }
 
         /// <summary>
@@ -85,6 +89,11 @@ namespace GestorEvento.Services
 
             try
             {
+                if (!PodeRegistrarVendaNoEvento(venda.IdPontoVenda))
+                {
+                    return 0;
+                }
+
                 return _repository.RegistrarVenda(venda);
             }
             catch (Exception ex)
@@ -184,6 +193,9 @@ namespace GestorEvento.Services
                 if (recebimentos == null || recebimentos.Count == 0)
                     throw new ArgumentException("Venda deve ter pelo menos um recebimento");
 
+                if (!PodeRegistrarVendaNoEvento(venda.IdPontoVenda))
+                    throw new ArgumentException("Não é possível registrar venda para este caixa.");
+
                 // Abrir conexão e transação
                 connection = new MySqlConnection(Connection.GetConnection());
                 connection.Open();
@@ -248,6 +260,37 @@ namespace GestorEvento.Services
                     catch { }
                 }
             }
+        }
+
+        private bool PodeRegistrarVendaNoEvento(int idPontoVenda)
+        {
+            var pontoVenda = _pontoVendaRepository.GetPontoVendaById(idPontoVenda);
+            if (pontoVenda == null)
+            {
+                UiHelper.ExibirAviso("Aviso", "Ponto de venda não encontrado.");
+                return false;
+            }
+
+            if (!string.Equals(pontoVenda.CdStatus, "Aberto", StringComparison.OrdinalIgnoreCase))
+            {
+                UiHelper.ExibirAviso("Aviso", "Caixa fechado. Não é possível registrar venda.");
+                return false;
+            }
+
+            var evento = _eventoRepository.GetEventoById(pontoVenda.IdEvento);
+            if (evento == null)
+            {
+                UiHelper.ExibirAviso("Aviso", "Evento não encontrado.");
+                return false;
+            }
+
+            if (evento.IsEncerrado)
+            {
+                UiHelper.ExibirAviso("Aviso", "Evento encerrado. Não é possível registrar venda.");
+                return false;
+            }
+
+            return true;
         }
     }
 }

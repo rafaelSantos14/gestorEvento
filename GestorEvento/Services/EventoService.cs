@@ -54,12 +54,105 @@ namespace GestorEvento.Services
             }
         }
 
+        public bool EventoEstaEncerrado(int eventoId)
+        {
+            var evento = GetEventoById(eventoId);
+            if (evento == null)
+            {
+                return false;
+            }
+
+            return evento.IsEncerrado;
+        }
+
+        public bool EncerrarEvento(int eventoId)
+        {
+            if (eventoId <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do evento inválido");
+                return false;
+            }
+
+            try
+            {
+                var evento = _repository.GetEventoById(eventoId);
+                if (evento == null)
+                {
+                    UiHelper.ExibirAviso("Aviso", "Evento não encontrado.");
+                    return false;
+                }
+
+                if (evento.IsEncerrado)
+                {
+                    UiHelper.ExibirInfo("Informação", "Este evento já está encerrado.");
+                    return false;
+                }
+
+                int qtdeCaixasAbertos = _repository.GetQtdeCaixasAbertos(eventoId);
+                if (qtdeCaixasAbertos > 0)
+                {
+                    UiHelper.ExibirAviso("Aviso", "Não é possível encerrar o evento porque existem caixas abertos.");
+                    return false;
+                }
+
+                bool sucesso = _repository.EncerrarEvento(eventoId);
+                if (sucesso)
+                {
+                    UiHelper.ExibirSucesso("Sucesso", "Evento encerrado com sucesso!");
+                }
+
+                return sucesso;
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao encerrar evento: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool ReabrirEvento(int eventoId)
+        {
+            if (eventoId <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do evento inválido");
+                return false;
+            }
+
+            try
+            {
+                var evento = _repository.GetEventoById(eventoId);
+                if (evento == null)
+                {
+                    UiHelper.ExibirAviso("Aviso", "Evento não encontrado.");
+                    return false;
+                }
+
+                if (!evento.IsEncerrado)
+                {
+                    UiHelper.ExibirInfo("Informação", "Este evento já está ativo.");
+                    return false;
+                }
+
+                bool sucesso = _repository.ReabrirEvento(eventoId);
+                if (sucesso)
+                {
+                    UiHelper.ExibirSucesso("Sucesso", "Evento reaberto com sucesso!");
+                }
+
+                return sucesso;
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao reabrir evento: {ex.Message}");
+                return false;
+            }
+        }
+
         /// <summary>
         /// Cria um novo evento com validações
         /// </summary>
         public bool CreateEvento(Evento evento)
         {
-            // Validações
             if (evento == null)
             {
                 UiHelper.ExibirAviso("Aviso", "Evento não pode ser nulo");
@@ -78,10 +171,15 @@ namespace GestorEvento.Services
                 return false;
             }
 
-            if (evento.DataEvento == null || evento.DataEvento == default(DateTime))
+            if (evento.DataEvento == default(DateTime))
             {
                 UiHelper.ExibirAviso("Aviso", "Data do evento é obrigatória");
                 return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(evento.CdStatus))
+            {
+                evento.CdStatus = Evento.StatusAtivo;
             }
 
             try
@@ -90,7 +188,6 @@ namespace GestorEvento.Services
             }
             catch (MySqlException mySqlEx)
             {
-                // Erro 1062 = Duplicate Entry (chave única violada)
                 if (mySqlEx.Number == 1062)
                 {
                     UiHelper.ExibirAviso("Aviso", "Já existe um evento com esse nome na mesma data. Por favor, escolha outro nome ou data.");
@@ -113,7 +210,6 @@ namespace GestorEvento.Services
         /// </summary>
         public bool UpdateEvento(Evento evento)
         {
-            // Validações
             if (evento == null)
             {
                 UiHelper.ExibirAviso("Aviso", "Evento não pode ser nulo");
@@ -123,6 +219,12 @@ namespace GestorEvento.Services
             if (evento.Id <= 0)
             {
                 UiHelper.ExibirAviso("Aviso", "ID do evento inválido");
+                return false;
+            }
+
+            if (EventoEstaEncerrado(evento.Id))
+            {
+                UiHelper.ExibirAviso("Aviso", "Evento encerrado não pode ser editado.");
                 return false;
             }
 
@@ -138,7 +240,7 @@ namespace GestorEvento.Services
                 return false;
             }
 
-            if (evento.DataEvento == null || evento.DataEvento == default(DateTime))
+            if (evento.DataEvento == default(DateTime))
             {
                 UiHelper.ExibirAviso("Aviso", "Data do evento é obrigatória");
                 return false;
@@ -150,7 +252,6 @@ namespace GestorEvento.Services
             }
             catch (MySqlException mySqlEx)
             {
-                // Erro 1062 = Duplicate Entry (chave única violada)
                 if (mySqlEx.Number == 1062)
                 {
                     UiHelper.ExibirAviso("Aviso", "Já existe um evento com esse nome na mesma data. Por favor, escolha outro nome ou data.");
@@ -213,20 +314,23 @@ namespace GestorEvento.Services
         }
 
         /// <summary>
-        /// Busca eventos por nome e/ou data
+        /// Busca eventos por nome e/ou data e/ou status
         /// </summary>
-        public List<Evento> SearchEventosByNameAndDate(string nome, DateTime? data)
+        public List<Evento> SearchEventosByNameDateAndStatus(string nome, DateTime? data, string status = null)
         {
-            // Se ambos estão vazios, avisar
-            if (string.IsNullOrWhiteSpace(nome) && !data.HasValue)
+            bool semNome = string.IsNullOrWhiteSpace(nome);
+            bool semData = !data.HasValue;
+            bool semStatusUtil = string.IsNullOrWhiteSpace(status) || string.Equals(status, "Todos", StringComparison.OrdinalIgnoreCase);
+
+            if (semNome && semData && semStatusUtil)
             {
-                UiHelper.ExibirAviso("Aviso", "Preencha ao menos um filtro (nome ou data)");
+                UiHelper.ExibirAviso("Aviso", "Preencha ao menos um filtro (nome, data ou status)");
                 return new List<Evento>();
             }
 
             try
             {
-                return _repository.SearchEventosByNameAndDate(nome, data);
+                return _repository.SearchEventosByNameDateAndStatus(nome, data, status);
             }
             catch (Exception ex)
             {

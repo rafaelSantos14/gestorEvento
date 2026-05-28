@@ -12,6 +12,7 @@ namespace GestorEvento.Services
         private readonly VendaService _vendaService;
         private readonly RecebimentoService _recebimentoService;
         private readonly MovimentacaoService _movimentacaoService;
+        private readonly EventoRepository _eventoRepository;
 
         public PontoVendaService()
         {
@@ -19,6 +20,7 @@ namespace GestorEvento.Services
             _vendaService = new VendaService();
             _recebimentoService = new RecebimentoService();
             _movimentacaoService = new MovimentacaoService();
+            _eventoRepository = new EventoRepository();
         }
 
         /// <summary>
@@ -40,6 +42,19 @@ namespace GestorEvento.Services
 
             try
             {
+                var evento = _eventoRepository.GetEventoById(eventoId);
+                if (evento == null)
+                {
+                    UiHelper.ExibirAviso("Aviso", "Evento não encontrado.");
+                    return 0;
+                }
+
+                if (evento.IsEncerrado)
+                {
+                    UiHelper.ExibirAviso("Aviso", "Evento encerrado. Não é possível abrir caixa.");
+                    return 0;
+                }
+
                 return _repository.AbrirPontoVenda(eventoId, valorInicial, descricao);
             }
             catch (Exception ex)

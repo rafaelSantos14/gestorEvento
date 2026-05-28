@@ -16,6 +16,7 @@ namespace GestorEvento.Views
     {
         private int _eventoIdSelecionado = 0;
         private PontoVendaService _pontoVendaService;
+        private EventoService _eventoService;
         private static FormPDV _formPDVGlobal = null;
 
         public FormSelecionarPontoVenda(int eventoId)
@@ -23,6 +24,7 @@ namespace GestorEvento.Views
             InitializeComponent();
             _eventoIdSelecionado = eventoId;
             _pontoVendaService = new PontoVendaService();
+            _eventoService = new EventoService();
             
             // Configurar grid
             ConfigurarDataGridView();
@@ -210,6 +212,18 @@ namespace GestorEvento.Views
                 // Ação: Registrar Venda
                 if (e.ColumnIndex == dgvCaixas.Columns["RegistrarVenda"].Index)
                 {
+                    if (_eventoService.EventoEstaEncerrado(_eventoIdSelecionado))
+                    {
+                        DialogoCustomizado aviso = new DialogoCustomizado(
+                            "Aviso",
+                            "Evento encerrado. Não é possível registrar venda.",
+                            TipoDialogo.Aviso,
+                            TipoButton.Ok
+                        );
+                        aviso.ShowDialog();
+                        return;
+                    }
+
                     // Verificar se FormPDV já está aberta
                     if (_formPDVGlobal != null && !_formPDVGlobal.IsDisposed)
                     {
@@ -254,6 +268,18 @@ namespace GestorEvento.Views
                 // Ação: Movimentação Caixa
                 else if (e.ColumnIndex == dgvCaixas.Columns["Movimentacao"].Index)
                 {
+                    if (_eventoService.EventoEstaEncerrado(_eventoIdSelecionado))
+                    {
+                        DialogoCustomizado aviso = new DialogoCustomizado(
+                            "Aviso",
+                            "Evento encerrado. Movimentações estão bloqueadas para este evento.",
+                            TipoDialogo.Aviso,
+                            TipoButton.Ok
+                        );
+                        aviso.ShowDialog();
+                        return;
+                    }
+
                     // Abrir FormMovimentacaoCaixa como dialog
                     FormMovimentacaoCaixa formMovimentacao = new FormMovimentacaoCaixa(caixaId);
                     formMovimentacao.ShowDialog();

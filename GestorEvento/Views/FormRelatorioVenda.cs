@@ -67,6 +67,23 @@ namespace GestorEvento.Views
                 cmbEventoResultados.DataSource = null;
                 cmbEventoResultados.Refresh();
             }
+            else if (textoBusca == "%")
+            {
+                // % sozinho funciona como curinga para listar todos os eventos
+                var todosEventos = _eventosCompletos
+                    .Select(evento => new
+                    {
+                        Id = evento.Id,
+                        DisplayText = $"{evento.Nome} - {evento.DataEvento:dd/MM/yyyy}"
+                    })
+                    .ToList();
+
+                cmbEventoResultados.DataSource = todosEventos;
+                cmbEventoResultados.DisplayMember = "DisplayText";
+                cmbEventoResultados.ValueMember = "Id";
+                cmbEventoResultados.Refresh();
+                cmbEventoResultados.Invalidate();
+            }
             else
             {
                 // Filtrar eventos que correspondem ao texto digitado

@@ -27,26 +27,20 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = "SELECT id_evento, nm_evento, dt_evento FROM EVENTO ORDER BY dt_evento DESC";
+                    string query = @"SELECT id_evento, nm_evento, dt_evento,
+                                            IFNULL(cd_status, 'Ativo') AS cd_status,
+                                            dt_encerramento
+                                     FROM EVENTO
+                                     ORDER BY dt_evento DESC";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        using (MySqlDataReader reader = command.ExecuteReader())
+                        while (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                var evento = new Evento
-                                {
-                                    Id = Convert.ToInt32(reader["id_evento"]),
-                                    Nome = reader["nm_evento"].ToString(),
-                                    DataEvento = Convert.ToDateTime(reader["dt_evento"])
-                                };
-                                eventos.Add(evento);
-                            }
+                            eventos.Add(MapEvento(reader));
                         }
                     }
-
-                    connection.Close();
                 }
             }
             catch (Exception ex)
@@ -68,7 +62,11 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = "SELECT id_evento, nm_evento, dt_evento FROM EVENTO WHERE id_evento = @id";
+                    string query = @"SELECT id_evento, nm_evento, dt_evento,
+                                            IFNULL(cd_status, 'Ativo') AS cd_status,
+                                            dt_encerramento
+                                     FROM EVENTO
+                                     WHERE id_evento = @id";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
@@ -78,20 +76,10 @@ namespace GestorEvento.Repositories
                         {
                             if (reader.Read())
                             {
-                                var evento = new Evento
-                                {
-                                    Id = Convert.ToInt32(reader["id_evento"]),
-                                    Nome = reader["nm_evento"].ToString(),
-                                    DataEvento = Convert.ToDateTime(reader["dt_evento"])
-                                };
-
-                                connection.Close();
-                                return evento;
+                                return MapEvento(reader);
                             }
                         }
                     }
-
-                    connection.Close();
                 }
             }
             catch (Exception ex)
@@ -113,17 +101,17 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = "INSERT INTO EVENTO (nm_evento, dt_evento) VALUES (@nome, @data)";
+                    string query = "INSERT INTO EVENTO (nm_evento, dt_evento, cd_status, dt_encerramento) VALUES (@nome, @data, @status, @dtEncerramento)";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@nome", evento.Nome);
                         command.Parameters.AddWithValue("@data", evento.DataEvento);
+                        command.Parameters.AddWithValue("@status", string.IsNullOrWhiteSpace(evento.CdStatus) ? Evento.StatusAtivo : evento.CdStatus);
+                        command.Parameters.AddWithValue("@dtEncerramento", (object)evento.DtEncerramento ?? DBNull.Value);
 
                         command.ExecuteNonQuery();
                     }
-
-                    connection.Close();
                 }
 
                 return true;
@@ -155,8 +143,6 @@ namespace GestorEvento.Repositories
 
                         command.ExecuteNonQuery();
                     }
-
-                    connection.Close();
                 }
 
                 return true;
@@ -185,8 +171,6 @@ namespace GestorEvento.Repositories
                         command.Parameters.AddWithValue("@id", id);
                         command.ExecuteNonQuery();
                     }
-
-                    connection.Close();
                 }
 
                 return true;
@@ -210,7 +194,12 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = "SELECT id_evento, nm_evento, dt_evento FROM EVENTO WHERE UPPER(nm_evento) LIKE UPPER(@nome) ORDER BY dt_evento DESC";
+                    string query = @"SELECT id_evento, nm_evento, dt_evento,
+                                            IFNULL(cd_status, 'Ativo') AS cd_status,
+                                            dt_encerramento
+                                     FROM EVENTO
+                                     WHERE UPPER(nm_evento) LIKE UPPER(@nome)
+                                     ORDER BY dt_evento DESC";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
@@ -220,18 +209,10 @@ namespace GestorEvento.Repositories
                         {
                             while (reader.Read())
                             {
-                                var evento = new Evento
-                                {
-                                    Id = Convert.ToInt32(reader["id_evento"]),
-                                    Nome = reader["nm_evento"].ToString(),
-                                    DataEvento = Convert.ToDateTime(reader["dt_evento"])
-                                };
-                                eventos.Add(evento);
+                                eventos.Add(MapEvento(reader));
                             }
                         }
                     }
-
-                    connection.Close();
                 }
             }
             catch (Exception ex)
@@ -243,9 +224,9 @@ namespace GestorEvento.Repositories
         }
 
         /// <summary>
-        /// Busca eventos por nome e/ou data
+        /// Busca eventos por nome e/ou data e/ou status
         /// </summary>
-        public List<Evento> SearchEventosByNameAndDate(string nome, DateTime? data)
+        public List<Evento> SearchEventosByNameDateAndStatus(string nome, DateTime? data, string status = null)
         {
             var eventos = new List<Evento>();
 
@@ -255,20 +236,27 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = "SELECT id_evento, nm_evento, dt_evento FROM EVENTO WHERE 1=1";
-                    
-                    // Adiciona filtro de nome se preenchido
+                    string query = @"SELECT id_evento, nm_evento, dt_evento,
+                                            IFNULL(cd_status, 'Ativo') AS cd_status,
+                                            dt_encerramento
+                                     FROM EVENTO
+                                     WHERE 1=1";
+
                     if (!string.IsNullOrWhiteSpace(nome))
                     {
                         query += " AND UPPER(nm_evento) LIKE UPPER(@nome)";
                     }
-                    
-                    // Adiciona filtro de data se preenchido
+
                     if (data.HasValue)
                     {
                         query += " AND DATE(dt_evento) = @data";
                     }
-                    
+
+                    if (!string.IsNullOrWhiteSpace(status) && !string.Equals(status, "Todos", StringComparison.OrdinalIgnoreCase))
+                    {
+                        query += " AND IFNULL(cd_status, 'Ativo') = @status";
+                    }
+
                     query += " ORDER BY dt_evento DESC";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -277,27 +265,25 @@ namespace GestorEvento.Repositories
                         {
                             command.Parameters.AddWithValue("@nome", $"%{nome}%");
                         }
-                        
+
                         if (data.HasValue)
                         {
                             command.Parameters.AddWithValue("@data", data.Value.Date);
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(status) && !string.Equals(status, "Todos", StringComparison.OrdinalIgnoreCase))
+                        {
+                            command.Parameters.AddWithValue("@status", status);
                         }
 
                         using (MySqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                var evento = new Evento
-                                {
-                                    Id = Convert.ToInt32(reader["id_evento"]),
-                                    Nome = reader["nm_evento"].ToString(),
-                                    DataEvento = Convert.ToDateTime(reader["dt_evento"])
-                                };
-                                eventos.Add(evento);
+                                eventos.Add(MapEvento(reader));
                             }
                         }
                     }
-                    connection.Close();
                 }
             }
             catch (Exception ex)
@@ -306,6 +292,85 @@ namespace GestorEvento.Repositories
             }
 
             return eventos;
+        }
+
+        public int GetQtdeCaixasAbertos(int eventoId)
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"SELECT COUNT(1)
+                                     FROM PONTO_VENDA
+                                     WHERE id_evento = @eventoId
+                                       AND cd_status = 'Aberto'";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@eventoId", eventoId);
+                        return Convert.ToInt32(command.ExecuteScalar());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao validar caixas abertos do evento: {ex.Message}", ex);
+            }
+        }
+
+        public bool UpdateStatusEvento(int eventoId, string novoStatus, DateTime? dtEncerramento)
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"UPDATE EVENTO
+                                     SET cd_status = @status,
+                                         dt_encerramento = @dtEncerramento
+                                     WHERE id_evento = @id";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@status", novoStatus);
+                        command.Parameters.AddWithValue("@dtEncerramento", (object)dtEncerramento ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@id", eventoId);
+
+                        return command.ExecuteNonQuery() > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao atualizar status do evento: {ex.Message}", ex);
+            }
+        }
+
+        public bool EncerrarEvento(int eventoId)
+        {
+            return UpdateStatusEvento(eventoId, Evento.StatusEncerrado, DateTime.Now);
+        }
+
+        public bool ReabrirEvento(int eventoId)
+        {
+            return UpdateStatusEvento(eventoId, Evento.StatusAtivo, null);
+        }
+
+        private Evento MapEvento(MySqlDataReader reader)
+        {
+            return new Evento
+            {
+                Id = Convert.ToInt32(reader["id_evento"]),
+                Nome = reader["nm_evento"].ToString(),
+                DataEvento = Convert.ToDateTime(reader["dt_evento"]),
+                CdStatus = reader["cd_status"].ToString(),
+                DtEncerramento = reader["dt_encerramento"] != DBNull.Value
+                    ? Convert.ToDateTime(reader["dt_encerramento"])
+                    : (DateTime?)null
+            };
         }
     }
 }
