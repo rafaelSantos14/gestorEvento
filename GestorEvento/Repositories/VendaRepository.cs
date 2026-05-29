@@ -365,5 +365,63 @@ namespace GestorEvento.Repositories
                 throw new Exception($"Erro ao obter total de vendas por evento: {ex.Message}", ex);
             }
         }
+
+        /// <summary>
+        /// Obtém resumo de produtos vendidos por evento, agrupado por produto e valor unitário
+        /// </summary>
+        public List<(string nomeProduto, int quantidadeVendida, int quantidadeDisponivel, decimal precoUnitario, decimal valorTotalVendido)> ObterResumoProdutosVendidosPorEvento(int idEvento)
+        {
+            var produtos = new List<(string, int, int, decimal, decimal)>();
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"SELECT p.nm_produto,
+                                            SUM(iv.qtde_vendida) AS qtde_vendida,
+                                            (pe.qtde_produto - COALESCE(pe.qtde_vendida, 0)) AS qtde_disponivel,
+                                            iv.vl_unitario,
+                                            SUM(iv.vl_subtotal) AS vl_total_vendido
+                                     FROM ITEM_VENDA iv
+                                     INNER JOIN VENDA v ON v.id_venda = iv.id_venda
+                                     INNER JOIN PONTO_VENDA pv ON pv.id_ponto_venda = v.id_ponto_venda
+                                     INNER JOIN PRODUTO_EVENTO pe ON pe.id_produto_evento = iv.id_produto_evento
+                                     INNER JOIN PRODUTO p ON p.id_produto = pe.id_produto
+                                     WHERE pv.id_evento = @idEvento
+                                       AND v.cd_status = 'Concluida'
+                                     GROUP BY iv.vl_unitario, pe.id_produto_evento
+                                     ORDER BY p.nm_produto ASC, iv.vl_unitario ASC";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@idEvento", idEvento);
+
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string nomeProduto = reader["nm_produto"].ToString();
+                                int quantidadeVendida = Convert.ToInt32(reader["qtde_vendida"]);
+                                int quantidadeDisponivel = Convert.ToInt32(reader["qtde_disponivel"]);
+                                decimal precoUnitario = Convert.ToDecimal(reader["vl_unitario"]);
+                                decimal valorTotalVendido = Convert.ToDecimal(reader["vl_total_vendido"]);
+
+                                produtos.Add((nomeProduto, quantidadeVendida, quantidadeDisponivel, precoUnitario, valorTotalVendido));
+                            }
+                        }
+                    }
+
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter resumo de produtos vendidos por evento: {ex.Message}", ex);
+            }
+
+            return produtos;
+        }
     }
 }

@@ -2,17 +2,10 @@ using GestorEvento.Components;
 
 namespace GestorEvento.Views
 {
-    partial class FormRelatorioVenda
+    partial class FormRelatorioCaixa
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -24,10 +17,6 @@ namespace GestorEvento.Views
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.panelTitulo = new System.Windows.Forms.Panel();
@@ -42,14 +31,17 @@ namespace GestorEvento.Views
             this.lblResultados = new System.Windows.Forms.Label();
             this.panelCards = new System.Windows.Forms.Panel();
             this.pnlCardTroco = new GestorEvento.Components.ModernCard();
-            this.lblTrocoValor = new System.Windows.Forms.Label();
-            this.lblTrocoLabel = new System.Windows.Forms.Label();
+            this.lblTrocoTotalValor = new System.Windows.Forms.Label();
+            this.lblTrocoTotalLabel = new System.Windows.Forms.Label();
+            this.pnlCardTicket = new GestorEvento.Components.ModernCard();
+            this.lblTicketMedioValor = new System.Windows.Forms.Label();
+            this.lblTicketMedioLabel = new System.Windows.Forms.Label();
             this.pnlCardValor = new GestorEvento.Components.ModernCard();
             this.lblValorVendidoValor = new System.Windows.Forms.Label();
             this.lblValorVendidoLabel = new System.Windows.Forms.Label();
-            this.pnlCardQtde = new GestorEvento.Components.ModernCard();
-            this.lblQtdeValor = new System.Windows.Forms.Label();
-            this.lblQtdeLabel = new System.Windows.Forms.Label();
+            this.pnlCardCaixas = new GestorEvento.Components.ModernCard();
+            this.lblCaixasValor = new System.Windows.Forms.Label();
+            this.lblCaixasLabel = new System.Windows.Forms.Label();
             this.panelGraficos = new System.Windows.Forms.Panel();
             this.panelGraficoPizza = new System.Windows.Forms.Panel();
             this.lblGraficoPizza = new System.Windows.Forms.Label();
@@ -57,20 +49,21 @@ namespace GestorEvento.Views
             this.panelGraficoBarras = new System.Windows.Forms.Panel();
             this.lblGraficoBarras = new System.Windows.Forms.Label();
             this.chartBarras = new LiveCharts.WinForms.CartesianChart();
-            this.panelProdutos = new System.Windows.Forms.Panel();
-            this.dgvProdutosVendidos = new System.Windows.Forms.DataGridView();
-            this.lblProdutosVendidos = new System.Windows.Forms.Label();
+            this.panelResumo = new System.Windows.Forms.Panel();
+            this.dgvResumoCaixas = new System.Windows.Forms.DataGridView();
+            this.lblResumo = new System.Windows.Forms.Label();
             this.panelTitulo.SuspendLayout();
             this.panelFiltro.SuspendLayout();
             this.panelCards.SuspendLayout();
             this.pnlCardTroco.SuspendLayout();
+            this.pnlCardTicket.SuspendLayout();
             this.pnlCardValor.SuspendLayout();
-            this.pnlCardQtde.SuspendLayout();
+            this.pnlCardCaixas.SuspendLayout();
             this.panelGraficos.SuspendLayout();
             this.panelGraficoPizza.SuspendLayout();
             this.panelGraficoBarras.SuspendLayout();
-            this.panelProdutos.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvProdutosVendidos)).BeginInit();
+            this.panelResumo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResumoCaixas)).BeginInit();
             this.SuspendLayout();
             // 
             // panelTitulo
@@ -96,7 +89,7 @@ namespace GestorEvento.Views
             this.btnFechar.Location = new System.Drawing.Point(910, 0);
             this.btnFechar.Name = "btnFechar";
             this.btnFechar.Size = new System.Drawing.Size(45, 50);
-            this.btnFechar.TabIndex = 4;
+            this.btnFechar.TabIndex = 3;
             this.btnFechar.Text = "✕";
             this.btnFechar.UseVisualStyleBackColor = false;
             this.btnFechar.Click += new System.EventHandler(this.btnFechar_Click);
@@ -112,7 +105,7 @@ namespace GestorEvento.Views
             this.btnMinimizar.Location = new System.Drawing.Point(955, 0);
             this.btnMinimizar.Name = "btnMinimizar";
             this.btnMinimizar.Size = new System.Drawing.Size(45, 50);
-            this.btnMinimizar.TabIndex = 3;
+            this.btnMinimizar.TabIndex = 2;
             this.btnMinimizar.Text = "−";
             this.btnMinimizar.UseVisualStyleBackColor = false;
             this.btnMinimizar.Click += new System.EventHandler(this.btnMinimizar_Click);
@@ -124,9 +117,9 @@ namespace GestorEvento.Views
             this.lblTitulo.ForeColor = System.Drawing.Color.White;
             this.lblTitulo.Location = new System.Drawing.Point(15, 12);
             this.lblTitulo.Name = "lblTitulo";
-            this.lblTitulo.Size = new System.Drawing.Size(222, 25);
+            this.lblTitulo.Size = new System.Drawing.Size(306, 25);
             this.lblTitulo.TabIndex = 0;
-            this.lblTitulo.Text = "RELATÓRIO DE VENDAS";
+            this.lblTitulo.Text = "RELATÓRIO DE CAIXAS (PDV)";
             // 
             // panelFiltro
             // 
@@ -153,7 +146,7 @@ namespace GestorEvento.Views
             this.btnAtualizar.Location = new System.Drawing.Point(473, 30);
             this.btnAtualizar.Name = "btnAtualizar";
             this.btnAtualizar.Size = new System.Drawing.Size(120, 35);
-            this.btnAtualizar.TabIndex = 2;
+            this.btnAtualizar.TabIndex = 3;
             this.btnAtualizar.Text = "Atualizar";
             this.btnAtualizar.UseVisualStyleBackColor = false;
             this.btnAtualizar.Click += new System.EventHandler(this.BtnAtualizar_Click);
@@ -197,15 +190,16 @@ namespace GestorEvento.Views
             this.lblResultados.Location = new System.Drawing.Point(15, 53);
             this.lblResultados.Name = "lblResultados";
             this.lblResultados.Size = new System.Drawing.Size(60, 19);
-            this.lblResultados.TabIndex = 0;
+            this.lblResultados.TabIndex = 4;
             this.lblResultados.Text = "Eventos:";
             // 
             // panelCards
             // 
             this.panelCards.BackColor = System.Drawing.Color.White;
             this.panelCards.Controls.Add(this.pnlCardTroco);
+            this.panelCards.Controls.Add(this.pnlCardTicket);
             this.panelCards.Controls.Add(this.pnlCardValor);
-            this.panelCards.Controls.Add(this.pnlCardQtde);
+            this.panelCards.Controls.Add(this.pnlCardCaixas);
             this.panelCards.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelCards.Location = new System.Drawing.Point(0, 150);
             this.panelCards.Name = "panelCards";
@@ -217,37 +211,73 @@ namespace GestorEvento.Views
             // 
             this.pnlCardTroco.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(230)))));
             this.pnlCardTroco.BorderRadius = 12;
-            this.pnlCardTroco.Controls.Add(this.lblTrocoValor);
-            this.pnlCardTroco.Controls.Add(this.lblTrocoLabel);
+            this.pnlCardTroco.Controls.Add(this.lblTrocoTotalValor);
+            this.pnlCardTroco.Controls.Add(this.lblTrocoTotalLabel);
             this.pnlCardTroco.ForeColor = System.Drawing.Color.Black;
-            this.pnlCardTroco.Location = new System.Drawing.Point(690, 20);
+            this.pnlCardTroco.Location = new System.Drawing.Point(496, 20);
             this.pnlCardTroco.Name = "pnlCardTroco";
             this.pnlCardTroco.ShadowColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.pnlCardTroco.ShadowSize = 4;
-            this.pnlCardTroco.Size = new System.Drawing.Size(290, 100);
-            this.pnlCardTroco.TabIndex = 0;
+            this.pnlCardTroco.Size = new System.Drawing.Size(226, 100);
+            this.pnlCardTroco.TabIndex = 2;
             // 
-            // lblTrocoValor
+            // lblTrocoTotalValor
             // 
-            this.lblTrocoValor.AutoSize = true;
-            this.lblTrocoValor.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblTrocoValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(140)))), ((int)(((byte)(0)))));
-            this.lblTrocoValor.Location = new System.Drawing.Point(10, 45);
-            this.lblTrocoValor.Name = "lblTrocoValor";
-            this.lblTrocoValor.Size = new System.Drawing.Size(69, 37);
-            this.lblTrocoValor.TabIndex = 1;
-            this.lblTrocoValor.Text = "R$ -";
+            this.lblTrocoTotalValor.AutoSize = true;
+            this.lblTrocoTotalValor.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
+            this.lblTrocoTotalValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(140)))), ((int)(((byte)(0)))));
+            this.lblTrocoTotalValor.Location = new System.Drawing.Point(10, 45);
+            this.lblTrocoTotalValor.Name = "lblTrocoTotalValor";
+            this.lblTrocoTotalValor.Size = new System.Drawing.Size(69, 37);
+            this.lblTrocoTotalValor.TabIndex = 1;
+            this.lblTrocoTotalValor.Text = "R$ -";
             // 
-            // lblTrocoLabel
+            // lblTrocoTotalLabel
             // 
-            this.lblTrocoLabel.AutoSize = true;
-            this.lblTrocoLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblTrocoLabel.ForeColor = System.Drawing.Color.DarkGray;
-            this.lblTrocoLabel.Location = new System.Drawing.Point(10, 10);
-            this.lblTrocoLabel.Name = "lblTrocoLabel";
-            this.lblTrocoLabel.Size = new System.Drawing.Size(110, 19);
-            this.lblTrocoLabel.TabIndex = 0;
-            this.lblTrocoLabel.Text = "Valor Total Troco";
+            this.lblTrocoTotalLabel.AutoSize = true;
+            this.lblTrocoTotalLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblTrocoTotalLabel.ForeColor = System.Drawing.Color.DarkGray;
+            this.lblTrocoTotalLabel.Location = new System.Drawing.Point(10, 10);
+            this.lblTrocoTotalLabel.Name = "lblTrocoTotalLabel";
+            this.lblTrocoTotalLabel.Size = new System.Drawing.Size(78, 19);
+            this.lblTrocoTotalLabel.TabIndex = 0;
+            this.lblTrocoTotalLabel.Text = "Total Troco";
+            // 
+            // pnlCardTicket
+            // 
+            this.pnlCardTicket.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(235)))), ((int)(((byte)(255)))));
+            this.pnlCardTicket.BorderRadius = 12;
+            this.pnlCardTicket.Controls.Add(this.lblTicketMedioValor);
+            this.pnlCardTicket.Controls.Add(this.lblTicketMedioLabel);
+            this.pnlCardTicket.ForeColor = System.Drawing.Color.Black;
+            this.pnlCardTicket.Location = new System.Drawing.Point(754, 20);
+            this.pnlCardTicket.Name = "pnlCardTicket";
+            this.pnlCardTicket.ShadowColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.pnlCardTicket.ShadowSize = 4;
+            this.pnlCardTicket.Size = new System.Drawing.Size(226, 100);
+            this.pnlCardTicket.TabIndex = 3;
+            // 
+            // lblTicketMedioValor
+            // 
+            this.lblTicketMedioValor.AutoSize = true;
+            this.lblTicketMedioValor.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
+            this.lblTicketMedioValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(31)))), ((int)(((byte)(162)))));
+            this.lblTicketMedioValor.Location = new System.Drawing.Point(10, 45);
+            this.lblTicketMedioValor.Name = "lblTicketMedioValor";
+            this.lblTicketMedioValor.Size = new System.Drawing.Size(64, 32);
+            this.lblTicketMedioValor.TabIndex = 1;
+            this.lblTicketMedioValor.Text = "R$ -";
+            // 
+            // lblTicketMedioLabel
+            // 
+            this.lblTicketMedioLabel.AutoSize = true;
+            this.lblTicketMedioLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblTicketMedioLabel.ForeColor = System.Drawing.Color.DarkGray;
+            this.lblTicketMedioLabel.Location = new System.Drawing.Point(10, 10);
+            this.lblTicketMedioLabel.Name = "lblTicketMedioLabel";
+            this.lblTicketMedioLabel.Size = new System.Drawing.Size(89, 19);
+            this.lblTicketMedioLabel.TabIndex = 0;
+            this.lblTicketMedioLabel.Text = "Ticket Médio";
             // 
             // pnlCardValor
             // 
@@ -256,12 +286,12 @@ namespace GestorEvento.Views
             this.pnlCardValor.Controls.Add(this.lblValorVendidoValor);
             this.pnlCardValor.Controls.Add(this.lblValorVendidoLabel);
             this.pnlCardValor.ForeColor = System.Drawing.Color.Black;
-            this.pnlCardValor.Location = new System.Drawing.Point(355, 20);
+            this.pnlCardValor.Location = new System.Drawing.Point(258, 20);
             this.pnlCardValor.Name = "pnlCardValor";
             this.pnlCardValor.ShadowColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.pnlCardValor.ShadowSize = 4;
-            this.pnlCardValor.Size = new System.Drawing.Size(290, 100);
-            this.pnlCardValor.TabIndex = 0;
+            this.pnlCardValor.Size = new System.Drawing.Size(226, 100);
+            this.pnlCardValor.TabIndex = 1;
             // 
             // lblValorVendidoValor
             // 
@@ -285,41 +315,41 @@ namespace GestorEvento.Views
             this.lblValorVendidoLabel.TabIndex = 0;
             this.lblValorVendidoLabel.Text = "Valor Total Vendido";
             // 
-            // pnlCardQtde
+            // pnlCardCaixas
             // 
-            this.pnlCardQtde.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(240)))), ((int)(((byte)(255)))));
-            this.pnlCardQtde.BorderRadius = 12;
-            this.pnlCardQtde.Controls.Add(this.lblQtdeValor);
-            this.pnlCardQtde.Controls.Add(this.lblQtdeLabel);
-            this.pnlCardQtde.ForeColor = System.Drawing.Color.Black;
-            this.pnlCardQtde.Location = new System.Drawing.Point(20, 20);
-            this.pnlCardQtde.Name = "pnlCardQtde";
-            this.pnlCardQtde.ShadowColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.pnlCardQtde.ShadowSize = 4;
-            this.pnlCardQtde.Size = new System.Drawing.Size(290, 100);
-            this.pnlCardQtde.TabIndex = 0;
+            this.pnlCardCaixas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(240)))), ((int)(((byte)(255)))));
+            this.pnlCardCaixas.BorderRadius = 12;
+            this.pnlCardCaixas.Controls.Add(this.lblCaixasValor);
+            this.pnlCardCaixas.Controls.Add(this.lblCaixasLabel);
+            this.pnlCardCaixas.ForeColor = System.Drawing.Color.Black;
+            this.pnlCardCaixas.Location = new System.Drawing.Point(20, 20);
+            this.pnlCardCaixas.Name = "pnlCardCaixas";
+            this.pnlCardCaixas.ShadowColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.pnlCardCaixas.ShadowSize = 4;
+            this.pnlCardCaixas.Size = new System.Drawing.Size(226, 100);
+            this.pnlCardCaixas.TabIndex = 0;
             // 
-            // lblQtdeValor
+            // lblCaixasValor
             // 
-            this.lblQtdeValor.AutoSize = true;
-            this.lblQtdeValor.Font = new System.Drawing.Font("Segoe UI", 28F, System.Drawing.FontStyle.Bold);
-            this.lblQtdeValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.lblQtdeValor.Location = new System.Drawing.Point(10, 40);
-            this.lblQtdeValor.Name = "lblQtdeValor";
-            this.lblQtdeValor.Size = new System.Drawing.Size(37, 51);
-            this.lblQtdeValor.TabIndex = 1;
-            this.lblQtdeValor.Text = "-";
+            this.lblCaixasValor.AutoSize = true;
+            this.lblCaixasValor.Font = new System.Drawing.Font("Segoe UI", 28F, System.Drawing.FontStyle.Bold);
+            this.lblCaixasValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.lblCaixasValor.Location = new System.Drawing.Point(10, 40);
+            this.lblCaixasValor.Name = "lblCaixasValor";
+            this.lblCaixasValor.Size = new System.Drawing.Size(37, 51);
+            this.lblCaixasValor.TabIndex = 1;
+            this.lblCaixasValor.Text = "-";
             // 
-            // lblQtdeLabel
+            // lblCaixasLabel
             // 
-            this.lblQtdeLabel.AutoSize = true;
-            this.lblQtdeLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblQtdeLabel.ForeColor = System.Drawing.Color.DarkGray;
-            this.lblQtdeLabel.Location = new System.Drawing.Point(10, 10);
-            this.lblQtdeLabel.Name = "lblQtdeLabel";
-            this.lblQtdeLabel.Size = new System.Drawing.Size(181, 19);
-            this.lblQtdeLabel.TabIndex = 0;
-            this.lblQtdeLabel.Text = "Quantidade Total de Vendas";
+            this.lblCaixasLabel.AutoSize = true;
+            this.lblCaixasLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblCaixasLabel.ForeColor = System.Drawing.Color.DarkGray;
+            this.lblCaixasLabel.Location = new System.Drawing.Point(10, 10);
+            this.lblCaixasLabel.Name = "lblCaixasLabel";
+            this.lblCaixasLabel.Size = new System.Drawing.Size(152, 19);
+            this.lblCaixasLabel.TabIndex = 0;
+            this.lblCaixasLabel.Text = "Quantidade Total de Vendas";
             // 
             // panelGraficos
             // 
@@ -330,7 +360,7 @@ namespace GestorEvento.Views
             this.panelGraficos.Location = new System.Drawing.Point(0, 290);
             this.panelGraficos.Name = "panelGraficos";
             this.panelGraficos.Padding = new System.Windows.Forms.Padding(15);
-            this.panelGraficos.Size = new System.Drawing.Size(1000, 320);
+            this.panelGraficos.Size = new System.Drawing.Size(1000, 260);
             this.panelGraficos.TabIndex = 3;
             // 
             // panelGraficoPizza
@@ -340,7 +370,7 @@ namespace GestorEvento.Views
             this.panelGraficoPizza.Dock = System.Windows.Forms.DockStyle.Right;
             this.panelGraficoPizza.Location = new System.Drawing.Point(510, 15);
             this.panelGraficoPizza.Name = "panelGraficoPizza";
-            this.panelGraficoPizza.Size = new System.Drawing.Size(475, 290);
+            this.panelGraficoPizza.Size = new System.Drawing.Size(475, 230);
             this.panelGraficoPizza.TabIndex = 1;
             // 
             // lblGraficoPizza
@@ -361,9 +391,9 @@ namespace GestorEvento.Views
             this.chartPizza.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartPizza.Location = new System.Drawing.Point(0, 0);
             this.chartPizza.Name = "chartPizza";
-            this.chartPizza.Size = new System.Drawing.Size(475, 290);
+            this.chartPizza.Size = new System.Drawing.Size(475, 230);
             this.chartPizza.TabIndex = 1;
-            this.chartPizza.Text = "pieChart1";
+            this.chartPizza.Text = "chartPizza";
             // 
             // panelGraficoBarras
             // 
@@ -372,7 +402,7 @@ namespace GestorEvento.Views
             this.panelGraficoBarras.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelGraficoBarras.Location = new System.Drawing.Point(15, 15);
             this.panelGraficoBarras.Name = "panelGraficoBarras";
-            this.panelGraficoBarras.Size = new System.Drawing.Size(490, 290);
+            this.panelGraficoBarras.Size = new System.Drawing.Size(490, 230);
             this.panelGraficoBarras.TabIndex = 0;
             // 
             // lblGraficoBarras
@@ -383,9 +413,9 @@ namespace GestorEvento.Views
             this.lblGraficoBarras.ForeColor = System.Drawing.Color.Black;
             this.lblGraficoBarras.Location = new System.Drawing.Point(0, 0);
             this.lblGraficoBarras.Name = "lblGraficoBarras";
-            this.lblGraficoBarras.Size = new System.Drawing.Size(214, 20);
+            this.lblGraficoBarras.Size = new System.Drawing.Size(194, 20);
             this.lblGraficoBarras.TabIndex = 0;
-            this.lblGraficoBarras.Text = "Valor Total Vendido por Caixa";
+            this.lblGraficoBarras.Text = "Valor Vendido por Caixa";
             // 
             // chartBarras
             // 
@@ -393,60 +423,60 @@ namespace GestorEvento.Views
             this.chartBarras.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartBarras.Location = new System.Drawing.Point(0, 0);
             this.chartBarras.Name = "chartBarras";
-            this.chartBarras.Size = new System.Drawing.Size(490, 290);
+            this.chartBarras.Size = new System.Drawing.Size(490, 230);
             this.chartBarras.TabIndex = 1;
-            this.chartBarras.Text = "cartesianChart1";
+            this.chartBarras.Text = "chartBarras";
             // 
-            // panelProdutos
+            // panelResumo
             // 
-            this.panelProdutos.BackColor = System.Drawing.Color.White;
-            this.panelProdutos.Controls.Add(this.dgvProdutosVendidos);
-            this.panelProdutos.Controls.Add(this.lblProdutosVendidos);
-            this.panelProdutos.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelProdutos.Location = new System.Drawing.Point(0, 610);
-            this.panelProdutos.Name = "panelProdutos";
-            this.panelProdutos.Padding = new System.Windows.Forms.Padding(15);
-            this.panelProdutos.Size = new System.Drawing.Size(1000, 260);
-            this.panelProdutos.TabIndex = 4;
+            this.panelResumo.BackColor = System.Drawing.Color.White;
+            this.panelResumo.Controls.Add(this.dgvResumoCaixas);
+            this.panelResumo.Controls.Add(this.lblResumo);
+            this.panelResumo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelResumo.Location = new System.Drawing.Point(0, 550);
+            this.panelResumo.Name = "panelResumo";
+            this.panelResumo.Padding = new System.Windows.Forms.Padding(15);
+            this.panelResumo.Size = new System.Drawing.Size(1000, 220);
+            this.panelResumo.TabIndex = 4;
             // 
-            // dgvProdutosVendidos
+            // dgvResumoCaixas
             // 
-            this.dgvProdutosVendidos.BackgroundColor = System.Drawing.Color.White;
-            this.dgvProdutosVendidos.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvProdutosVendidos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvProdutosVendidos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvProdutosVendidos.Location = new System.Drawing.Point(15, 35);
-            this.dgvProdutosVendidos.Name = "dgvProdutosVendidos";
-            this.dgvProdutosVendidos.Size = new System.Drawing.Size(970, 210);
-            this.dgvProdutosVendidos.TabIndex = 1;
+            this.dgvResumoCaixas.BackgroundColor = System.Drawing.Color.White;
+            this.dgvResumoCaixas.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvResumoCaixas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvResumoCaixas.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvResumoCaixas.Location = new System.Drawing.Point(15, 35);
+            this.dgvResumoCaixas.Name = "dgvResumoCaixas";
+            this.dgvResumoCaixas.Size = new System.Drawing.Size(970, 100);
+            this.dgvResumoCaixas.TabIndex = 1;
             // 
-            // lblProdutosVendidos
+            // lblResumo
             // 
-            this.lblProdutosVendidos.AutoSize = true;
-            this.lblProdutosVendidos.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblProdutosVendidos.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblProdutosVendidos.ForeColor = System.Drawing.Color.Black;
-            this.lblProdutosVendidos.Location = new System.Drawing.Point(15, 15);
-            this.lblProdutosVendidos.Name = "lblProdutosVendidos";
-            this.lblProdutosVendidos.Size = new System.Drawing.Size(235, 20);
-            this.lblProdutosVendidos.TabIndex = 0;
-            this.lblProdutosVendidos.Text = "Produtos Vendidos no Evento";
+            this.lblResumo.AutoSize = true;
+            this.lblResumo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblResumo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblResumo.ForeColor = System.Drawing.Color.Black;
+            this.lblResumo.Location = new System.Drawing.Point(15, 15);
+            this.lblResumo.Name = "lblResumo";
+            this.lblResumo.Size = new System.Drawing.Size(191, 20);
+            this.lblResumo.TabIndex = 0;
+            this.lblResumo.Text = "Resumo por Caixa (PDV)";
             // 
-            // FormRelatorioVenda
+            // FormRelatorioCaixa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1000, 700);
-            this.Controls.Add(this.panelProdutos);
+            this.Controls.Add(this.panelResumo);
             this.Controls.Add(this.panelGraficos);
             this.Controls.Add(this.panelCards);
             this.Controls.Add(this.panelFiltro);
             this.Controls.Add(this.panelTitulo);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "FormRelatorioVenda";
-            this.Text = "Relatório de Vendas";
+            this.Name = "FormRelatorioCaixa";
+            this.Text = "Relatório de Caixas";
             this.panelTitulo.ResumeLayout(false);
             this.panelTitulo.PerformLayout();
             this.panelFiltro.ResumeLayout(false);
@@ -454,18 +484,20 @@ namespace GestorEvento.Views
             this.panelCards.ResumeLayout(false);
             this.pnlCardTroco.ResumeLayout(false);
             this.pnlCardTroco.PerformLayout();
+            this.pnlCardTicket.ResumeLayout(false);
+            this.pnlCardTicket.PerformLayout();
             this.pnlCardValor.ResumeLayout(false);
             this.pnlCardValor.PerformLayout();
-            this.pnlCardQtde.ResumeLayout(false);
-            this.pnlCardQtde.PerformLayout();
+            this.pnlCardCaixas.ResumeLayout(false);
+            this.pnlCardCaixas.PerformLayout();
             this.panelGraficos.ResumeLayout(false);
             this.panelGraficoPizza.ResumeLayout(false);
             this.panelGraficoPizza.PerformLayout();
             this.panelGraficoBarras.ResumeLayout(false);
             this.panelGraficoBarras.PerformLayout();
-            this.panelProdutos.ResumeLayout(false);
-            this.panelProdutos.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvProdutosVendidos)).EndInit();
+            this.panelResumo.ResumeLayout(false);
+            this.panelResumo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResumoCaixas)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -473,34 +505,37 @@ namespace GestorEvento.Views
         #endregion
 
         private System.Windows.Forms.Panel panelTitulo;
+        private System.Windows.Forms.Button btnFechar;
+        private System.Windows.Forms.Button btnMinimizar;
         private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.Panel panelFiltro;
+        private System.Windows.Forms.Button btnAtualizar;
         private System.Windows.Forms.TextBox txtBuscaEvento;
         private System.Windows.Forms.ComboBox cmbEventoResultados;
         private System.Windows.Forms.Label lblEvento;
-        private System.Windows.Forms.Button btnAtualizar;
+        private System.Windows.Forms.Label lblResultados;
         private System.Windows.Forms.Panel panelCards;
-        private ModernCard pnlCardQtde;
-        private System.Windows.Forms.Label lblQtdeValor;
-        private System.Windows.Forms.Label lblQtdeLabel;
+        private ModernCard pnlCardTroco;
+        private System.Windows.Forms.Label lblTrocoTotalValor;
+        private System.Windows.Forms.Label lblTrocoTotalLabel;
+        private ModernCard pnlCardTicket;
+        private System.Windows.Forms.Label lblTicketMedioValor;
+        private System.Windows.Forms.Label lblTicketMedioLabel;
         private ModernCard pnlCardValor;
         private System.Windows.Forms.Label lblValorVendidoValor;
         private System.Windows.Forms.Label lblValorVendidoLabel;
-        private ModernCard pnlCardTroco;
-        private System.Windows.Forms.Label lblTrocoValor;
-        private System.Windows.Forms.Label lblTrocoLabel;
+        private ModernCard pnlCardCaixas;
+        private System.Windows.Forms.Label lblCaixasValor;
+        private System.Windows.Forms.Label lblCaixasLabel;
         private System.Windows.Forms.Panel panelGraficos;
-        private System.Windows.Forms.Panel panelGraficoBarras;
-        private LiveCharts.WinForms.CartesianChart chartBarras;
-        private System.Windows.Forms.Label lblGraficoBarras;
         private System.Windows.Forms.Panel panelGraficoPizza;
-        private LiveCharts.WinForms.PieChart chartPizza;
         private System.Windows.Forms.Label lblGraficoPizza;
-        private System.Windows.Forms.Button btnFechar;
-        private System.Windows.Forms.Button btnMinimizar;
-        private System.Windows.Forms.Label lblResultados;
-        private System.Windows.Forms.Panel panelProdutos;
-        private System.Windows.Forms.DataGridView dgvProdutosVendidos;
-        private System.Windows.Forms.Label lblProdutosVendidos;
+        private LiveCharts.WinForms.PieChart chartPizza;
+        private System.Windows.Forms.Panel panelGraficoBarras;
+        private System.Windows.Forms.Label lblGraficoBarras;
+        private LiveCharts.WinForms.CartesianChart chartBarras;
+        private System.Windows.Forms.Panel panelResumo;
+        private System.Windows.Forms.DataGridView dgvResumoCaixas;
+        private System.Windows.Forms.Label lblResumo;
     }
 }

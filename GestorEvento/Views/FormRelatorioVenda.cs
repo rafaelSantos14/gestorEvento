@@ -36,6 +36,8 @@ namespace GestorEvento.Views
             // Reduzir flickering
             this.DoubleBuffered = true;
 
+            ConfigurarGridProdutosVendidos();
+
             // Carregar eventos
             CarregarEventos();
         }
@@ -122,6 +124,7 @@ namespace GestorEvento.Views
                 // Limpar dados anteriores
                 LimparCards();
                 LimparGraficos();
+                dgvProdutosVendidos.Rows.Clear();
 
                 // Buscar dados
                 var dadosRelatorio = _relatorioService.ObterDadosRelatorio(idEvento);
@@ -131,6 +134,9 @@ namespace GestorEvento.Views
 
                 // Atualizar gráficos
                 AtualizarGraficos(dadosRelatorio);
+
+                // Atualizar grid de produtos vendidos
+                AtualizarGridProdutosVendidos(dadosRelatorio);
             }
             catch (Exception ex)
             {
@@ -258,6 +264,49 @@ namespace GestorEvento.Views
             chartPizza.Series.Clear();
         }
 
+        private void ConfigurarGridProdutosVendidos()
+        {
+            dgvProdutosVendidos.AutoGenerateColumns = false;
+            dgvProdutosVendidos.AllowUserToAddRows = false;
+            dgvProdutosVendidos.AllowUserToDeleteRows = false;
+            dgvProdutosVendidos.ReadOnly = true;
+            dgvProdutosVendidos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvProdutosVendidos.MultiSelect = false;
+            dgvProdutosVendidos.RowHeadersVisible = false;
+
+            dgvProdutosVendidos.Columns.Clear();
+            dgvProdutosVendidos.Columns.Add(new DataGridViewTextBoxColumn { Name = "NomeProduto", HeaderText = "Nome do Produto", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
+            dgvProdutosVendidos.Columns.Add(new DataGridViewTextBoxColumn { Name = "QuantidadeVendida", HeaderText = "Qtd. Vendida", Width = 95 });
+            dgvProdutosVendidos.Columns.Add(new DataGridViewTextBoxColumn { Name = "QuantidadeDisponivel", HeaderText = "Qtd. Disponível", Width = 105 });
+            dgvProdutosVendidos.Columns.Add(new DataGridViewTextBoxColumn { Name = "PrecoUnitario", HeaderText = "Preço Un.", Width = 90 });
+            dgvProdutosVendidos.Columns.Add(new DataGridViewTextBoxColumn { Name = "ValorTotal", HeaderText = "Valor Total Vendido", Width = 140 });
+            dgvProdutosVendidos.Columns.Add(new DataGridViewTextBoxColumn { Name = "Percentual", HeaderText = "% do Total", Width = 90 });
+
+            dgvProdutosVendidos.DefaultCellStyle.ForeColor = Color.Black;
+            dgvProdutosVendidos.DefaultCellStyle.BackColor = Color.White;
+            dgvProdutosVendidos.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvProdutosVendidos.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(25, 118, 210);
+            dgvProdutosVendidos.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
+            dgvProdutosVendidos.EnableHeadersVisualStyles = false;
+        }
+
+        private void AtualizarGridProdutosVendidos(RelatorioVendaData dados)
+        {
+            dgvProdutosVendidos.Rows.Clear();
+
+            foreach (var produto in dados.DadosProdutosVendidos)
+            {
+                dgvProdutosVendidos.Rows.Add(
+                    produto.NomeProduto,
+                    produto.QuantidadeVendida,
+                    produto.QuantidadeDisponivel,
+                    $"R$ {produto.PrecoUnitario:N2}",
+                    $"R$ {produto.ValorTotalVendido:N2}",
+                    $"{produto.PercentualTotalVendas:N1}%"
+                );
+            }
+        }
+
         private void BtnAtualizar_Click(object sender, EventArgs e)
         {
             // Recarregar eventos e limpar filtros
@@ -266,6 +315,7 @@ namespace GestorEvento.Views
             cmbEventoResultados.DataSource = null;
             LimparCards();
             LimparGraficos();
+            dgvProdutosVendidos.Rows.Clear();
         }
 
         private void btnFechar_Click(object sender, EventArgs e)

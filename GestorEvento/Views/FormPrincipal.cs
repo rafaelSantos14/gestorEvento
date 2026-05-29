@@ -142,6 +142,11 @@ namespace GestorEvento.Views
             ToolStripMenuItem itemVendas = new ToolStripMenuItem("📊 Vendas");
             itemVendas.Click += (s, args) => AbrirRelatorioVendas();
             menuRelatorios.Items.Add(itemVendas);
+
+            // Adicionar item Relatório de Caixas (Ponto de Venda)
+            ToolStripMenuItem itemCaixas = new ToolStripMenuItem("💰 Caixas (PDV)");
+            itemCaixas.Click += (s, args) => AbrirRelatorioCaixas();
+            menuRelatorios.Items.Add(itemCaixas);
             
             // adicionar mais relatórios no futuro:
             // ToolStripMenuItem itemTeste = new ToolStripMenuItem("📦 Estoque");
@@ -180,6 +185,33 @@ namespace GestorEvento.Views
             catch (Exception ex)
             {
                 MessageBox.Show("Erro ao abrir FormRelatorioVenda: " + ex.Message + "\n" + ex.StackTrace, "Erro");
+            }
+        }
+
+        private void AbrirRelatorioCaixas()
+        {
+            try
+            {
+                foreach (Form f in this.MdiChildren)
+                {
+                    if (f is FormRelatorioCaixa)
+                    {
+                        f.Activate();
+                        return;
+                    }
+                }
+
+                FormRelatorioCaixa form = new FormRelatorioCaixa();
+                form.Text = "Relatório de Caixas";
+                form.MdiParent = this;
+                form.Show();
+
+                form.Location = new Point(0, 0);
+                form.Size = new Size(this.ClientSize.Width - panelMenu.Width - 5, this.ClientSize.Height - panelTitulo.Height - 35);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao abrir FormRelatorioCaixa: " + ex.Message + "\n" + ex.StackTrace, "Erro");
             }
         }
 

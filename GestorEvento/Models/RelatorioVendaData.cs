@@ -13,11 +13,13 @@ namespace GestorEvento.Models
         public decimal ValorTotalTroco { get; set; }
         public List<DadosPagamento> DadosPorFormaPagamento { get; set; }
         public List<DadosCaixa> DadosPorCaixa { get; set; }
+        public List<DadosProdutoVendido> DadosProdutosVendidos { get; set; }
 
         public RelatorioVendaData()
         {
             DadosPorFormaPagamento = new List<DadosPagamento>();
             DadosPorCaixa = new List<DadosCaixa>();
+            DadosProdutosVendidos = new List<DadosProdutoVendido>();
         }
     }
 
@@ -40,6 +42,20 @@ namespace GestorEvento.Models
         public string NomeCaixa { get; set; }
         public int NumeroCaixa { get; set; }
         public decimal ValorTotal { get; set; }
+        public decimal ValorTroco { get; set; }
         public int QuantidadeVendas { get; set; }
+    }
+
+    /// <summary>
+    /// Dados de produtos vendidos no evento (agrupados por produto e valor unitario)
+    /// </summary>
+    public class DadosProdutoVendido
+    {
+        public string NomeProduto { get; set; }
+        public int QuantidadeVendida { get; set; }
+        public int QuantidadeDisponivel { get; set; }
+        public decimal PrecoUnitario { get; set; }
+        public decimal ValorTotalVendido { get; set; }
+        public decimal PercentualTotalVendas { get; set; }
     }
 }

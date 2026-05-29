@@ -277,6 +277,12 @@
     <Compile Include="Views\FormRelatorioVenda.Designer.cs">
       <DependentUpon>FormRelatorioVenda.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FormRelatorioCaixa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormRelatorioCaixa.Designer.cs">
+      <DependentUpon>FormRelatorioCaixa.cs</DependentUpon>
+    </Compile>
     <Compile Include="Components\ModernCard.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -339,6 +345,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormRelatorioVenda.resx">
       <DependentUpon>FormRelatorioVenda.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormRelatorioCaixa.resx">
+      <DependentUpon>FormRelatorioCaixa.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="GestorEvento_3_TemporaryKey.pfx" />

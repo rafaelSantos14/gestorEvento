@@ -85,6 +85,11 @@ namespace GestorEvento.Services
                     var pontoVenda = _pontoVendaRepository.GetPontoVendaById(idPontoVenda);
                     var totalCaixa = grupo.Sum(v => v.VlTotal);
                     var quantidadeCaixa = grupo.Count();
+                    var idsVendasCaixa = grupo.Select(v => v.IdVenda).ToHashSet();
+                    decimal totalRecebidoCaixa = recebimentos
+                        .Where(r => idsVendasCaixa.Contains(r.IdVenda))
+                        .Sum(r => r.VlRecebimento);
+                    decimal totalTrocoCaixa = totalRecebidoCaixa - totalCaixa;
 
                     if (pontoVenda != null)
                     {
@@ -94,6 +99,7 @@ namespace GestorEvento.Services
                             NomeCaixa = pontoVenda.DsPontoVenda ?? $"Caixa {pontoVenda.NoPontoVenda}",
                             NumeroCaixa = pontoVenda.NoPontoVenda,
                             ValorTotal = totalCaixa,
+                            ValorTroco = totalTrocoCaixa,
                             QuantidadeVendas = quantidadeCaixa
                         });
                     }
@@ -107,6 +113,25 @@ namespace GestorEvento.Services
                 resultado.DadosPorCaixa = resultado.DadosPorCaixa
                     .OrderBy(d => d.NumeroCaixa)
                     .ToList();
+
+                // 8. Produtos vendidos (agrupados por produto e valor unitário)
+                var produtosVendidos = _vendaRepository.ObterResumoProdutosVendidosPorEvento(idEvento);
+                foreach (var (nomeProduto, quantidadeVendida, quantidadeDisponivel, precoUnitario, valorTotalVendido) in produtosVendidos)
+                {
+                    decimal percentualTotalVendas = resultado.ValorTotalVendido > 0
+                        ? (valorTotalVendido / resultado.ValorTotalVendido) * 100
+                        : 0;
+
+                    resultado.DadosProdutosVendidos.Add(new DadosProdutoVendido
+                    {
+                        NomeProduto = nomeProduto,
+                        QuantidadeVendida = quantidadeVendida,
+                        QuantidadeDisponivel = quantidadeDisponivel,
+                        PrecoUnitario = precoUnitario,
+                        ValorTotalVendido = valorTotalVendido,
+                        PercentualTotalVendas = percentualTotalVendas
+                    });
+                }
 
                 return resultado;
             }
