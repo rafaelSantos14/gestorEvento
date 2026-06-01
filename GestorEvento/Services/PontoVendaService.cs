@@ -188,7 +188,7 @@ namespace GestorEvento.Services
 
                 // Obter vendas simplificadas
                 var vendas = new List<ResumoVendaFechamento>();
-                foreach (var (idVenda, dtVenda, vlTotal) in _vendaService.GetResumoVendasByPontoVenda(idPontoVenda))
+                foreach (var (idVenda, dtVenda, vlTotal, tipoOperacao) in _vendaService.GetResumoVendasByPontoVenda(idPontoVenda))
                 {
                     // Obter a principal forma de pagamento da venda
                     var recebimentos = _recebimentoService.GetRecebimentosByVendaId(idVenda);
@@ -205,6 +205,7 @@ namespace GestorEvento.Services
                         IdVenda = idVenda,
                         DtVenda = dtVenda,
                         VlTotal = vlTotal,
+                        TipoOperacao = string.IsNullOrWhiteSpace(tipoOperacao) ? "VENDA" : tipoOperacao,
                         NomeFormaPagamento = nomeFormaPagamento
                     });
                 }

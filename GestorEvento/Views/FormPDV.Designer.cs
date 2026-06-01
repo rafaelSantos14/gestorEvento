@@ -25,6 +25,9 @@ namespace GestorEvento.Views
             this.lblInfoCaixa = new System.Windows.Forms.Label();
             this.panelConteudo = new System.Windows.Forms.Panel();
             this.panelTotalizacao = new System.Windows.Forms.Panel();
+            this.groupBoxTipoOperacao = new System.Windows.Forms.GroupBox();
+            this._rbCortesia = new System.Windows.Forms.RadioButton();
+            this._rbVenda = new System.Windows.Forms.RadioButton();
             this.lblTrocoValor = new System.Windows.Forms.Label();
             this.btnConfirmarVenda = new System.Windows.Forms.Button();
             this.lblTroco = new System.Windows.Forms.Label();
@@ -38,6 +41,7 @@ namespace GestorEvento.Views
             this.panelInfoCaixa.SuspendLayout();
             this.panelConteudo.SuspendLayout();
             this.panelTotalizacao.SuspendLayout();
+            this.groupBoxTipoOperacao.SuspendLayout();
             this.panelBotoes.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -136,6 +140,7 @@ namespace GestorEvento.Views
             // 
             this.panelTotalizacao.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.panelTotalizacao.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelTotalizacao.Controls.Add(this.groupBoxTipoOperacao);
             this.panelTotalizacao.Controls.Add(this.lblTrocoValor);
             this.panelTotalizacao.Controls.Add(this.btnConfirmarVenda);
             this.panelTotalizacao.Controls.Add(this.lblTroco);
@@ -147,6 +152,42 @@ namespace GestorEvento.Views
             this.panelTotalizacao.Padding = new System.Windows.Forms.Padding(15);
             this.panelTotalizacao.Size = new System.Drawing.Size(334, 455);
             this.panelTotalizacao.TabIndex = 3;
+            // 
+            // groupBoxTipoOperacao
+            // 
+            this.groupBoxTipoOperacao.Controls.Add(this._rbCortesia);
+            this.groupBoxTipoOperacao.Controls.Add(this._rbVenda);
+            this.groupBoxTipoOperacao.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.groupBoxTipoOperacao.Location = new System.Drawing.Point(5, 285);
+            this.groupBoxTipoOperacao.Name = "groupBoxTipoOperacao";
+            this.groupBoxTipoOperacao.Size = new System.Drawing.Size(300, 50);
+            this.groupBoxTipoOperacao.TabIndex = 10;
+            this.groupBoxTipoOperacao.TabStop = false;
+            this.groupBoxTipoOperacao.Text = "Tipo de Operação";
+            // 
+            // _rbCortesia
+            // 
+            this._rbCortesia.AutoSize = true;
+            this._rbCortesia.Location = new System.Drawing.Point(120, 20);
+            this._rbCortesia.Name = "_rbCortesia";
+            this._rbCortesia.Size = new System.Drawing.Size(117, 19);
+            this._rbCortesia.TabIndex = 1;
+            this._rbCortesia.Text = "AMIGO ALIANÇA";
+            this._rbCortesia.UseVisualStyleBackColor = true;
+            this._rbCortesia.CheckedChanged += new System.EventHandler(this.RbTipoOperacao_CheckedChanged);
+            // 
+            // _rbVenda
+            // 
+            this._rbVenda.AutoSize = true;
+            this._rbVenda.Checked = true;
+            this._rbVenda.Location = new System.Drawing.Point(10, 20);
+            this._rbVenda.Name = "_rbVenda";
+            this._rbVenda.Size = new System.Drawing.Size(63, 19);
+            this._rbVenda.TabIndex = 0;
+            this._rbVenda.TabStop = true;
+            this._rbVenda.Text = "VENDA";
+            this._rbVenda.UseVisualStyleBackColor = true;
+            this._rbVenda.CheckedChanged += new System.EventHandler(this.RbTipoOperacao_CheckedChanged);
             // 
             // lblTrocoValor
             // 
@@ -279,6 +320,8 @@ namespace GestorEvento.Views
             this.panelInfoCaixa.PerformLayout();
             this.panelConteudo.ResumeLayout(false);
             this.panelTotalizacao.ResumeLayout(false);
+            this.groupBoxTipoOperacao.ResumeLayout(false);
+            this.groupBoxTipoOperacao.PerformLayout();
             this.panelBotoes.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -303,5 +346,8 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Panel panelBotoes;
         private System.Windows.Forms.Button btnConfirmarVenda;
         private System.Windows.Forms.Button btnCancelar;
+        private System.Windows.Forms.GroupBox groupBoxTipoOperacao;
+        private System.Windows.Forms.RadioButton _rbCortesia;
+        private System.Windows.Forms.RadioButton _rbVenda;
     }
 }

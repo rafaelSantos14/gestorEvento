@@ -10,6 +10,7 @@ namespace GestorEvento.Models
         public DateTime DtVenda { get; set; }
         public decimal VlTotal { get; set; }
         public string CdStatus { get; set; } // Pendente, Concluida
+        public string TipoOperacao { get; set; } = "VENDA"; // VENDA ou CORTESIA
         public List<ItemVenda> Itens { get; set; }
 
         // Constructors

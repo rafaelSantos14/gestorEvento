@@ -49,6 +49,7 @@ namespace GestorEvento.Models
         public int IdVenda { get; set; }
         public DateTime DtVenda { get; set; }
         public decimal VlTotal { get; set; }
+        public string TipoOperacao { get; set; }
         public string NomeFormaPagamento { get; set; } // Principal forma de pagamento
     }
 

@@ -68,8 +68,10 @@ CREATE TABLE VENDA (
     id_ponto_venda INT NOT NULL,
 	cd_status VARCHAR(50) NOT NULL, 
     vl_total DECIMAL(10,2) NOT NULL,
+    tp_operacao ENUM('VENDA', 'CORTESIA') NOT NULL DEFAULT 'VENDA',
     dt_venda DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_ponto_venda) REFERENCES PONTO_VENDA(id_ponto_venda)
+    FOREIGN KEY (id_ponto_venda) REFERENCES PONTO_VENDA(id_ponto_venda),
+    INDEX idx_venda_tp_operacao (tp_operacao)
 );
 
 -- Cada produto vendido naquela transação

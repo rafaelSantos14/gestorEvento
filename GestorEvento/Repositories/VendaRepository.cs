@@ -30,9 +30,9 @@ namespace GestorEvento.Repositories
 
                 // 1. Inserir venda
                 string queryVenda = @"INSERT INTO VENDA 
-                                      (id_ponto_venda, dt_venda, vl_total, cd_status) 
+                                      (id_ponto_venda, dt_venda, vl_total, cd_status, tp_operacao) 
                                       VALUES 
-                                      (@idPontoVenda, @dtVenda, @vlTotal, @cdStatus);
+                                      (@idPontoVenda, @dtVenda, @vlTotal, @cdStatus, @tpOperacao);
                                       SELECT LAST_INSERT_ID();";
 
                 int idVenda = 0;
@@ -42,6 +42,7 @@ namespace GestorEvento.Repositories
                     command.Parameters.AddWithValue("@dtVenda", venda.DtVenda);
                     command.Parameters.AddWithValue("@vlTotal", venda.VlTotal);
                     command.Parameters.AddWithValue("@cdStatus", "Concluida"); // Status sempre Concluida ao registrar
+                    command.Parameters.AddWithValue("@tpOperacao", venda.TipoOperacao ?? "VENDA"); // Tipo de operação: VENDA ou CORTESIA
 
                     object result = command.ExecuteScalar();
                     idVenda = Convert.ToInt32(result);
@@ -97,7 +98,7 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = @"SELECT id_venda, id_ponto_venda, dt_venda, vl_total, cd_status 
+                    string query = @"SELECT id_venda, id_ponto_venda, dt_venda, vl_total, cd_status, tp_operacao 
                                      FROM VENDA 
                                      WHERE id_venda = @id";
 
@@ -115,7 +116,8 @@ namespace GestorEvento.Repositories
                                     IdPontoVenda = Convert.ToInt32(reader["id_ponto_venda"]),
                                     DtVenda = Convert.ToDateTime(reader["dt_venda"]),
                                     VlTotal = Convert.ToDecimal(reader["vl_total"]),
-                                    CdStatus = reader["cd_status"].ToString()
+                                    CdStatus = reader["cd_status"].ToString(),
+                                    TipoOperacao = reader["tp_operacao"].ToString()
                                 };
 
                                 connection.Close();
@@ -202,7 +204,7 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = @"SELECT id_venda, id_ponto_venda, dt_venda, vl_total, cd_status 
+                    string query = @"SELECT id_venda, id_ponto_venda, dt_venda, vl_total, cd_status, tp_operacao 
                                      FROM VENDA 
                                      WHERE id_ponto_venda = @idPontoVenda
                                      ORDER BY dt_venda DESC";
@@ -221,7 +223,8 @@ namespace GestorEvento.Repositories
                                     IdPontoVenda = Convert.ToInt32(reader["id_ponto_venda"]),
                                     DtVenda = Convert.ToDateTime(reader["dt_venda"]),
                                     VlTotal = Convert.ToDecimal(reader["vl_total"]),
-                                    CdStatus = reader["cd_status"].ToString()
+                                    CdStatus = reader["cd_status"].ToString(),
+                                    TipoOperacao = reader["tp_operacao"].ToString()
                                 };
                                 vendas.Add(venda);
                             }
@@ -242,9 +245,9 @@ namespace GestorEvento.Repositories
         /// <summary>
         /// Obtém resumo de vendas de um ponto de venda (apenas id, data e valor) para fechamento de caixa
         /// </summary>
-        public List<(int idVenda, DateTime dtVenda, decimal vlTotal)> GetResumoVendasByPontoVenda(int idPontoVenda)
+        public List<(int idVenda, DateTime dtVenda, decimal vlTotal, string tipoOperacao)> GetResumoVendasByPontoVenda(int idPontoVenda)
         {
-            var vendas = new List<(int, DateTime, decimal)>();
+            var vendas = new List<(int, DateTime, decimal, string)>();
 
             try
             {
@@ -252,7 +255,7 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = @"SELECT id_venda, dt_venda, vl_total 
+                    string query = @"SELECT id_venda, dt_venda, vl_total, tp_operacao 
                                      FROM VENDA 
                                      WHERE id_ponto_venda = @idPontoVenda
                                      ORDER BY dt_venda ASC";
@@ -268,7 +271,8 @@ namespace GestorEvento.Repositories
                                 int idVenda = Convert.ToInt32(reader["id_venda"]);
                                 DateTime dtVenda = Convert.ToDateTime(reader["dt_venda"]);
                                 decimal vlTotal = Convert.ToDecimal(reader["vl_total"]);
-                                vendas.Add((idVenda, dtVenda, vlTotal));
+                                string tipoOperacao = reader["tp_operacao"].ToString();
+                                vendas.Add((idVenda, dtVenda, vlTotal, tipoOperacao));
                             }
                         }
                     }
@@ -297,7 +301,7 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = @"SELECT v.id_venda, v.id_ponto_venda, v.dt_venda, v.vl_total, v.cd_status 
+                    string query = @"SELECT v.id_venda, v.id_ponto_venda, v.dt_venda, v.vl_total, v.cd_status, v.tp_operacao 
                                      FROM VENDA v
                                      INNER JOIN PONTO_VENDA pv ON v.id_ponto_venda = pv.id_ponto_venda
                                      WHERE pv.id_evento = @idEvento
@@ -317,7 +321,8 @@ namespace GestorEvento.Repositories
                                     IdPontoVenda = Convert.ToInt32(reader["id_ponto_venda"]),
                                     DtVenda = Convert.ToDateTime(reader["dt_venda"]),
                                     VlTotal = Convert.ToDecimal(reader["vl_total"]),
-                                    CdStatus = reader["cd_status"].ToString()
+                                    CdStatus = reader["cd_status"].ToString(),
+                                    TipoOperacao = reader["tp_operacao"].ToString()
                                 };
                                 vendas.Add(venda);
                             }
@@ -391,6 +396,7 @@ namespace GestorEvento.Repositories
                                      INNER JOIN PRODUTO p ON p.id_produto = pe.id_produto
                                      WHERE pv.id_evento = @idEvento
                                        AND v.cd_status = 'Concluida'
+                                       AND v.tp_operacao = 'VENDA'
                                      GROUP BY iv.vl_unitario, pe.id_produto_evento
                                      ORDER BY p.nm_produto ASC, iv.vl_unitario ASC";
 
@@ -419,6 +425,65 @@ namespace GestorEvento.Repositories
             catch (Exception ex)
             {
                 throw new Exception($"Erro ao obter resumo de produtos vendidos por evento: {ex.Message}", ex);
+            }
+
+            return produtos;
+        }
+
+        /// <summary>
+        /// Obtém resumo de produtos em cortesia por evento, agrupado por produto e valor unitário
+        /// </summary>
+        public List<(string nomeProduto, int quantidadeVendida, int quantidadeDisponivel, decimal precoUnitario, decimal valorTotalVendido)> ObterResumoProdutosCortesiaPorEvento(int idEvento)
+        {
+            var produtos = new List<(string, int, int, decimal, decimal)>();
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"SELECT p.nm_produto,
+                                            SUM(iv.qtde_vendida) AS qtde_vendida,
+                                            (pe.qtde_produto - COALESCE(pe.qtde_vendida, 0)) AS qtde_disponivel,
+                                            iv.vl_unitario,
+                                            SUM(iv.vl_subtotal) AS vl_total_cortesia
+                                     FROM ITEM_VENDA iv
+                                     INNER JOIN VENDA v ON v.id_venda = iv.id_venda
+                                     INNER JOIN PONTO_VENDA pv ON pv.id_ponto_venda = v.id_ponto_venda
+                                     INNER JOIN PRODUTO_EVENTO pe ON pe.id_produto_evento = iv.id_produto_evento
+                                     INNER JOIN PRODUTO p ON p.id_produto = pe.id_produto
+                                     WHERE pv.id_evento = @idEvento
+                                       AND v.cd_status = 'Concluida'
+                                       AND v.tp_operacao = 'CORTESIA'
+                                     GROUP BY iv.vl_unitario, pe.id_produto_evento
+                                     ORDER BY p.nm_produto ASC, iv.vl_unitario ASC";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@idEvento", idEvento);
+
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string nomeProduto = reader["nm_produto"].ToString();
+                                int quantidadeVendida = Convert.ToInt32(reader["qtde_vendida"]);
+                                int quantidadeDisponivel = Convert.ToInt32(reader["qtde_disponivel"]);
+                                decimal precoUnitario = Convert.ToDecimal(reader["vl_unitario"]);
+                                decimal valorTotalCortesia = Convert.ToDecimal(reader["vl_total_cortesia"]);
+
+                                produtos.Add((nomeProduto, quantidadeVendida, quantidadeDisponivel, precoUnitario, valorTotalCortesia));
+                            }
+                        }
+                    }
+
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter resumo de produtos em cortesia por evento: {ex.Message}", ex);
             }
 
             return produtos;

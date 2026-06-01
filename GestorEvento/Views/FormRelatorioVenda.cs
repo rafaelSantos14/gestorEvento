@@ -154,6 +154,14 @@ namespace GestorEvento.Views
 
             // Card 3: Valor Total Troco
             lblTrocoValor.Text = $"R$ {dados.ValorTotalTroco:N2}";
+            
+            // Log de cortesias para auditoria (se houver)
+            if (dados.TotalQuantidadeCortesia > 0)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"[RELATÓRIO VENDA] Cortesias neste evento: Qtd={dados.TotalQuantidadeCortesia}, Valor=R${dados.ValorTotalCortesia:N2}"
+                );
+            }
         }
 
         private void LimparCards()

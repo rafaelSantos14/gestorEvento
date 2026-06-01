@@ -128,6 +128,14 @@ namespace GestorEvento.Views
             lblValorVendidoValor.Text = $"R$ {dados.ValorTotalVendido:N2}";
             lblTrocoTotalValor.Text = $"R$ {dados.ValorTotalTroco:N2}";
             lblTicketMedioValor.Text = $"R$ {ticketMedio:N2}";
+            
+            // Log de cortesias para auditoria (se houver)
+            if (dados.TotalQuantidadeCortesia > 0)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"[RELATÓRIO CAIXA] Cortesias neste período: Qtd={dados.TotalQuantidadeCortesia}, Valor=R${dados.ValorTotalCortesia:N2}"
+                );
+            }
         }
 
         private void LimparCards()

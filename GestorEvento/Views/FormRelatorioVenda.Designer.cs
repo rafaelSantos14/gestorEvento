@@ -428,7 +428,7 @@ namespace GestorEvento.Views
             this.lblProdutosVendidos.ForeColor = System.Drawing.Color.Black;
             this.lblProdutosVendidos.Location = new System.Drawing.Point(15, 15);
             this.lblProdutosVendidos.Name = "lblProdutosVendidos";
-            this.lblProdutosVendidos.Size = new System.Drawing.Size(235, 20);
+            this.lblProdutosVendidos.Size = new System.Drawing.Size(215, 20);
             this.lblProdutosVendidos.TabIndex = 0;
             this.lblProdutosVendidos.Text = "Produtos Vendidos no Evento";
             // 
@@ -437,7 +437,7 @@ namespace GestorEvento.Views
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1000, 700);
+            this.ClientSize = new System.Drawing.Size(1017, 700);
             this.Controls.Add(this.panelProdutos);
             this.Controls.Add(this.panelGraficos);
             this.Controls.Add(this.panelCards);

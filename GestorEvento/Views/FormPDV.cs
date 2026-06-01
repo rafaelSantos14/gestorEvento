@@ -390,18 +390,23 @@ namespace GestorEvento.Views
                     return;
                 }
 
-                // Validação 2: A soma dos pagamentos é >= total da venda?
+                // Validação 2: A soma dos pagamentos é >= total da venda? (apenas para VENDA)
+                // CORTESIA não precisa de pagamento
                 decimal somaPagementos = _formasPagamento.Sum(f => f.GetValor());
-                if (somaPagementos < _totalVenda)
+                
+                if (!_rbCortesia.Checked)
                 {
-                    DialogoCustomizado dialogo = new DialogoCustomizado(
-                        "Aviso",
-                        $"Soma dos pagamentos (R$ {somaPagementos.ToString("F2")}) é menor que o total (R$ {_totalVenda.ToString("F2")})",
-                        TipoDialogo.Aviso,
-                        TipoButton.Ok
-                    );
-                    dialogo.ShowDialog();
-                    return;
+                    if (somaPagementos < _totalVenda)
+                    {
+                        DialogoCustomizado dialogo = new DialogoCustomizado(
+                            "Aviso",
+                            $"Soma dos pagamentos (R$ {somaPagementos.ToString("F2")}) é menor que o total (R$ {_totalVenda.ToString("F2")})",
+                            TipoDialogo.Aviso,
+                            TipoButton.Ok
+                        );
+                        dialogo.ShowDialog();
+                        return;
+                    }
                 }
 
                 // ======== VALIDAÇÃO 3: VERIFICAR ESTOQUE ANTES DE REGISTRAR ========
@@ -427,6 +432,9 @@ namespace GestorEvento.Views
                 // Criar venda com itens que têm quantidade > 0
                 var venda = new Venda(_caixaIdSelecionado);
                 
+                // Definir tipo de operação (VENDA ou CORTESIA) baseado no seletor
+                venda.TipoOperacao = _rbCortesia.Checked ? "CORTESIA" : "VENDA";
+                
                 foreach (var linha in _produtosLinhas)
                 {
                     int qtde = linha.GetQuantidade();
@@ -444,7 +452,8 @@ namespace GestorEvento.Views
                 }
 
                 // Registrar venda + recebimentos + troco em TRANSAÇÃO ÚNICA (seguro!)
-                decimal vlTroco = somaPagementos - _totalVenda;
+                // CORTESIA não gera troco
+                decimal vlTroco = _rbCortesia.Checked ? 0 : (somaPagementos - _totalVenda);
                 
                 // Preparar lista de recebimentos
                 var recebimentos = new List<(int idFormaPagamento, decimal valor)>();
@@ -622,6 +631,19 @@ namespace GestorEvento.Views
                 forma.Limpar();
             }
             
+            // Resetar seletor de tipo de operação para VENDA
+            if (_rbVenda != null)
+            {
+                _rbVenda.Checked = true;
+                _rbCortesia.Checked = false;
+                
+                // Habilitar novamente os campos de pagamento
+                foreach (var forma in _formasPagamento)
+                {
+                    forma.SetEnabled(true);
+                }
+            }
+            
             // Atualizar totalizações
             AtualizarTotalVenda();
         }
@@ -680,6 +702,34 @@ namespace GestorEvento.Views
             base.OnResize(e);
             AjustarLayoutPaineis();
             PosicionarBotaoProximoAoTotal();
+        }
+
+        /// <summary>
+        /// Inicializa o seletor de tipo de operação (VENDA/CORTESIA)
+        /// Adiciona RadioButtons no painel de totalização com VENDA pré-selecionado
+        /// </summary>
+        /// <summary>
+        /// Handler para mudança no seletor de tipo de operação
+        /// Quando CORTESIA é selecionado, desabilita os campos de pagamento
+        /// </summary>
+        private void RbTipoOperacao_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_rbCortesia.Checked)
+            {
+                // CORTESIA selecionado - desabilitar formas de pagamento
+                foreach (var formaPag in _formasPagamento)
+                {
+                    formaPag.SetEnabled(false);
+                }
+            }
+            else
+            {
+                // VENDA selecionado - habilitar formas de pagamento
+                foreach (var formaPag in _formasPagamento)
+                {
+                    formaPag.SetEnabled(true);
+                }
+            }
         }
 
         // ==================== CLASSES INTERNAS ====================
@@ -971,6 +1021,24 @@ namespace GestorEvento.Views
             public void Limpar()
             {
                 _txtValor.Text = "";
+            }
+
+            public void SetEnabled(bool enabled)
+            {
+                _lblForma.Enabled = enabled;
+                _txtValor.Enabled = enabled;
+                
+                // Deixar campo de forma de pagamento desabilitado visualmente para CORTESIA
+                if (!enabled)
+                {
+                    _txtValor.BackColor = System.Drawing.Color.LightGray;
+                    _txtValor.ForeColor = System.Drawing.Color.Gray;
+                }
+                else
+                {
+                    _txtValor.BackColor = System.Drawing.Color.White;
+                    _txtValor.ForeColor = System.Drawing.Color.Black;
+                }
             }
         }
 

@@ -38,20 +38,28 @@ namespace GestorEvento.Services
                 var resultado = new RelatorioVendaData();
 
                 // 1. Obter todas as vendas do evento
-                var vendas = _vendaRepository.ObterVendasPorEvento(idEvento);
+                var todasAsVendas = _vendaRepository.ObterVendasPorEvento(idEvento);
+                
+                // Separar vendas por tipo de operação
+                var vendas = todasAsVendas.Where(v => v.TipoOperacao != "CORTESIA").ToList();
+                var cortesias = todasAsVendas.Where(v => v.TipoOperacao == "CORTESIA").ToList();
+                
+                // Métricas de VENDA (operação financeira)
                 resultado.TotalQuantidadeVendas = vendas.Count;
-
-                // 2. Calcular valor total vendido
                 resultado.ValorTotalVendido = vendas.Sum(v => v.VlTotal);
+                
+                // Métricas de CORTESIA (operação não financeira)
+                resultado.TotalQuantidadeCortesia = cortesias.Count;
+                resultado.ValorTotalCortesia = cortesias.Sum(v => v.VlTotal);
 
-                // 3. Obter todos os recebimentos do evento
+                // 2. Obter todos os recebimentos do evento (apenas VENDA gera recebimento)
                 var recebimentos = _recebimentoRepository.ObterRecebimentosPorEvento(idEvento);
 
-                // 4. Calcular valor total recebido e troco
+                // 3. Calcular valor total recebido e troco (apenas de VENDA)
                 decimal valorTotalRecebido = recebimentos.Sum(r => r.VlRecebimento);
                 resultado.ValorTotalTroco = valorTotalRecebido - resultado.ValorTotalVendido;
 
-                // 5. Agrupar dados por forma de pagamento
+                // 4. Agrupar dados por forma de pagamento
                 var recebimentosAgrupados = recebimentos
                     .GroupBy(r => r.IdFormaPagamento)
                     .ToList();
@@ -74,7 +82,7 @@ namespace GestorEvento.Services
                     }
                 }
 
-                // 6. Agrupar dados por ponto de venda (caixa)
+                // 5. Agrupar dados por ponto de venda (caixa) - apenas VENDA
                 var vendasAgrupadas = vendas
                     .GroupBy(v => v.IdPontoVenda)
                     .ToList();
@@ -138,6 +146,84 @@ namespace GestorEvento.Services
             catch (Exception ex)
             {
                 UiHelper.ExibirErro("Erro", $"Erro ao obter dados do relatório: {ex.Message}");
+                return new RelatorioVendaData();
+            }
+        }
+
+        /// <summary>
+        /// Obtém os dados consolidados do relatório de cortesia para um evento
+        /// </summary>
+        public RelatorioVendaData ObterDadosRelatorioCortesia(int idEvento)
+        {
+            if (idEvento <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID do evento inválido");
+                return new RelatorioVendaData();
+            }
+
+            try
+            {
+                var resultado = new RelatorioVendaData();
+
+                var todasAsVendas = _vendaRepository.ObterVendasPorEvento(idEvento);
+                var cortesias = todasAsVendas
+                    .Where(v => string.Equals(v.TipoOperacao, "CORTESIA", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                resultado.TotalQuantidadeCortesia = cortesias.Count;
+                resultado.ValorTotalCortesia = cortesias.Sum(v => v.VlTotal);
+
+                var cortesiasPorCaixa = cortesias
+                    .GroupBy(v => v.IdPontoVenda)
+                    .ToList();
+
+                foreach (var grupo in cortesiasPorCaixa)
+                {
+                    var idPontoVenda = grupo.Key;
+                    var pontoVenda = _pontoVendaRepository.GetPontoVendaById(idPontoVenda);
+                    if (pontoVenda == null)
+                    {
+                        continue;
+                    }
+
+                    resultado.DadosPorCaixa.Add(new DadosCaixa
+                    {
+                        IdCaixa = pontoVenda.IdPontoVenda,
+                        NomeCaixa = pontoVenda.DsPontoVenda ?? $"Caixa {pontoVenda.NoPontoVenda}",
+                        NumeroCaixa = pontoVenda.NoPontoVenda,
+                        ValorTotal = grupo.Sum(v => v.VlTotal),
+                        ValorTroco = 0m,
+                        QuantidadeVendas = grupo.Count()
+                    });
+                }
+
+                resultado.DadosPorCaixa = resultado.DadosPorCaixa
+                    .OrderBy(d => d.NumeroCaixa)
+                    .ToList();
+
+                var produtosCortesia = _vendaRepository.ObterResumoProdutosCortesiaPorEvento(idEvento);
+                foreach (var (nomeProduto, quantidadeVendida, quantidadeDisponivel, precoUnitario, valorTotalCortesia) in produtosCortesia)
+                {
+                    decimal percentualTotal = resultado.ValorTotalCortesia > 0
+                        ? (valorTotalCortesia / resultado.ValorTotalCortesia) * 100
+                        : 0;
+
+                    resultado.DadosProdutosVendidos.Add(new DadosProdutoVendido
+                    {
+                        NomeProduto = nomeProduto,
+                        QuantidadeVendida = quantidadeVendida,
+                        QuantidadeDisponivel = quantidadeDisponivel,
+                        PrecoUnitario = precoUnitario,
+                        ValorTotalVendido = valorTotalCortesia,
+                        PercentualTotalVendas = percentualTotal
+                    });
+                }
+
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao obter dados do relatório de cortesia: {ex.Message}");
                 return new RelatorioVendaData();
             }
         }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using GestorEvento.Models;
@@ -31,13 +31,13 @@ namespace GestorEvento.Services
         {
             if (venda == null)
             {
-                UiHelper.ExibirAviso("Aviso", "Venda não pode ser nula");
+                UiHelper.ExibirAviso("Aviso", "Venda nÃ£o pode ser nula");
                 return 0;
             }
 
             if (venda.IdPontoVenda <= 0)
             {
-                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda invÃ¡lido");
                 return 0;
             }
 
@@ -47,9 +47,17 @@ namespace GestorEvento.Services
                 return 0;
             }
 
-            if (venda.VlTotal <= 0)
+            // ValidaÃ§Ã£o de valor total: VENDA exige > 0, CORTESIA permite = 0
+            string tipoOperacao = venda.TipoOperacao ?? "VENDA";
+            if (tipoOperacao == "VENDA" && venda.VlTotal <= 0)
             {
                 UiHelper.ExibirAviso("Aviso", "Valor total da venda deve ser maior que zero");
+                return 0;
+            }
+            
+            if (tipoOperacao == "CORTESIA" && venda.VlTotal < 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "Valor total nÃ£o pode ser negativo");
                 return 0;
             }
 
@@ -58,13 +66,13 @@ namespace GestorEvento.Services
             {
                 if (item.IdProdutoEvento <= 0)
                 {
-                    UiHelper.ExibirAviso("Aviso", "ID do produto-evento inválido no item");
+                    UiHelper.ExibirAviso("Aviso", "ID do produto-evento invÃ¡lido no item");
                     return 0;
                 }
 
                 if (string.IsNullOrWhiteSpace(item.NomeProduto))
                 {
-                    UiHelper.ExibirAviso("Aviso", "Nome do produto não pode estar vazio");
+                    UiHelper.ExibirAviso("Aviso", "Nome do produto nÃ£o pode estar vazio");
                     return 0;
                 }
 
@@ -76,7 +84,7 @@ namespace GestorEvento.Services
 
                 if (item.VlUnitario < 0)
                 {
-                    UiHelper.ExibirAviso("Aviso", "Valor unitário não pode ser negativo");
+                    UiHelper.ExibirAviso("Aviso", "Valor unitÃ¡rio nÃ£o pode ser negativo");
                     return 0;
                 }
 
@@ -104,13 +112,13 @@ namespace GestorEvento.Services
         }
 
         /// <summary>
-        /// Obtém uma venda por ID
+        /// ObtÃ©m uma venda por ID
         /// </summary>
         public Venda GetVendaById(int id)
         {
             if (id <= 0)
             {
-                UiHelper.ExibirAviso("Aviso", "ID da venda inválido");
+                UiHelper.ExibirAviso("Aviso", "ID da venda invÃ¡lido");
                 return null;
             }
 
@@ -132,7 +140,7 @@ namespace GestorEvento.Services
         {
             if (idPontoVenda <= 0)
             {
-                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda invÃ¡lido");
                 return new List<Venda>();
             }
 
@@ -148,14 +156,14 @@ namespace GestorEvento.Services
         }
 
         /// <summary>
-        /// Obtém resumo simplificado de vendas para fechamento de caixa (id, data, valor)
+        /// ObtÃ©m resumo simplificado de vendas para fechamento de caixa (id, data, valor)
         /// </summary>
-        public List<(int idVenda, DateTime dtVenda, decimal vlTotal)> GetResumoVendasByPontoVenda(int idPontoVenda)
+        public List<(int idVenda, DateTime dtVenda, decimal vlTotal, string tipoOperacao)> GetResumoVendasByPontoVenda(int idPontoVenda)
         {
             if (idPontoVenda <= 0)
             {
-                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda inválido");
-                return new List<(int, DateTime, decimal)>();
+                UiHelper.ExibirAviso("Aviso", "ID do ponto de venda invÃ¡lido");
+                return new List<(int, DateTime, decimal, string)>();
             }
 
             try
@@ -165,12 +173,12 @@ namespace GestorEvento.Services
             catch (Exception ex)
             {
                 UiHelper.ExibirErro("Erro", $"Erro ao obter resumo de vendas: {ex.Message}");
-                return new List<(int, DateTime, decimal)>();
+                return new List<(int, DateTime, decimal, string)>();
             }
         }
 
         /// <summary>
-        /// Registra uma venda com recebimentos e troco em uma transação atômica
+        /// Registra uma venda com recebimentos e troco em uma transaÃ§Ã£o atÃ´mica
         /// Se algo falhar, faz rollback de tudo
         /// </summary>
         public int RegistrarVendaComTrocoComTransacao(Venda venda, List<(int idFormaPagamento, decimal valor)> recebimentos, decimal vlTroco)
@@ -180,54 +188,62 @@ namespace GestorEvento.Services
 
             try
             {
-                // Validações iniciais
+                // ValidaÃ§Ãµes iniciais
                 if (venda == null)
-                    throw new ArgumentNullException("Venda não pode ser nula");
+                    throw new ArgumentNullException("Venda nÃ£o pode ser nula");
 
                 if (venda.IdPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda inválido");
+                    throw new ArgumentException("ID do ponto de venda invÃ¡lido");
 
                 if (venda.VlTotal <= 0)
                     throw new ArgumentException("Valor total da venda deve ser maior que zero");
 
                 if (recebimentos == null || recebimentos.Count == 0)
-                    throw new ArgumentException("Venda deve ter pelo menos um recebimento");
+                {
+                    // CORTESIA pode nÃ£o ter recebimento
+                    if (venda.TipoOperacao != "CORTESIA")
+                        throw new ArgumentException("Venda deve ter pelo menos um recebimento");
+                }
 
                 if (!PodeRegistrarVendaNoEvento(venda.IdPontoVenda))
-                    throw new ArgumentException("Não é possível registrar venda para este caixa.");
+                    throw new ArgumentException("NÃ£o Ã© possÃ­vel registrar venda para este caixa.");
 
-                // Abrir conexão e transação
+                // Abrir conexÃ£o e transaÃ§Ã£o
                 connection = new MySqlConnection(Connection.GetConnection());
                 connection.Open();
                 transaction = connection.BeginTransaction();
 
-                // 1. REGISTRAR VENDA E ITENS (usa transação internamente via RegistrarVenda)
+                // 1. REGISTRAR VENDA E ITENS (usa transaÃ§Ã£o internamente via RegistrarVenda)
                 int idVenda = RegistrarVenda(venda);
 
-                // 2. REGISTRAR RECEBIMENTOS em transação
-                foreach (var (idFormaPagamento, valor) in recebimentos)
+                // 2. REGISTRAR RECEBIMENTOS em transaÃ§Ã£o (apenas para VENDA)
+                if (venda.TipoOperacao == "VENDA")
                 {
-                    if (valor > 0)
+                    foreach (var (idFormaPagamento, valor) in recebimentos)
                     {
-                        var recebimento = new Recebimento
+                        if (valor > 0)
                         {
-                            IdVenda = idVenda,
-                            IdFormaPagamento = idFormaPagamento,
-                            VlRecebimento = valor,
-                            DtRecebimento = DateTime.Now
-                        };
+                            var recebimento = new Recebimento
+                            {
+                                IdVenda = idVenda,
+                                IdFormaPagamento = idFormaPagamento,
+                                VlRecebimento = valor,
+                                DtRecebimento = DateTime.Now
+                            };
 
-                        _recebimentoRepository.RegistrarRecebimentoComTransacao(connection, transaction, recebimento);
+                            _recebimentoRepository.RegistrarRecebimentoComTransacao(connection, transaction, recebimento);
+                        }
+                    }
+
+                    // 3. REGISTRAR TROCO em transaÃ§Ã£o (se houver, apenas para VENDA)
+                    if (vlTroco > 0)
+                    {
+                        _movimentacaoRepository.RegistrarTrocoComTransacao(connection, transaction, venda.IdPontoVenda, idVenda, vlTroco);
                     }
                 }
+                // Para CORTESIA, nÃ£o registra recebimento nem troco
 
-                // 3. REGISTRAR TROCO em transação (se houver)
-                if (vlTroco > 0)
-                {
-                    _movimentacaoRepository.RegistrarTrocoComTransacao(connection, transaction, venda.IdPontoVenda, idVenda, vlTroco);
-                }
-
-                // Se chegou aqui, tudo OK → commit
+                // Se chegou aqui, tudo OK â†’ commit
                 transaction.Commit();
 
                 return idVenda;
@@ -246,7 +262,7 @@ namespace GestorEvento.Services
                     }
                 }
 
-                throw new Exception($"Erro ao registrar venda com troco (transação revertida): {ex.Message}", ex);
+                throw new Exception($"Erro ao registrar venda com troco (transaÃ§Ã£o revertida): {ex.Message}", ex);
             }
             finally
             {
@@ -267,26 +283,26 @@ namespace GestorEvento.Services
             var pontoVenda = _pontoVendaRepository.GetPontoVendaById(idPontoVenda);
             if (pontoVenda == null)
             {
-                UiHelper.ExibirAviso("Aviso", "Ponto de venda não encontrado.");
+                UiHelper.ExibirAviso("Aviso", "Ponto de venda nÃ£o encontrado.");
                 return false;
             }
 
             if (!string.Equals(pontoVenda.CdStatus, "Aberto", StringComparison.OrdinalIgnoreCase))
             {
-                UiHelper.ExibirAviso("Aviso", "Caixa fechado. Não é possível registrar venda.");
+                UiHelper.ExibirAviso("Aviso", "Caixa fechado. NÃ£o Ã© possÃ­vel registrar venda.");
                 return false;
             }
 
             var evento = _eventoRepository.GetEventoById(pontoVenda.IdEvento);
             if (evento == null)
             {
-                UiHelper.ExibirAviso("Aviso", "Evento não encontrado.");
+                UiHelper.ExibirAviso("Aviso", "Evento nÃ£o encontrado.");
                 return false;
             }
 
             if (evento.IsEncerrado)
             {
-                UiHelper.ExibirAviso("Aviso", "Evento encerrado. Não é possível registrar venda.");
+                UiHelper.ExibirAviso("Aviso", "Evento encerrado. NÃ£o Ã© possÃ­vel registrar venda.");
                 return false;
             }
 
@@ -294,3 +310,4 @@ namespace GestorEvento.Services
         }
     }
 }
+

@@ -283,6 +283,12 @@
     <Compile Include="Views\FormRelatorioCaixa.Designer.cs">
       <DependentUpon>FormRelatorioCaixa.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FormRelatorioCortesia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormRelatorioCortesia.Designer.cs">
+      <DependentUpon>FormRelatorioCortesia.cs</DependentUpon>
+    </Compile>
     <Compile Include="Components\ModernCard.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -324,6 +330,9 @@
     <EmbeddedResource Include="Views\FormAbrirCaixa.resx">
       <DependentUpon>FormAbrirCaixa.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormRelatorioCortesia.resx">
+      <DependentUpon>FormRelatorioCortesia.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormSelecionarPontoVenda.resx">
       <DependentUpon>FormSelecionarPontoVenda.cs</DependentUpon>

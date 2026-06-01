@@ -11,6 +11,11 @@ namespace GestorEvento.Models
         public int TotalQuantidadeVendas { get; set; }
         public decimal ValorTotalVendido { get; set; }
         public decimal ValorTotalTroco { get; set; }
+        
+        // Métricas de CORTESIA (separadas de VENDA para não contaminar financeiro)
+        public int TotalQuantidadeCortesia { get; set; }
+        public decimal ValorTotalCortesia { get; set; }
+        
         public List<DadosPagamento> DadosPorFormaPagamento { get; set; }
         public List<DadosCaixa> DadosPorCaixa { get; set; }
         public List<DadosProdutoVendido> DadosProdutosVendidos { get; set; }

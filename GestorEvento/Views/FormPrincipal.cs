@@ -147,6 +147,11 @@ namespace GestorEvento.Views
             ToolStripMenuItem itemCaixas = new ToolStripMenuItem("💰 Caixas (PDV)");
             itemCaixas.Click += (s, args) => AbrirRelatorioCaixas();
             menuRelatorios.Items.Add(itemCaixas);
+
+            // Adicionar item Relatório de Cortesia
+            ToolStripMenuItem itemCortesia = new ToolStripMenuItem("🎁 Cortesias");
+            itemCortesia.Click += (s, args) => AbrirRelatorioCortesias();
+            menuRelatorios.Items.Add(itemCortesia);
             
             // adicionar mais relatórios no futuro:
             // ToolStripMenuItem itemTeste = new ToolStripMenuItem("📦 Estoque");
@@ -212,6 +217,33 @@ namespace GestorEvento.Views
             catch (Exception ex)
             {
                 MessageBox.Show("Erro ao abrir FormRelatorioCaixa: " + ex.Message + "\n" + ex.StackTrace, "Erro");
+            }
+        }
+
+        private void AbrirRelatorioCortesias()
+        {
+            try
+            {
+                foreach (Form f in this.MdiChildren)
+                {
+                    if (f is FormRelatorioCortesia)
+                    {
+                        f.Activate();
+                        return;
+                    }
+                }
+
+                FormRelatorioCortesia form = new FormRelatorioCortesia();
+                form.Text = "Relatório de Cortesias";
+                form.MdiParent = this;
+                form.Show();
+
+                form.Location = new Point(0, 0);
+                form.Size = new Size(this.ClientSize.Width - panelMenu.Width - 5, this.ClientSize.Height - panelTitulo.Height - 35);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao abrir FormRelatorioCortesia: " + ex.Message + "\n" + ex.StackTrace, "Erro");
             }
         }
 
