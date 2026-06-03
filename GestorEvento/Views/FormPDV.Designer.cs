@@ -48,8 +48,8 @@ namespace GestorEvento.Views
             // panelTitulo
             // 
             this.panelTitulo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.panelTitulo.Controls.Add(this.btnFechar);
             this.panelTitulo.Controls.Add(this.btnMinimizar);
+            this.panelTitulo.Controls.Add(this.btnFechar);            
             this.panelTitulo.Controls.Add(this.lblTitulo);
             this.panelTitulo.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTitulo.Location = new System.Drawing.Point(0, 0);
@@ -160,7 +160,7 @@ namespace GestorEvento.Views
             this.groupBoxTipoOperacao.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.groupBoxTipoOperacao.Location = new System.Drawing.Point(5, 285);
             this.groupBoxTipoOperacao.Name = "groupBoxTipoOperacao";
-            this.groupBoxTipoOperacao.Size = new System.Drawing.Size(300, 50);
+            this.groupBoxTipoOperacao.Size = new System.Drawing.Size(319, 50);
             this.groupBoxTipoOperacao.TabIndex = 10;
             this.groupBoxTipoOperacao.TabStop = false;
             this.groupBoxTipoOperacao.Text = "Tipo de Operação";
@@ -170,9 +170,9 @@ namespace GestorEvento.Views
             this._rbCortesia.AutoSize = true;
             this._rbCortesia.Location = new System.Drawing.Point(120, 20);
             this._rbCortesia.Name = "_rbCortesia";
-            this._rbCortesia.Size = new System.Drawing.Size(117, 19);
+            this._rbCortesia.Size = new System.Drawing.Size(123, 19);
             this._rbCortesia.TabIndex = 1;
-            this._rbCortesia.Text = "AMIGO ALIANÇA";
+            this._rbCortesia.Text = "AMIGOS ALIANÇA";
             this._rbCortesia.UseVisualStyleBackColor = true;
             this._rbCortesia.CheckedChanged += new System.EventHandler(this.RbTipoOperacao_CheckedChanged);
             // 

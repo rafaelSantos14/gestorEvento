@@ -17,6 +17,7 @@ namespace GestorEvento.Views
         private readonly RelatorioVendaService _relatorioService;
         private readonly EventoService _eventoService;
         private List<Evento> _eventosCompletos;
+        private string _statusFiltro = "Todos";
 
         public FormRelatorioCortesia()
         {
@@ -26,7 +27,6 @@ namespace GestorEvento.Views
             _eventoService = new EventoService();
             _eventosCompletos = new List<Evento>();
 
-            EstiloManager.AplicarEstiloInfo(btnAtualizar);
             DoubleBuffered = true;
             ConfigurarGridProdutos();
             CarregarEventos();
@@ -38,6 +38,15 @@ namespace GestorEvento.Views
             {
                 _eventosCompletos = _eventoService.GetAllEventos();
                 cmbEventoResultados.DataSource = null;
+                
+                // Inicializar ComboBox de status se não estiver inicializado
+                if (cmbStatusFiltro != null && cmbStatusFiltro.Items.Count == 0)
+                {
+                    cmbStatusFiltro.Items.AddRange(new[] { "Todos", "Ativo", "Encerrado" });
+                    cmbStatusFiltro.SelectedItem = "Todos";
+                    cmbStatusFiltro.SelectedIndexChanged += CmbStatusFiltro_SelectedIndexChanged;
+                }
+                
                 txtBuscaEvento.Focus();
             }
             catch (Exception ex)
@@ -48,6 +57,28 @@ namespace GestorEvento.Views
 
         private void TxtBuscaEvento_TextChanged(object sender, EventArgs e)
         {
+            AtualizarComboEventos();
+        }
+
+        private void CmbEventoResultados_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbEventoResultados.SelectedValue != null && cmbEventoResultados.SelectedValue is int idEvento && idEvento > 0)
+            {
+                CarregarDadosRelatorio(idEvento);
+            }
+        }
+
+        private void CmbStatusFiltro_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbStatusFiltro != null && cmbStatusFiltro.SelectedItem != null)
+            {
+                _statusFiltro = cmbStatusFiltro.SelectedItem.ToString();
+                AtualizarComboEventos();
+            }
+        }
+
+        private void AtualizarComboEventos()
+        {
             string textoBusca = txtBuscaEvento.Text.ToLower().Trim();
 
             if (string.IsNullOrWhiteSpace(textoBusca))
@@ -57,16 +88,7 @@ namespace GestorEvento.Views
                 return;
             }
 
-            var eventosFiltrados = _eventosCompletos
-                .Where(evento => textoBusca == "%"
-                    || (evento.Nome ?? string.Empty).ToLower().Contains(textoBusca)
-                    || evento.DataEvento.ToString("dd/MM/yyyy").Contains(textoBusca))
-                .Select(evento => new
-                {
-                    Id = evento.Id,
-                    DisplayText = $"{evento.Nome} - {evento.DataEvento:dd/MM/yyyy}"
-                })
-                .ToList();
+            var eventosFiltrados = FiltrarEventosPorNomeEStatus(textoBusca);
 
             cmbEventoResultados.DataSource = eventosFiltrados;
             cmbEventoResultados.DisplayMember = "DisplayText";
@@ -75,12 +97,53 @@ namespace GestorEvento.Views
             cmbEventoResultados.Invalidate();
         }
 
-        private void CmbEventoResultados_SelectedIndexChanged(object sender, EventArgs e)
+        private List<object> FiltrarEventosPorNomeEStatus(string textoBusca)
         {
-            if (cmbEventoResultados.SelectedValue != null && cmbEventoResultados.SelectedValue is int idEvento && idEvento > 0)
+            var eventosFiltrados = new List<object>();
+            foreach (var evento in _eventosCompletos)
             {
-                CarregarDadosRelatorio(idEvento);
+                // Filtrar por status
+                bool passouFiltroStatus = false;
+                if (_statusFiltro == "Todos")
+                {
+                    passouFiltroStatus = true;
+                }
+                else if (_statusFiltro == "Ativo" && string.Equals(evento.CdStatus, "Ativo", StringComparison.OrdinalIgnoreCase))
+                {
+                    passouFiltroStatus = true;
+                }
+                else if (_statusFiltro == "Encerrado" && string.Equals(evento.CdStatus, "Encerrado", StringComparison.OrdinalIgnoreCase))
+                {
+                    passouFiltroStatus = true;
+                }
+
+                if (!passouFiltroStatus)
+                    continue;
+
+                // Filtrar por nome/data
+                bool correspondeBusca = false;
+                if (textoBusca == "%")
+                {
+                    correspondeBusca = true;
+                }
+                else
+                {
+                    string nomeEvento = evento.Nome ?? string.Empty;
+                    string dataEvento = evento.DataEvento.ToString("dd/MM/yyyy");
+                    correspondeBusca = nomeEvento.ToLower().Contains(textoBusca) || dataEvento.Contains(textoBusca);
+                }
+
+                if (correspondeBusca)
+                {
+                    eventosFiltrados.Add(new
+                    {
+                        Id = evento.Id,
+                        DisplayText = $"{evento.Nome} - {evento.DataEvento:dd/MM/yyyy} [{evento.CdStatus}]"
+                    });
+                }
             }
+
+            return eventosFiltrados;
         }
 
         private void CarregarDadosRelatorio(int idEvento)

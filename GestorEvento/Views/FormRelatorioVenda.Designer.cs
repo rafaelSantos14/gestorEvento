@@ -35,11 +35,12 @@ namespace GestorEvento.Views
             this.btnMinimizar = new System.Windows.Forms.Button();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.panelFiltro = new System.Windows.Forms.Panel();
-            this.btnAtualizar = new System.Windows.Forms.Button();
             this.txtBuscaEvento = new System.Windows.Forms.TextBox();
+            this.cmbStatusFiltro = new System.Windows.Forms.ComboBox();
             this.cmbEventoResultados = new System.Windows.Forms.ComboBox();
             this.lblEvento = new System.Windows.Forms.Label();
             this.lblResultados = new System.Windows.Forms.Label();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.panelCards = new System.Windows.Forms.Panel();
             this.pnlCardTroco = new GestorEvento.Components.ModernCard();
             this.lblTrocoValor = new System.Windows.Forms.Label();
@@ -76,8 +77,8 @@ namespace GestorEvento.Views
             // panelTitulo
             // 
             this.panelTitulo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.panelTitulo.Controls.Add(this.btnFechar);
             this.panelTitulo.Controls.Add(this.btnMinimizar);
+            this.panelTitulo.Controls.Add(this.btnFechar);            
             this.panelTitulo.Controls.Add(this.lblTitulo);
             this.panelTitulo.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTitulo.Location = new System.Drawing.Point(0, 0);
@@ -131,32 +132,18 @@ namespace GestorEvento.Views
             // panelFiltro
             // 
             this.panelFiltro.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.panelFiltro.Controls.Add(this.btnAtualizar);
             this.panelFiltro.Controls.Add(this.txtBuscaEvento);
+            this.panelFiltro.Controls.Add(this.cmbStatusFiltro);
             this.panelFiltro.Controls.Add(this.cmbEventoResultados);
             this.panelFiltro.Controls.Add(this.lblEvento);
             this.panelFiltro.Controls.Add(this.lblResultados);
+            this.panelFiltro.Controls.Add(this.lblStatus);
             this.panelFiltro.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelFiltro.Location = new System.Drawing.Point(0, 50);
             this.panelFiltro.Name = "panelFiltro";
             this.panelFiltro.Padding = new System.Windows.Forms.Padding(15);
             this.panelFiltro.Size = new System.Drawing.Size(1000, 100);
             this.panelFiltro.TabIndex = 1;
-            // 
-            // btnAtualizar
-            // 
-            this.btnAtualizar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.btnAtualizar.FlatAppearance.BorderSize = 0;
-            this.btnAtualizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAtualizar.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.btnAtualizar.ForeColor = System.Drawing.Color.White;
-            this.btnAtualizar.Location = new System.Drawing.Point(473, 30);
-            this.btnAtualizar.Name = "btnAtualizar";
-            this.btnAtualizar.Size = new System.Drawing.Size(120, 35);
-            this.btnAtualizar.TabIndex = 2;
-            this.btnAtualizar.Text = "Atualizar";
-            this.btnAtualizar.UseVisualStyleBackColor = false;
-            this.btnAtualizar.Click += new System.EventHandler(this.BtnAtualizar_Click);
             // 
             // txtBuscaEvento
             // 
@@ -166,6 +153,19 @@ namespace GestorEvento.Views
             this.txtBuscaEvento.Size = new System.Drawing.Size(320, 25);
             this.txtBuscaEvento.TabIndex = 1;
             this.txtBuscaEvento.TextChanged += new System.EventHandler(this.TxtBuscaEvento_TextChanged);
+            // 
+            // cmbStatusFiltro
+            // 
+            this.cmbStatusFiltro.DropDownHeight = 100;
+            this.cmbStatusFiltro.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatusFiltro.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cmbStatusFiltro.FormattingEnabled = true;
+            this.cmbStatusFiltro.IntegralHeight = false;
+            this.cmbStatusFiltro.Location = new System.Drawing.Point(526, 20);
+            this.cmbStatusFiltro.Name = "cmbStatusFiltro";
+            this.cmbStatusFiltro.Size = new System.Drawing.Size(150, 25);
+            this.cmbStatusFiltro.TabIndex = 3;
+            this.cmbStatusFiltro.SelectedIndexChanged += new System.EventHandler(this.CmbStatusFiltro_SelectedIndexChanged);
             // 
             // cmbEventoResultados
             // 
@@ -199,6 +199,16 @@ namespace GestorEvento.Views
             this.lblResultados.Size = new System.Drawing.Size(60, 19);
             this.lblResultados.TabIndex = 0;
             this.lblResultados.Text = "Eventos:";
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblStatus.Location = new System.Drawing.Point(479, 23);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(50, 19);
+            this.lblStatus.TabIndex = 5;
+            this.lblStatus.Text = "Status:";
             // 
             // panelCards
             // 
@@ -477,8 +487,8 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Panel panelFiltro;
         private System.Windows.Forms.TextBox txtBuscaEvento;
         private System.Windows.Forms.ComboBox cmbEventoResultados;
+        private System.Windows.Forms.ComboBox cmbStatusFiltro;
         private System.Windows.Forms.Label lblEvento;
-        private System.Windows.Forms.Button btnAtualizar;
         private System.Windows.Forms.Panel panelCards;
         private ModernCard pnlCardQtde;
         private System.Windows.Forms.Label lblQtdeValor;
@@ -499,6 +509,7 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Button btnFechar;
         private System.Windows.Forms.Button btnMinimizar;
         private System.Windows.Forms.Label lblResultados;
+        private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Panel panelProdutos;
         private System.Windows.Forms.DataGridView dgvProdutosVendidos;
         private System.Windows.Forms.Label lblProdutosVendidos;

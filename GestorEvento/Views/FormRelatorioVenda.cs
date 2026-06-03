@@ -21,6 +21,7 @@ namespace GestorEvento.Views
         private RelatorioVendaService _relatorioService;
         private EventoService _eventoService;
         private List<Evento> _eventosCompletos;
+        private string _statusFiltro = "Todos";
 
         public FormRelatorioVenda()
         {
@@ -29,10 +30,7 @@ namespace GestorEvento.Views
             _relatorioService = new RelatorioVendaService();
             _eventoService = new EventoService();
             _eventosCompletos = new List<Evento>();
-
-            // Configurar estilos
-            EstiloManager.AplicarEstiloInfo(btnAtualizar);
-            
+           
             // Reduzir flickering
             this.DoubleBuffered = true;
 
@@ -50,6 +48,15 @@ namespace GestorEvento.Views
                 
                 // ComboBox inicia vazio - será preenchido conforme digita no TextBox
                 cmbEventoResultados.DataSource = null;
+                
+                // Inicializar ComboBox de status se não estiver inicializado
+                if (cmbStatusFiltro != null && cmbStatusFiltro.Items.Count == 0)
+                {
+                    cmbStatusFiltro.Items.AddRange(new[] { "Todos", "Ativo", "Encerrado" });
+                    cmbStatusFiltro.SelectedItem = "Todos";
+                    cmbStatusFiltro.SelectedIndexChanged += CmbStatusFiltro_SelectedIndexChanged;
+                }
+                
                 txtBuscaEvento.Focus();
             }
             catch (Exception ex)
@@ -60,52 +67,7 @@ namespace GestorEvento.Views
 
         private void TxtBuscaEvento_TextChanged(object sender, EventArgs e)
         {
-            // Filtrar eventos conforme digita no TextBox
-            string textoBusca = txtBuscaEvento.Text.ToLower().Trim();
-
-            if (string.IsNullOrWhiteSpace(textoBusca))
-            {
-                // Se vazio, limpar ComboBox
-                cmbEventoResultados.DataSource = null;
-                cmbEventoResultados.Refresh();
-            }
-            else if (textoBusca == "%")
-            {
-                // % sozinho funciona como curinga para listar todos os eventos
-                var todosEventos = _eventosCompletos
-                    .Select(evento => new
-                    {
-                        Id = evento.Id,
-                        DisplayText = $"{evento.Nome} - {evento.DataEvento:dd/MM/yyyy}"
-                    })
-                    .ToList();
-
-                cmbEventoResultados.DataSource = todosEventos;
-                cmbEventoResultados.DisplayMember = "DisplayText";
-                cmbEventoResultados.ValueMember = "Id";
-                cmbEventoResultados.Refresh();
-                cmbEventoResultados.Invalidate();
-            }
-            else
-            {
-                // Filtrar eventos que correspondem ao texto digitado
-                var eventosFiltrados = _eventosCompletos
-                    .Where(evento => evento.Nome.ToLower().Contains(textoBusca) || 
-                                evento.DataEvento.ToString("dd/MM/yyyy").Contains(textoBusca))
-                    .Select(evento => new
-                    {
-                        Id = evento.Id,
-                        DisplayText = $"{evento.Nome} - {evento.DataEvento:dd/MM/yyyy}"
-                    })
-                    .ToList();
-
-                // Atualizar ComboBox com resultados
-                cmbEventoResultados.DataSource = eventosFiltrados;
-                cmbEventoResultados.DisplayMember = "DisplayText";
-                cmbEventoResultados.ValueMember = "Id";
-                cmbEventoResultados.Refresh();
-                cmbEventoResultados.Invalidate();
-            }
+            AtualizarComboEventos();
         }
 
         private void CmbEventoResultados_SelectedIndexChanged(object sender, EventArgs e)
@@ -115,6 +77,84 @@ namespace GestorEvento.Views
             {
                 CarregarDadosRelatorio(idEvento);
             }
+        }
+
+        private void CmbStatusFiltro_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbStatusFiltro != null && cmbStatusFiltro.SelectedItem != null)
+            {
+                _statusFiltro = cmbStatusFiltro.SelectedItem.ToString();
+                AtualizarComboEventos();
+            }
+        }
+
+        private void AtualizarComboEventos()
+        {
+            string textoBusca = txtBuscaEvento.Text.ToLower().Trim();
+
+            if (string.IsNullOrWhiteSpace(textoBusca))
+            {
+                cmbEventoResultados.DataSource = null;
+                cmbEventoResultados.Refresh();
+                return;
+            }
+
+            var eventosFiltrados = FiltrarEventosPorNomeEStatus(textoBusca);
+
+            cmbEventoResultados.DataSource = eventosFiltrados;
+            cmbEventoResultados.DisplayMember = "DisplayText";
+            cmbEventoResultados.ValueMember = "Id";
+            cmbEventoResultados.Refresh();
+            cmbEventoResultados.Invalidate();
+        }
+
+        private List<object> FiltrarEventosPorNomeEStatus(string textoBusca)
+        {
+            var eventosFiltrados = new List<object>();
+            foreach (var evento in _eventosCompletos)
+            {
+                // Filtrar por status
+                bool passouFiltroStatus = false;
+                if (_statusFiltro == "Todos")
+                {
+                    passouFiltroStatus = true;
+                }
+                else if (_statusFiltro == "Ativo" && string.Equals(evento.CdStatus, "Ativo", StringComparison.OrdinalIgnoreCase))
+                {
+                    passouFiltroStatus = true;
+                }
+                else if (_statusFiltro == "Encerrado" && string.Equals(evento.CdStatus, "Encerrado", StringComparison.OrdinalIgnoreCase))
+                {
+                    passouFiltroStatus = true;
+                }
+
+                if (!passouFiltroStatus)
+                    continue;
+
+                // Filtrar por nome/data
+                bool correspondeBusca = false;
+                if (textoBusca == "%")
+                {
+                    correspondeBusca = true;
+                }
+                else
+                {
+                    string nomeEvento = evento.Nome ?? string.Empty;
+                    string dataEvento = evento.DataEvento.ToString("dd/MM/yyyy");
+                    correspondeBusca = nomeEvento.ToLower().Contains(textoBusca) || dataEvento.Contains(textoBusca);
+                }
+
+                if (correspondeBusca)
+                {
+                    eventosFiltrados.Add(new
+                    {
+                        Id = evento.Id,
+                        DisplayText = $"{evento.Nome} - {evento.DataEvento:dd/MM/yyyy} [{evento.CdStatus}]"
+                    });
+                }
+            }
+
+            return eventosFiltrados;
         }
 
         private void CarregarDadosRelatorio(int idEvento)

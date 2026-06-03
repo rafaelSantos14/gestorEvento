@@ -20,15 +20,16 @@ namespace GestorEvento.Views
         private void InitializeComponent()
         {
             this.panelTitulo = new System.Windows.Forms.Panel();
-            this.btnFechar = new System.Windows.Forms.Button();
             this.btnMinimizar = new System.Windows.Forms.Button();
+            this.btnFechar = new System.Windows.Forms.Button();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.panelFiltro = new System.Windows.Forms.Panel();
-            this.btnAtualizar = new System.Windows.Forms.Button();
             this.txtBuscaEvento = new System.Windows.Forms.TextBox();
+            this.cmbStatusFiltro = new System.Windows.Forms.ComboBox();
             this.cmbEventoResultados = new System.Windows.Forms.ComboBox();
             this.lblEvento = new System.Windows.Forms.Label();
             this.lblResultados = new System.Windows.Forms.Label();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.panelCards = new System.Windows.Forms.Panel();
             this.pnlCardTroco = new GestorEvento.Components.ModernCard();
             this.lblTrocoTotalValor = new System.Windows.Forms.Label();
@@ -69,30 +70,14 @@ namespace GestorEvento.Views
             // panelTitulo
             // 
             this.panelTitulo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.panelTitulo.Controls.Add(this.btnFechar);
             this.panelTitulo.Controls.Add(this.btnMinimizar);
+            this.panelTitulo.Controls.Add(this.btnFechar);
             this.panelTitulo.Controls.Add(this.lblTitulo);
             this.panelTitulo.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTitulo.Location = new System.Drawing.Point(0, 0);
             this.panelTitulo.Name = "panelTitulo";
-            this.panelTitulo.Size = new System.Drawing.Size(1000, 50);
+            this.panelTitulo.Size = new System.Drawing.Size(1017, 50);
             this.panelTitulo.TabIndex = 0;
-            // 
-            // btnFechar
-            // 
-            this.btnFechar.BackColor = System.Drawing.Color.Transparent;
-            this.btnFechar.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnFechar.FlatAppearance.BorderSize = 0;
-            this.btnFechar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnFechar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.btnFechar.ForeColor = System.Drawing.Color.White;
-            this.btnFechar.Location = new System.Drawing.Point(910, 0);
-            this.btnFechar.Name = "btnFechar";
-            this.btnFechar.Size = new System.Drawing.Size(45, 50);
-            this.btnFechar.TabIndex = 3;
-            this.btnFechar.Text = "✕";
-            this.btnFechar.UseVisualStyleBackColor = false;
-            this.btnFechar.Click += new System.EventHandler(this.btnFechar_Click);
             // 
             // btnMinimizar
             // 
@@ -102,13 +87,29 @@ namespace GestorEvento.Views
             this.btnMinimizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMinimizar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnMinimizar.ForeColor = System.Drawing.Color.White;
-            this.btnMinimizar.Location = new System.Drawing.Point(955, 0);
+            this.btnMinimizar.Location = new System.Drawing.Point(927, 0);
             this.btnMinimizar.Name = "btnMinimizar";
             this.btnMinimizar.Size = new System.Drawing.Size(45, 50);
             this.btnMinimizar.TabIndex = 2;
             this.btnMinimizar.Text = "−";
             this.btnMinimizar.UseVisualStyleBackColor = false;
             this.btnMinimizar.Click += new System.EventHandler(this.btnMinimizar_Click);
+            // 
+            // btnFechar
+            // 
+            this.btnFechar.BackColor = System.Drawing.Color.Transparent;
+            this.btnFechar.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnFechar.FlatAppearance.BorderSize = 0;
+            this.btnFechar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFechar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnFechar.ForeColor = System.Drawing.Color.White;
+            this.btnFechar.Location = new System.Drawing.Point(972, 0);
+            this.btnFechar.Name = "btnFechar";
+            this.btnFechar.Size = new System.Drawing.Size(45, 50);
+            this.btnFechar.TabIndex = 3;
+            this.btnFechar.Text = "✕";
+            this.btnFechar.UseVisualStyleBackColor = false;
+            this.btnFechar.Click += new System.EventHandler(this.btnFechar_Click);
             // 
             // lblTitulo
             // 
@@ -117,39 +118,25 @@ namespace GestorEvento.Views
             this.lblTitulo.ForeColor = System.Drawing.Color.White;
             this.lblTitulo.Location = new System.Drawing.Point(15, 12);
             this.lblTitulo.Name = "lblTitulo";
-            this.lblTitulo.Size = new System.Drawing.Size(306, 25);
+            this.lblTitulo.Size = new System.Drawing.Size(271, 25);
             this.lblTitulo.TabIndex = 0;
             this.lblTitulo.Text = "RELATÓRIO DE CAIXAS (PDV)";
             // 
             // panelFiltro
             // 
             this.panelFiltro.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.panelFiltro.Controls.Add(this.btnAtualizar);
             this.panelFiltro.Controls.Add(this.txtBuscaEvento);
+            this.panelFiltro.Controls.Add(this.cmbStatusFiltro);
             this.panelFiltro.Controls.Add(this.cmbEventoResultados);
             this.panelFiltro.Controls.Add(this.lblEvento);
             this.panelFiltro.Controls.Add(this.lblResultados);
+            this.panelFiltro.Controls.Add(this.lblStatus);
             this.panelFiltro.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelFiltro.Location = new System.Drawing.Point(0, 50);
             this.panelFiltro.Name = "panelFiltro";
             this.panelFiltro.Padding = new System.Windows.Forms.Padding(15);
-            this.panelFiltro.Size = new System.Drawing.Size(1000, 100);
+            this.panelFiltro.Size = new System.Drawing.Size(1017, 100);
             this.panelFiltro.TabIndex = 1;
-            // 
-            // btnAtualizar
-            // 
-            this.btnAtualizar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.btnAtualizar.FlatAppearance.BorderSize = 0;
-            this.btnAtualizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAtualizar.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.btnAtualizar.ForeColor = System.Drawing.Color.White;
-            this.btnAtualizar.Location = new System.Drawing.Point(473, 30);
-            this.btnAtualizar.Name = "btnAtualizar";
-            this.btnAtualizar.Size = new System.Drawing.Size(120, 35);
-            this.btnAtualizar.TabIndex = 3;
-            this.btnAtualizar.Text = "Atualizar";
-            this.btnAtualizar.UseVisualStyleBackColor = false;
-            this.btnAtualizar.Click += new System.EventHandler(this.BtnAtualizar_Click);
             // 
             // txtBuscaEvento
             // 
@@ -159,6 +146,19 @@ namespace GestorEvento.Views
             this.txtBuscaEvento.Size = new System.Drawing.Size(320, 25);
             this.txtBuscaEvento.TabIndex = 1;
             this.txtBuscaEvento.TextChanged += new System.EventHandler(this.TxtBuscaEvento_TextChanged);
+            // 
+            // cmbStatusFiltro
+            // 
+            this.cmbStatusFiltro.DropDownHeight = 100;
+            this.cmbStatusFiltro.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatusFiltro.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cmbStatusFiltro.FormattingEnabled = true;
+            this.cmbStatusFiltro.IntegralHeight = false;
+            this.cmbStatusFiltro.Location = new System.Drawing.Point(535, 20);
+            this.cmbStatusFiltro.Name = "cmbStatusFiltro";
+            this.cmbStatusFiltro.Size = new System.Drawing.Size(150, 25);
+            this.cmbStatusFiltro.TabIndex = 3;
+            this.cmbStatusFiltro.SelectedIndexChanged += new System.EventHandler(this.CmbStatusFiltro_SelectedIndexChanged);
             // 
             // cmbEventoResultados
             // 
@@ -193,6 +193,16 @@ namespace GestorEvento.Views
             this.lblResultados.TabIndex = 4;
             this.lblResultados.Text = "Eventos:";
             // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblStatus.Location = new System.Drawing.Point(479, 23);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(50, 19);
+            this.lblStatus.TabIndex = 5;
+            this.lblStatus.Text = "Status:";
+            // 
             // panelCards
             // 
             this.panelCards.BackColor = System.Drawing.Color.White;
@@ -204,7 +214,7 @@ namespace GestorEvento.Views
             this.panelCards.Location = new System.Drawing.Point(0, 150);
             this.panelCards.Name = "panelCards";
             this.panelCards.Padding = new System.Windows.Forms.Padding(15);
-            this.panelCards.Size = new System.Drawing.Size(1000, 140);
+            this.panelCards.Size = new System.Drawing.Size(1017, 140);
             this.panelCards.TabIndex = 2;
             // 
             // pnlCardTroco
@@ -239,7 +249,7 @@ namespace GestorEvento.Views
             this.lblTrocoTotalLabel.ForeColor = System.Drawing.Color.DarkGray;
             this.lblTrocoTotalLabel.Location = new System.Drawing.Point(10, 10);
             this.lblTrocoTotalLabel.Name = "lblTrocoTotalLabel";
-            this.lblTrocoTotalLabel.Size = new System.Drawing.Size(78, 19);
+            this.lblTrocoTotalLabel.Size = new System.Drawing.Size(75, 19);
             this.lblTrocoTotalLabel.TabIndex = 0;
             this.lblTrocoTotalLabel.Text = "Total Troco";
             // 
@@ -264,7 +274,7 @@ namespace GestorEvento.Views
             this.lblTicketMedioValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(31)))), ((int)(((byte)(162)))));
             this.lblTicketMedioValor.Location = new System.Drawing.Point(10, 45);
             this.lblTicketMedioValor.Name = "lblTicketMedioValor";
-            this.lblTicketMedioValor.Size = new System.Drawing.Size(64, 32);
+            this.lblTicketMedioValor.Size = new System.Drawing.Size(62, 32);
             this.lblTicketMedioValor.TabIndex = 1;
             this.lblTicketMedioValor.Text = "R$ -";
             // 
@@ -275,7 +285,7 @@ namespace GestorEvento.Views
             this.lblTicketMedioLabel.ForeColor = System.Drawing.Color.DarkGray;
             this.lblTicketMedioLabel.Location = new System.Drawing.Point(10, 10);
             this.lblTicketMedioLabel.Name = "lblTicketMedioLabel";
-            this.lblTicketMedioLabel.Size = new System.Drawing.Size(89, 19);
+            this.lblTicketMedioLabel.Size = new System.Drawing.Size(87, 19);
             this.lblTicketMedioLabel.TabIndex = 0;
             this.lblTicketMedioLabel.Text = "Ticket Médio";
             // 
@@ -347,7 +357,7 @@ namespace GestorEvento.Views
             this.lblCaixasLabel.ForeColor = System.Drawing.Color.DarkGray;
             this.lblCaixasLabel.Location = new System.Drawing.Point(10, 10);
             this.lblCaixasLabel.Name = "lblCaixasLabel";
-            this.lblCaixasLabel.Size = new System.Drawing.Size(152, 19);
+            this.lblCaixasLabel.Size = new System.Drawing.Size(181, 19);
             this.lblCaixasLabel.TabIndex = 0;
             this.lblCaixasLabel.Text = "Quantidade Total de Vendas";
             // 
@@ -360,7 +370,7 @@ namespace GestorEvento.Views
             this.panelGraficos.Location = new System.Drawing.Point(0, 290);
             this.panelGraficos.Name = "panelGraficos";
             this.panelGraficos.Padding = new System.Windows.Forms.Padding(15);
-            this.panelGraficos.Size = new System.Drawing.Size(1000, 260);
+            this.panelGraficos.Size = new System.Drawing.Size(1017, 260);
             this.panelGraficos.TabIndex = 3;
             // 
             // panelGraficoPizza
@@ -368,7 +378,7 @@ namespace GestorEvento.Views
             this.panelGraficoPizza.Controls.Add(this.lblGraficoPizza);
             this.panelGraficoPizza.Controls.Add(this.chartPizza);
             this.panelGraficoPizza.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelGraficoPizza.Location = new System.Drawing.Point(510, 15);
+            this.panelGraficoPizza.Location = new System.Drawing.Point(527, 15);
             this.panelGraficoPizza.Name = "panelGraficoPizza";
             this.panelGraficoPizza.Size = new System.Drawing.Size(475, 230);
             this.panelGraficoPizza.TabIndex = 1;
@@ -413,7 +423,7 @@ namespace GestorEvento.Views
             this.lblGraficoBarras.ForeColor = System.Drawing.Color.Black;
             this.lblGraficoBarras.Location = new System.Drawing.Point(0, 0);
             this.lblGraficoBarras.Name = "lblGraficoBarras";
-            this.lblGraficoBarras.Size = new System.Drawing.Size(194, 20);
+            this.lblGraficoBarras.Size = new System.Drawing.Size(175, 20);
             this.lblGraficoBarras.TabIndex = 0;
             this.lblGraficoBarras.Text = "Valor Vendido por Caixa";
             // 
@@ -436,7 +446,7 @@ namespace GestorEvento.Views
             this.panelResumo.Location = new System.Drawing.Point(0, 550);
             this.panelResumo.Name = "panelResumo";
             this.panelResumo.Padding = new System.Windows.Forms.Padding(15);
-            this.panelResumo.Size = new System.Drawing.Size(1000, 220);
+            this.panelResumo.Size = new System.Drawing.Size(1017, 220);
             this.panelResumo.TabIndex = 4;
             // 
             // dgvResumoCaixas
@@ -447,7 +457,7 @@ namespace GestorEvento.Views
             this.dgvResumoCaixas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvResumoCaixas.Location = new System.Drawing.Point(15, 35);
             this.dgvResumoCaixas.Name = "dgvResumoCaixas";
-            this.dgvResumoCaixas.Size = new System.Drawing.Size(970, 100);
+            this.dgvResumoCaixas.Size = new System.Drawing.Size(987, 170);
             this.dgvResumoCaixas.TabIndex = 1;
             // 
             // lblResumo
@@ -458,7 +468,7 @@ namespace GestorEvento.Views
             this.lblResumo.ForeColor = System.Drawing.Color.Black;
             this.lblResumo.Location = new System.Drawing.Point(15, 15);
             this.lblResumo.Name = "lblResumo";
-            this.lblResumo.Size = new System.Drawing.Size(191, 20);
+            this.lblResumo.Size = new System.Drawing.Size(181, 20);
             this.lblResumo.TabIndex = 0;
             this.lblResumo.Text = "Resumo por Caixa (PDV)";
             // 
@@ -467,7 +477,7 @@ namespace GestorEvento.Views
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1000, 700);
+            this.ClientSize = new System.Drawing.Size(1034, 700);
             this.Controls.Add(this.panelResumo);
             this.Controls.Add(this.panelGraficos);
             this.Controls.Add(this.panelCards);
@@ -509,11 +519,12 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Button btnMinimizar;
         private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.Panel panelFiltro;
-        private System.Windows.Forms.Button btnAtualizar;
         private System.Windows.Forms.TextBox txtBuscaEvento;
         private System.Windows.Forms.ComboBox cmbEventoResultados;
+        private System.Windows.Forms.ComboBox cmbStatusFiltro;
         private System.Windows.Forms.Label lblEvento;
         private System.Windows.Forms.Label lblResultados;
+        private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Panel panelCards;
         private ModernCard pnlCardTroco;
         private System.Windows.Forms.Label lblTrocoTotalValor;
