@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using GestorEvento.Models;
 using GestorEvento.Utilities;
@@ -94,6 +95,46 @@ namespace GestorEvento.Views
             }
 
             return true;
+        }
+
+        private void TxtPreco_TextChanged(object sender, EventArgs e)
+        {
+            // Remove caracteres não numéricos
+            string texto = new string(txtPreco.Text.Where(c => char.IsDigit(c)).ToArray());
+
+            // Se vazio, mostra "0"
+            if (string.IsNullOrEmpty(texto))
+            {
+                texto = "0";
+            }
+
+            // Formata com 2 casas decimais
+            decimal valor = decimal.Parse(texto) / 100;
+            
+            // Guarda o index do cursor
+            int cursorPos = txtPreco.SelectionStart;
+            
+            // Atualiza o texto formatado
+            txtPreco.Text = valor.ToString("F2");
+            
+            // Reposiciona o cursor no final
+            txtPreco.SelectionStart = txtPreco.Text.Length;
+        }
+
+        private void TxtPreco_Leave(object sender, EventArgs e)
+        {
+            // Validar se é um número válido
+            if (decimal.TryParse(txtPreco.Text, out decimal valor))
+            {
+                if (valor < 0)
+                {
+                    txtPreco.Text = "0";
+                }
+            }
+            else if (!string.IsNullOrWhiteSpace(txtPreco.Text))
+            {
+                txtPreco.Text = "0";
+            }
         }
     }
 }

@@ -101,6 +101,8 @@ namespace GestorEvento.Views
             this.txtPreco.Name = "txtPreco";
             this.txtPreco.Size = new System.Drawing.Size(200, 25);
             this.txtPreco.TabIndex = 2;
+            this.txtPreco.TextChanged += new System.EventHandler(this.TxtPreco_TextChanged);
+            this.txtPreco.Leave += new System.EventHandler(this.TxtPreco_Leave);
             // 
             // FormVincularProdutoEvento
             // 
