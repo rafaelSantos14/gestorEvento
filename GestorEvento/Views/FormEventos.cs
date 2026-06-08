@@ -379,7 +379,19 @@ namespace GestorEvento.Views
                 return;
             }
 
-            string nomeEvento = dgvEventos.SelectedRows[0].Cells["Nome"].Value.ToString();
+            if (dgvEventos.SelectedRows[0].Cells["ID"].Value == null)
+            {
+                DialogoCustomizado aviso = new DialogoCustomizado(
+                    "Aviso",
+                    "Selecione um evento válido para deletar",
+                    TipoDialogo.Aviso,
+                    TipoButton.Ok
+                );
+                aviso.ShowDialog();
+                return;
+            }
+
+            string nomeEvento = dgvEventos.SelectedRows[0].Cells["Nome"].Value?.ToString() ?? "Desconhecido";
             DialogoCustomizado confirmacao = new DialogoCustomizado(
                 "Confirmação",
                 $"Deseja realmente deletar o evento '{nomeEvento}'?",
@@ -389,10 +401,6 @@ namespace GestorEvento.Views
             
             if (confirmacao.ShowDialog() == DialogResult.Yes)
             {
-                // Obter ID do evento selecionado
-                if (dgvEventos.SelectedRows[0].Cells["ID"].Value == null)
-                    return;
-
                 string statusEvento = dgvEventos.SelectedRows[0].Cells["Status"].Value?.ToString();
                 if (string.Equals(statusEvento, Evento.StatusEncerrado, StringComparison.OrdinalIgnoreCase))
                 {

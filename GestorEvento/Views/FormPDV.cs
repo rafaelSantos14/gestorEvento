@@ -32,6 +32,8 @@ namespace GestorEvento.Views
         private FormaPagamentoService _formaPagamentoService;
         private RecebimentoService _recebimentoService;
         private MovimentacaoService _movimentacaoService;
+        private MotivoReimpressaoService _motivoReimpressaoService;
+        private ReimpressaoService _reimpressaoService;
 
         public FormPDV(int caixaId)
         {
@@ -44,12 +46,28 @@ namespace GestorEvento.Views
             _formaPagamentoService = new FormaPagamentoService();
             _recebimentoService = new RecebimentoService();
             _movimentacaoService = new MovimentacaoService();
+            _motivoReimpressaoService = new MotivoReimpressaoService();
+            _reimpressaoService = new ReimpressaoService();
         }
 
         private void FormPDV_Load(object sender, EventArgs e)
         {
             try
             {
+                // Minimizar menu principal e trazer PDV para frente
+                foreach (Form form in Application.OpenForms)
+                {
+                    if (form.GetType().Name == "FormPrincipal")
+                    {
+                        form.WindowState = FormWindowState.Minimized;
+                        break;
+                    }
+                }
+                
+                // Trazer janela para frente
+                this.BringToFront();
+                this.Focus();
+                
                 // Registrar evento de fechamento para desconectar impressora
                 this.FormClosing += FormPDV_FormClosing;
                 
@@ -376,6 +394,13 @@ namespace GestorEvento.Views
                     return;
                 }
 
+                // ============ SE OPERAÇÃO = REIMPRIMIR, ROTA DIFERENTE ============
+                if (_rbReimprimir.Checked)
+                {
+                    ExibirDialogReimpressao();
+                    return;
+                }
+
                 // Validação 1: Existe pelo menos um produto com qtde > 0?
                 var produtosComQtde = _produtosLinhas.Where(p => p.GetQuantidade() > 0).ToList();
                 if (produtosComQtde.Count == 0)
@@ -648,6 +673,103 @@ namespace GestorEvento.Views
             AtualizarTotalVenda();
         }
 
+        /// <summary>
+        /// Exibe dialog para seleção de motivo e registra a reimpressão
+        /// </summary>
+        private void ExibirDialogReimpressao()
+        {
+            try
+            {
+                // Validação: Existe pelo menos um produto com qtde > 0?
+                var produtosComQtde = _produtosLinhas.Where(p => p.GetQuantidade() > 0).ToList();
+                if (produtosComQtde.Count == 0)
+                {
+                    DialogoCustomizado dialogo = new DialogoCustomizado(
+                        "Aviso",
+                        "Por favor, adicione pelo menos um produto com quantidade maior que zero",
+                        TipoDialogo.Aviso,
+                        TipoButton.Ok
+                    );
+                    dialogo.ShowDialog();
+                    return;
+                }
+
+                // 1. Carregar motivos de reimpressão
+                var motivos = _motivoReimpressaoService.GetMotivosAtivos();
+                if (motivos == null || motivos.Count == 0)
+                {
+                    DialogoCustomizado dialogo = new DialogoCustomizado(
+                        "Erro",
+                        "Nenhum motivo de reimpressão disponível",
+                        TipoDialogo.Erro,
+                        TipoButton.Ok
+                    );
+                    dialogo.ShowDialog();
+                    return;
+                }
+
+                // 2. Mostrar dialog para seleção de motivo
+                var dialogMotivo = new DialogMotivoReimpressao(motivos);
+                if (dialogMotivo.ShowDialog() != DialogResult.OK)
+                {
+                    return; // Usuário cancelou
+                }
+
+                // 3. Criar objeto Reimpressao com os dados
+                var reimpressao = new Reimpressao
+                {
+                    DtReimpressao = DateTime.Now,
+                    IdMotivo = dialogMotivo.MotivoSelecionado.IdMotivo,
+                    IdEvento = _eventoIdSelecionado,
+                    IdPontoVenda = _caixaIdSelecionado,
+                    Itens = new List<ReimpressaoItem>()
+                };
+
+                // 4. Adicionar itens com quantidade > 0
+                foreach (var linha in _produtosLinhas)
+                {
+                    int qtde = linha.GetQuantidade();
+                    if (qtde > 0)
+                    {
+                        decimal valor = linha.GetValor();
+                        reimpressao.Itens.Add(new ReimpressaoItem
+                        {
+                            IdProdutoEvento = linha.IdProdutoEvento,
+                            QtdeReimpressao = qtde,
+                            VlUnitario = valor / qtde, // Preço unitário
+                            VlSubtotal = valor,
+                            DescricaoProduto = linha.NomeProduto
+                        });
+                    }
+                }
+
+                // 5. Registrar reimpressão (sem debitar estoque)
+                int idReimpressao = _reimpressaoService.RegistrarReimpressao(reimpressao, _numeroCaixa, _descricaoCaixa);
+
+                // 6. Mensagem de sucesso
+                DialogoCustomizado dialogo_sucesso = new DialogoCustomizado(
+                    "Sucesso",
+                    $"Cupom reimpresso com sucesso!\n\nID Reimpressão: {idReimpressao}",
+                    TipoDialogo.Sucesso,
+                    TipoButton.Ok
+                );
+                dialogo_sucesso.ShowDialog();
+
+                // 7. Limpar tela
+                LimparTudo();
+            }
+            catch (Exception ex)
+            {
+                DialogoCustomizado dialogo_erro = new DialogoCustomizado(
+                    "Erro",
+                    $"Erro ao registrar reimpressão:\n\n{ex.Message}",
+                    TipoDialogo.Erro,
+                    TipoButton.Ok
+                );
+                dialogo_erro.ShowDialog();
+            }
+        }
+
         private void BtnFechar_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -710,13 +832,13 @@ namespace GestorEvento.Views
         /// </summary>
         /// <summary>
         /// Handler para mudança no seletor de tipo de operação
-        /// Quando CORTESIA é selecionado, desabilita os campos de pagamento
+        /// Quando CORTESIA ou REIMPRIMIR é selecionado, desabilita os campos de pagamento
         /// </summary>
         private void RbTipoOperacao_CheckedChanged(object sender, EventArgs e)
         {
-            if (_rbCortesia.Checked)
+            if (_rbCortesia.Checked || _rbReimprimir.Checked)
             {
-                // CORTESIA selecionado - desabilitar formas de pagamento
+                // CORTESIA ou REIMPRIMIR selecionado - desabilitar formas de pagamento
                 foreach (var formaPag in _formasPagamento)
                 {
                     formaPag.SetEnabled(false);

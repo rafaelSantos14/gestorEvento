@@ -470,12 +470,12 @@ namespace GestorEvento.Views
             // 
             this.dgvEventos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvEventos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEventos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvEventos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvEventos.Location = new System.Drawing.Point(10, 60);
             this.dgvEventos.Name = "dgvEventos";
             this.dgvEventos.ReadOnly = true;
             this.dgvEventos.RowTemplate.Height = 25;
-            this.dgvEventos.Size = new System.Drawing.Size(1172, 560);
+            this.dgvEventos.Size = new System.Drawing.Size(1172, 500);
             this.dgvEventos.TabIndex = 1;
             // 
             // panelPesquisa

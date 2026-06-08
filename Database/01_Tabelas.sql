@@ -128,3 +128,49 @@ CREATE TABLE IF NOT EXISTS MOVIMENTACAO_PONTO_VENDA (
     INDEX idx_tipo_movimento (tipo_movimento),
     INDEX idx_dt_movimento (dt_movimento)
 );
+
+-- 1. Catálogo de motivos para reimpressão
+CREATE TABLE MOTIVOS_REIMPRESSAO (
+    id_motivo INT PRIMARY KEY AUTO_INCREMENT,
+    cd_motivo VARCHAR(50) UNIQUE NOT NULL,
+    ds_motivo VARCHAR(200) NOT NULL,
+    fl_ativo BOOLEAN DEFAULT TRUE,
+    INDEX idx_fl_ativo (fl_ativo)
+);
+
+-- Dados iniciais - Motivos padrão
+INSERT INTO MOTIVOS_REIMPRESSAO (cd_motivo, ds_motivo) VALUES
+('CUPOM_DANIFICADO', 'Cupom rasgado/amassado/ilegível'),
+('ERRO_IMPRESSORA', 'Erro de impressão/corte/papel'),
+('TESTE_SISTEMA', 'Teste de equipamentos/sistema'),
+('OUTRO', 'Outro motivo');
+
+-- 2. Header da reimpressão (registro da operação)
+CREATE TABLE REIMPRESSAO (
+    id_reimpressao INT PRIMARY KEY AUTO_INCREMENT,
+    dt_reimpressao DATETIME DEFAULT NOW(),
+    id_motivo INT NOT NULL,
+    id_evento INT,
+    id_ponto_venda INT,
+    vl_total DECIMAL(10,2),
+    FOREIGN KEY (id_motivo) REFERENCES MOTIVOS_REIMPRESSAO(id_motivo),
+    FOREIGN KEY (id_evento) REFERENCES EVENTO(id_evento),
+    FOREIGN KEY (id_ponto_venda) REFERENCES PONTO_VENDA(id_ponto_venda),
+    INDEX idx_evento_data (id_evento, dt_reimpressao),
+    INDEX idx_motivo (id_motivo),
+    INDEX idx_ponto_venda (id_ponto_venda)
+);
+
+-- 3. Itens reimpressos (produtos que foram reimpressos)
+CREATE TABLE REIMPRESSAO_ITENS (
+    id_reimpressao_item INT PRIMARY KEY AUTO_INCREMENT,
+    id_reimpressao INT NOT NULL,
+    id_produto_evento INT,
+    qtde_reimpressao INT,
+    vl_unitario DECIMAL(10,2),
+    vl_subtotal DECIMAL(10,2),
+    FOREIGN KEY (id_reimpressao) REFERENCES REIMPRESSAO(id_reimpressao),
+    FOREIGN KEY (id_produto_evento) REFERENCES PRODUTO_EVENTO(id_produto_evento),
+    INDEX idx_reimpressao (id_reimpressao),
+    INDEX idx_produto_evento (id_produto_evento)
+);

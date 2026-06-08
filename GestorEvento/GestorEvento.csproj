@@ -174,6 +174,9 @@
     <Compile Include="Models\Movimentacao.cs" />
     <Compile Include="Models\ResumoFechamentoCaixa.cs" />
     <Compile Include="Models\RelatorioVendaData.cs" />
+    <Compile Include="Models\MotivoReimpressao.cs" />
+    <Compile Include="Models\Reimpressao.cs" />
+    <Compile Include="Models\ReimpressaoItem.cs" />
     <Compile Include="Services\ProdutoService.cs" />
     <Compile Include="Services\EventoService.cs" />
     <Compile Include="Services\PontoVendaService.cs" />
@@ -185,6 +188,19 @@
     <Compile Include="Services\RelatorioVendaService.cs" />
     <Compile Include="Services\EpsonTM20Service.cs" />
     <Compile Include="Services\PrinterServiceFactory.cs" />
+    <Compile Include="Services\MotivoReimpressaoService.cs" />
+    <Compile Include="Services\ReimpressaoService.cs" />
+    <Compile Include="Repositories\Connection.cs" />
+    <Compile Include="Repositories\EventoRepository.cs" />
+    <Compile Include="Repositories\ProdutoRepository.cs" />
+    <Compile Include="Repositories\ProdutoEventoRepository.cs" />
+    <Compile Include="Repositories\VendaRepository.cs" />
+    <Compile Include="Repositories\FormaPagamentoRepository.cs" />
+    <Compile Include="Repositories\RecebimentoRepository.cs" />
+    <Compile Include="Repositories\PontoVendaRepository.cs" />
+    <Compile Include="Repositories\MovimentacaoRepository.cs" />
+    <Compile Include="Repositories\MotivoReimpressaoRepository.cs" />
+    <Compile Include="Repositories\ReimpressaoRepository.cs" />
     <Compile Include="Utilities\EstiloManager.cs" />
     <Compile Include="Utilities\UiHelper.cs" />
     <Compile Include="Views\DialogoCustomizado.cs">
@@ -289,6 +305,18 @@
     <Compile Include="Views\FormRelatorioCortesia.Designer.cs">
       <DependentUpon>FormRelatorioCortesia.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FormRelatorioReimpressao.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormRelatorioReimpressao.Designer.cs">
+      <DependentUpon>FormRelatorioReimpressao.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DialogMotivoReimpressao.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\DialogMotivoReimpressao.Designer.cs">
+      <DependentUpon>DialogMotivoReimpressao.cs</DependentUpon>
+    </Compile>
     <Compile Include="Components\ModernCard.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -333,6 +361,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormRelatorioCortesia.resx">
       <DependentUpon>FormRelatorioCortesia.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormRelatorioReimpressao.resx">
+      <DependentUpon>FormRelatorioReimpressao.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormSelecionarPontoVenda.resx">
       <DependentUpon>FormSelecionarPontoVenda.cs</DependentUpon>

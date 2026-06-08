@@ -152,6 +152,11 @@ namespace GestorEvento.Views
             ToolStripMenuItem itemCortesia = new ToolStripMenuItem("🎁 Cortesias");
             itemCortesia.Click += (s, args) => AbrirRelatorioCortesias();
             menuRelatorios.Items.Add(itemCortesia);
+
+            // Adicionar item Relatório de Reimpressões
+            ToolStripMenuItem itemReimpressoes = new ToolStripMenuItem("🖨️ Reimpressões");
+            itemReimpressoes.Click += (s, args) => AbrirRelatorioReimpressoes();
+            menuRelatorios.Items.Add(itemReimpressoes);
             
             // adicionar mais relatórios no futuro:
             // ToolStripMenuItem itemTeste = new ToolStripMenuItem("📦 Estoque");
@@ -244,6 +249,33 @@ namespace GestorEvento.Views
             catch (Exception ex)
             {
                 MessageBox.Show("Erro ao abrir FormRelatorioCortesia: " + ex.Message + "\n" + ex.StackTrace, "Erro");
+            }
+        }
+
+        private void AbrirRelatorioReimpressoes()
+        {
+            try
+            {
+                foreach (Form f in this.MdiChildren)
+                {
+                    if (f is FormRelatorioReimpressao)
+                    {
+                        f.Activate();
+                        return;
+                    }
+                }
+
+                FormRelatorioReimpressao form = new FormRelatorioReimpressao();
+                form.Text = "Relatório de Reimpressões";
+                form.MdiParent = this;
+                form.Show();
+
+                form.Location = new Point(0, 0);
+                form.Size = new Size(this.ClientSize.Width - panelMenu.Width - 5, this.ClientSize.Height - panelTitulo.Height - 35);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao abrir FormRelatorioReimpressao: " + ex.Message + "\n" + ex.StackTrace, "Erro");
             }
         }
 

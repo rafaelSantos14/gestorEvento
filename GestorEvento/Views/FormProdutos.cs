@@ -131,6 +131,9 @@ namespace GestorEvento.Views
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            
+            // Carregar produtos ao abrir o formulário
+            CarregarProdutosDoDb();
         }
 
         private void btnSalvar_Click(object sender, EventArgs e)
@@ -190,7 +193,19 @@ namespace GestorEvento.Views
                 return;
             }
 
-            string nomeProduto = dgvProdutos.SelectedRows[0].Cells["Nome"].Value.ToString();
+            if (dgvProdutos.SelectedRows[0].Cells["ID"].Value == null)
+            {
+                DialogoCustomizado aviso = new DialogoCustomizado(
+                    "Aviso",
+                    "Selecione um produto válido para deletar",
+                    TipoDialogo.Aviso,
+                    TipoButton.Ok
+                );
+                aviso.ShowDialog();
+                return;
+            }
+
+            string nomeProduto = dgvProdutos.SelectedRows[0].Cells["Nome"].Value?.ToString() ?? "Desconhecido";
             DialogoCustomizado confirmacao = new DialogoCustomizado(
                 "Confirmação",
                 $"Deseja realmente deletar o produto '{nomeProduto}'?",
@@ -200,10 +215,6 @@ namespace GestorEvento.Views
             
             if (confirmacao.ShowDialog() == DialogResult.Yes)
             {
-                // Obter ID do produto selecionado
-                if (dgvProdutos.SelectedRows[0].Cells["ID"].Value == null)
-                    return;
-
                 int produtoId = Convert.ToInt32(dgvProdutos.SelectedRows[0].Cells["ID"].Value);
                 int rowIndex = dgvProdutos.SelectedRows[0].Index;
                 

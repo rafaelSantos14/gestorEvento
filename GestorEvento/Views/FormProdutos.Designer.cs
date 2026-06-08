@@ -29,8 +29,8 @@ namespace GestorEvento.Views
         private void InitializeComponent()
         {
             this.panelTitulo = new System.Windows.Forms.Panel();
-            this.btnFechar = new System.Windows.Forms.Button();
             this.btnMinimizar = new System.Windows.Forms.Button();
+            this.btnFechar = new System.Windows.Forms.Button();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabCadastro = new System.Windows.Forms.TabPage();
@@ -40,28 +40,28 @@ namespace GestorEvento.Views
             this.btnSalvar = new System.Windows.Forms.Button();
             this.btnLimpar = new System.Windows.Forms.Button();
             this.tabLista = new System.Windows.Forms.TabPage();
-            this.panelBotoes = new System.Windows.Forms.Panel();
-            this.btnEditar = new System.Windows.Forms.Button();
-            this.btnDeletar = new System.Windows.Forms.Button();
             this.dgvProdutos = new System.Windows.Forms.DataGridView();
             this.panelPesquisa = new System.Windows.Forms.Panel();
             this.btnPesquisar = new System.Windows.Forms.Button();
             this.txtPesquisar = new System.Windows.Forms.TextBox();
+            this.btnDeletar = new System.Windows.Forms.Button();
+            this.btnEditar = new System.Windows.Forms.Button();
+            this.panelBotoes = new System.Windows.Forms.Panel();
             this.panelTitulo.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabCadastro.SuspendLayout();
             this.panelBotoesCadastro.SuspendLayout();
             this.tabLista.SuspendLayout();
-            this.panelBotoes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProdutos)).BeginInit();
             this.panelPesquisa.SuspendLayout();
+            this.panelBotoes.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelTitulo
             // 
             this.panelTitulo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
             this.panelTitulo.Controls.Add(this.btnMinimizar);
-            this.panelTitulo.Controls.Add(this.btnFechar);            
+            this.panelTitulo.Controls.Add(this.btnFechar);
             this.panelTitulo.Controls.Add(this.lblTitulo);
             this.panelTitulo.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTitulo.Location = new System.Drawing.Point(0, 0);
@@ -72,22 +72,6 @@ namespace GestorEvento.Views
             this.panelTitulo.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PanelTitulo_MouseMove);
             this.panelTitulo.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PanelTitulo_MouseUp);
             // 
-            // btnFechar
-            // 
-            this.btnFechar.BackColor = System.Drawing.Color.Transparent;
-            this.btnFechar.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnFechar.FlatAppearance.BorderSize = 0;
-            this.btnFechar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnFechar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.btnFechar.ForeColor = System.Drawing.Color.White;
-            this.btnFechar.Location = new System.Drawing.Point(810, 0);
-            this.btnFechar.Name = "btnFechar";
-            this.btnFechar.Size = new System.Drawing.Size(45, 40);
-            this.btnFechar.TabIndex = 2;
-            this.btnFechar.Text = "✕";
-            this.btnFechar.UseVisualStyleBackColor = false;
-            this.btnFechar.Click += new System.EventHandler(this.BtnFechar_Click);
-            // 
             // btnMinimizar
             // 
             this.btnMinimizar.BackColor = System.Drawing.Color.Transparent;
@@ -96,13 +80,29 @@ namespace GestorEvento.Views
             this.btnMinimizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMinimizar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnMinimizar.ForeColor = System.Drawing.Color.White;
-            this.btnMinimizar.Location = new System.Drawing.Point(855, 0);
+            this.btnMinimizar.Location = new System.Drawing.Point(810, 0);
             this.btnMinimizar.Name = "btnMinimizar";
             this.btnMinimizar.Size = new System.Drawing.Size(45, 40);
             this.btnMinimizar.TabIndex = 1;
             this.btnMinimizar.Text = "−";
             this.btnMinimizar.UseVisualStyleBackColor = false;
             this.btnMinimizar.Click += new System.EventHandler(this.BtnMinimizar_Click);
+            // 
+            // btnFechar
+            // 
+            this.btnFechar.BackColor = System.Drawing.Color.Transparent;
+            this.btnFechar.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnFechar.FlatAppearance.BorderSize = 0;
+            this.btnFechar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFechar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnFechar.ForeColor = System.Drawing.Color.White;
+            this.btnFechar.Location = new System.Drawing.Point(855, 0);
+            this.btnFechar.Name = "btnFechar";
+            this.btnFechar.Size = new System.Drawing.Size(45, 40);
+            this.btnFechar.TabIndex = 2;
+            this.btnFechar.Text = "✕";
+            this.btnFechar.UseVisualStyleBackColor = false;
+            this.btnFechar.Click += new System.EventHandler(this.BtnFechar_Click);
             // 
             // lblTitulo
             // 
@@ -167,10 +167,10 @@ namespace GestorEvento.Views
             this.panelBotoesCadastro.Controls.Add(this.btnSalvar);
             this.panelBotoesCadastro.Controls.Add(this.btnLimpar);
             this.panelBotoesCadastro.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBotoesCadastro.Location = new System.Drawing.Point(10, 412);
+            this.panelBotoesCadastro.Location = new System.Drawing.Point(15, 407);
             this.panelBotoesCadastro.Name = "panelBotoesCadastro";
             this.panelBotoesCadastro.Padding = new System.Windows.Forms.Padding(10);
-            this.panelBotoesCadastro.Size = new System.Drawing.Size(872, 50);
+            this.panelBotoesCadastro.Size = new System.Drawing.Size(862, 50);
             this.panelBotoesCadastro.TabIndex = 3;
             // 
             // btnSalvar
@@ -216,56 +216,15 @@ namespace GestorEvento.Views
             this.tabLista.TabIndex = 1;
             this.tabLista.Text = "LISTA DE PRODUTOS";
             // 
-            // panelBotoes
-            // 
-            this.panelBotoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.panelBotoes.Controls.Add(this.btnEditar);
-            this.panelBotoes.Controls.Add(this.btnDeletar);
-            this.panelBotoes.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBotoes.Location = new System.Drawing.Point(10, 412);
-            this.panelBotoes.Name = "panelBotoes";
-            this.panelBotoes.Padding = new System.Windows.Forms.Padding(10);
-            this.panelBotoes.Size = new System.Drawing.Size(872, 50);
-            this.panelBotoes.TabIndex = 2;
-            // 
-            // btnEditar
-            // 
-            this.btnEditar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.btnEditar.FlatAppearance.BorderSize = 0;
-            this.btnEditar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnEditar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnEditar.ForeColor = System.Drawing.Color.White;
-            this.btnEditar.Location = new System.Drawing.Point(10, 11);
-            this.btnEditar.Name = "btnEditar";
-            this.btnEditar.Size = new System.Drawing.Size(100, 30);
-            this.btnEditar.TabIndex = 4;
-            this.btnEditar.Text = "EDITAR";
-            this.btnEditar.UseVisualStyleBackColor = false;
-            this.btnEditar.Click += new System.EventHandler(this.btnEditar_Click);
-            // 
-            // btnDeletar
-            // 
-            this.btnDeletar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
-            this.btnDeletar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDeletar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnDeletar.ForeColor = System.Drawing.Color.White;
-            this.btnDeletar.Location = new System.Drawing.Point(120, 11);
-            this.btnDeletar.Name = "btnDeletar";
-            this.btnDeletar.Size = new System.Drawing.Size(100, 30);
-            this.btnDeletar.TabIndex = 1;
-            this.btnDeletar.Text = "DELETAR";
-            this.btnDeletar.UseVisualStyleBackColor = false;
-            this.btnDeletar.Click += new System.EventHandler(this.btnDeletar_Click);
-            // 
             // dgvProdutos
             // 
             this.dgvProdutos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvProdutos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvProdutos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvProdutos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvProdutos.Location = new System.Drawing.Point(10, 60);
             this.dgvProdutos.Name = "dgvProdutos";
             this.dgvProdutos.ReadOnly = true;
-            this.dgvProdutos.Size = new System.Drawing.Size(872, 402);
+            this.dgvProdutos.Size = new System.Drawing.Size(872, 352);
             this.dgvProdutos.TabIndex = 1;
             // 
             // panelPesquisa
@@ -303,6 +262,47 @@ namespace GestorEvento.Views
             this.txtPesquisar.Size = new System.Drawing.Size(350, 27);
             this.txtPesquisar.TabIndex = 1;
             // 
+            // btnDeletar
+            // 
+            this.btnDeletar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(67)))), ((int)(((byte)(54)))));
+            this.btnDeletar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDeletar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnDeletar.ForeColor = System.Drawing.Color.White;
+            this.btnDeletar.Location = new System.Drawing.Point(120, 11);
+            this.btnDeletar.Name = "btnDeletar";
+            this.btnDeletar.Size = new System.Drawing.Size(100, 30);
+            this.btnDeletar.TabIndex = 1;
+            this.btnDeletar.Text = "DELETAR";
+            this.btnDeletar.UseVisualStyleBackColor = false;
+            this.btnDeletar.Click += new System.EventHandler(this.btnDeletar_Click);
+            // 
+            // btnEditar
+            // 
+            this.btnEditar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.btnEditar.FlatAppearance.BorderSize = 0;
+            this.btnEditar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEditar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnEditar.ForeColor = System.Drawing.Color.White;
+            this.btnEditar.Location = new System.Drawing.Point(10, 11);
+            this.btnEditar.Name = "btnEditar";
+            this.btnEditar.Size = new System.Drawing.Size(100, 30);
+            this.btnEditar.TabIndex = 4;
+            this.btnEditar.Text = "EDITAR";
+            this.btnEditar.UseVisualStyleBackColor = false;
+            this.btnEditar.Click += new System.EventHandler(this.btnEditar_Click);
+            // 
+            // panelBotoes
+            // 
+            this.panelBotoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.panelBotoes.Controls.Add(this.btnEditar);
+            this.panelBotoes.Controls.Add(this.btnDeletar);
+            this.panelBotoes.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelBotoes.Location = new System.Drawing.Point(10, 412);
+            this.panelBotoes.Name = "panelBotoes";
+            this.panelBotoes.Padding = new System.Windows.Forms.Padding(10);
+            this.panelBotoes.Size = new System.Drawing.Size(872, 50);
+            this.panelBotoes.TabIndex = 2;
+            // 
             // FormProdutos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -321,10 +321,10 @@ namespace GestorEvento.Views
             this.tabCadastro.PerformLayout();
             this.panelBotoesCadastro.ResumeLayout(false);
             this.tabLista.ResumeLayout(false);
-            this.panelBotoes.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvProdutos)).EndInit();
             this.panelPesquisa.ResumeLayout(false);
             this.panelPesquisa.PerformLayout();
+            this.panelBotoes.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

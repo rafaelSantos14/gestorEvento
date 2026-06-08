@@ -55,6 +55,26 @@ namespace GestorEvento.Services
         }
 
         /// <summary>
+        /// Imprime uma reimpressão (cupom sem debitar estoque)
+        /// Segue o mesmo padrão de ImprimirVenda
+        /// </summary>
+        public static bool ImprimirReimpressao(int reimpressaoId, List<string> itens, int numeroCaixa = 0, string descricaoCaixa = "")
+        {
+            string printMode = ConfigurationManager.AppSettings["PrintMode"] ?? "Local";
+
+            System.Diagnostics.Debug.WriteLine($"[PrinterServiceFactory] Reimpressão #{reimpressaoId} - Caixa #{numeroCaixa} - Modo: {printMode} - Itens: {itens.Count}");
+
+            if (printMode == "Remote")
+            {
+                return ImprimirVendaViaAPI(reimpressaoId, itens, numeroCaixa, descricaoCaixa);
+            }
+            else
+            {
+                return ImprimirVendaLocal(reimpressaoId, itens, numeroCaixa, descricaoCaixa);
+            }
+        }
+
+        /// <summary>
         /// Imprime uma venda localmente (todos os itens sequencialmente)
         /// </summary>
         private static bool ImprimirVendaLocal(int vendaId, List<string> itens, int numeroCaixa = 0, string descricaoCaixa = "")
