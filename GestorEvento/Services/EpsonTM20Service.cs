@@ -403,34 +403,6 @@ namespace GestorEvento.Services
                     Thread.Sleep(30);
                 }
 
-                // ============ FASE 3.6: IMPRIMIR DATA E HORA ============
-                // 3 linhas vazias entre caixa e data (rodapé)
-                for (int i = 0; i < 3; i++)
-                {
-                    _serialPort.Write(lineFeed, 0, lineFeed.Length);
-                }
-                
-                // Align right para data/hora
-                byte[] alignRight = { 0x1B, 0x61, 0x02 };
-                _serialPort.Write(alignRight, 0, alignRight.Length);
-                
-                // Fonte pequena para data
-                byte[] fontSmall = { 0x1D, 0x21, 0x00 };
-                _serialPort.Write(fontSmall, 0, fontSmall.Length);
-                
-                // Data e hora
-                string dataHora = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                byte[] dataHoraBytes = Encoding.GetEncoding(1252).GetBytes(dataHora);
-                _serialPort.Write(dataHoraBytes, 0, dataHoraBytes.Length);
-                _serialPort.BaseStream.Flush();
-                Thread.Sleep(50);
-                // System.Diagnostics.Debug.WriteLine($"✓ Data/Hora enviada: {dataHora}");
-                
-                // Voltar para fonte normal
-                byte[] fontNormalSmall = { 0x1D, 0x21, 0x00 };
-                _serialPort.Write(fontNormalSmall, 0, fontNormalSmall.Length);
-                _serialPort.BaseStream.Flush();
-
                 // ============ FASE 3.6: LOGO (IMAGEM) - DESATIVADO PARA TESTES ============
                 // System.Diagnostics.Debug.WriteLine("\n[FASE 3.6] Imprimindo logos");
                 //
@@ -460,6 +432,57 @@ namespace GestorEvento.Services
                 //Thread.Sleep(100);
                 // System.Diagnostics.Debug.WriteLine("✓ Logos processados");
 
+                // ============ FASE 3.6: IMPRIMIR DATA E HORA ============
+                // 3 linhas vazias antes da data/hora
+                for (int i = 0; i < 3; i++)
+                {
+                    _serialPort.Write(lineFeed, 0, lineFeed.Length);
+                }
+                
+                // Align right para data/hora
+                byte[] alignRight = { 0x1B, 0x61, 0x02 };
+                _serialPort.Write(alignRight, 0, alignRight.Length);
+                
+                // Fonte pequena para data
+                byte[] fontSmall = { 0x1D, 0x21, 0x00 };
+                _serialPort.Write(fontSmall, 0, fontSmall.Length);
+                
+                // Data e hora
+                string dataHora = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                byte[] dataHoraBytes = Encoding.GetEncoding(1252).GetBytes(dataHora);
+                _serialPort.Write(dataHoraBytes, 0, dataHoraBytes.Length);
+                _serialPort.BaseStream.Flush();
+                Thread.Sleep(50);
+                // System.Diagnostics.Debug.WriteLine($"✓ Data/Hora enviada: {dataHora}");
+                
+                // Voltar para fonte normal
+                byte[] fontNormalSmall = { 0x1D, 0x21, 0x00 };
+                _serialPort.Write(fontNormalSmall, 0, fontNormalSmall.Length);
+                _serialPort.BaseStream.Flush();
+
+                // ============ FASE 3.7: REDES SOCIAIS (RODAPÉ) ============
+                // 2 linhas vazias antes das redes sociais
+                for (int i = 0; i < 2; i++)
+                {
+                    _serialPort.Write(lineFeed, 0, lineFeed.Length);
+                }
+                
+                // Align center
+                byte[] alignCenterSocial = { 0x1B, 0x61, 0x01 };
+                _serialPort.Write(alignCenterSocial, 0, alignCenterSocial.Length);
+                
+                // Fonte pequena
+                byte[] fontSmallSocial = { 0x1D, 0x21, 0x00 };
+                _serialPort.Write(fontSmallSocial, 0, fontSmallSocial.Length);
+                _serialPort.BaseStream.Flush();
+                
+                // Imprimir redes sociais em uma linha
+                string redesSociais = "@AliancaDeMisericordia.salto @CidadeRahamim";
+                byte[] redesSociaisBytes = Encoding.GetEncoding(1252).GetBytes(redesSociais);
+                _serialPort.Write(redesSociaisBytes, 0, redesSociaisBytes.Length);
+                _serialPort.BaseStream.Flush();
+                Thread.Sleep(20);
+
                 // ============ FASE 4: RESET DE FORMATAÇÃO ============
                 // System.Diagnostics.Debug.WriteLine("\n[FASE 4] Resetando formatação");
 
@@ -481,13 +504,10 @@ namespace GestorEvento.Services
                 // ============ FASE 5: AVANÇAR PAPEL ============
                 // System.Diagnostics.Debug.WriteLine("\n[FASE 5] Avançando papel");
                 
-                // Enviar 2 quebras de linha (reduzido de 5)
-                for (int i = 0; i < 2; i++)
-                {
-                    _serialPort.Write(lineFeed, 0, lineFeed.Length);
-                }
+                // Enviar 1 quebra de linha apenas
+                _serialPort.Write(lineFeed, 0, lineFeed.Length);
                 _serialPort.BaseStream.Flush();
-                // System.Diagnostics.Debug.WriteLine("✓ 2 quebras de linha enviadas");
+                // System.Diagnostics.Debug.WriteLine("✓ 1 quebra de linha enviada");
 
                 // ============ FASE 6: ESPERAR IMPRESSÃO TERMINAR ============
                 // System.Diagnostics.Debug.WriteLine("\n[FASE 6] Aguardando impressão");
@@ -495,15 +515,7 @@ namespace GestorEvento.Services
                 Thread.Sleep(300); // Reduzido de 500ms
                 // System.Diagnostics.Debug.WriteLine("✓ Tempo de impressão decorrido");
 
-                // ============ FASE 7: MAIS FEEDS ANTES DE CORTAR ============
-                // System.Diagnostics.Debug.WriteLine("\n[FASE 7] Enviando feeds extras antes do corte");
-                _serialPort.Write(lineFeed, 0, lineFeed.Length); // 1 quebra de linha apenas
-                _serialPort.BaseStream.Flush();
-                Thread.Sleep(100); // Reduzido de 200ms
-                // System.Diagnostics.Debug.WriteLine("✓ 1 feed extra enviado");
-                // System.Diagnostics.Debug.WriteLine("✓ 3 feeds extras enviados");
-
-                // ============ FASE 8: CORTE (FINAL) ============
+                // ============ FASE 7: CORTE (FINAL) ============
                 // System.Diagnostics.Debug.WriteLine("\n[FASE 8] ENVIANDO CORTE");
                 
                 // Tentar comando full cut

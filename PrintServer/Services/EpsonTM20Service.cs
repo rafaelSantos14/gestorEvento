@@ -259,7 +259,7 @@ namespace GestorEvento.Services
                 }
 
                 // ============ FASE 3.6: IMPRIMIR DATA E HORA COM ACENTUAÇÃO ============
-                // 3 linhas vazias entre caixa e data (rodapé)
+                // 3 linhas vazias antes da data/hora
                 for (int i = 0; i < 3; i++)
                 {
                     _serialPort.Write(lineFeed, 0, lineFeed.Length);
@@ -281,6 +281,29 @@ namespace GestorEvento.Services
                 _serialPort.Write(fontNormalSmall, 0, fontNormalSmall.Length);
                 _serialPort.BaseStream.Flush();
 
+                // ============ FASE 3.7: REDES SOCIAIS (RODAPÉ) ============
+                // 2 linhas vazias antes das redes sociais
+                for (int i = 0; i < 2; i++)
+                {
+                    _serialPort.Write(lineFeed, 0, lineFeed.Length);
+                }
+                
+                // Align center
+                byte[] alignCenterSocial = { 0x1B, 0x61, 0x01 };
+                _serialPort.Write(alignCenterSocial, 0, alignCenterSocial.Length);
+                
+                // Fonte pequena
+                byte[] fontSmallSocial = { 0x1D, 0x21, 0x00 };
+                _serialPort.Write(fontSmallSocial, 0, fontSmallSocial.Length);
+                _serialPort.BaseStream.Flush();
+                
+                // Imprimir redes sociais em uma linha
+                string redesSociais = "@AliancaDeMisericordia.salto @CidadeRahamim";
+                byte[] redesSociaisBytes = Encoding.GetEncoding(1252).GetBytes(redesSociais);
+                _serialPort.Write(redesSociaisBytes, 0, redesSociaisBytes.Length);
+                _serialPort.BaseStream.Flush();
+                Thread.Sleep(20);
+
                 // ============ FASE 4: RESET DE FORMATAÇÃO ============
                 byte[] boldOff = { 0x1B, 0x45, 0x00 };
                 _serialPort.Write(boldOff, 0, boldOff.Length);
@@ -293,10 +316,8 @@ namespace GestorEvento.Services
                 _serialPort.BaseStream.Flush();
 
                 // ============ FASE 5: AVANÇAR PAPEL ============
-                for (int i = 0; i < 2; i++)
-                {
-                    _serialPort.Write(lineFeed, 0, lineFeed.Length);
-                }
+                // Enviar 1 quebra de linha apenas
+                _serialPort.Write(lineFeed, 0, lineFeed.Length);
                 _serialPort.BaseStream.Flush();
 
                 // ============ FASE 6: ESPERAR IMPRESSÃO TERMINAR ============
@@ -305,7 +326,7 @@ namespace GestorEvento.Services
                 // ============ FASE 7: FEEDS EXTRAS ANTES DO CORTE ============
                 // Removido: não adicionar mais linhas aqui
                 _serialPort.BaseStream.Flush();
-                // Agora apenas 2 linhas de feeds antes do corte (da FASE 5)
+                // Agora apenas 1 linha de feed antes do corte (da FASE 5)
 
                 // ============ FASE 8: CORTE FINAL ============
                 byte[] paperCutFull = { 0x1D, 0x56, 0x41 }; // GS V A (Full Cut)
