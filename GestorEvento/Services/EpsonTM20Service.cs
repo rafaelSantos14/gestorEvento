@@ -310,12 +310,19 @@ namespace GestorEvento.Services
         /// REFATORADO COMPLETAMENTE
         /// Estratégia: Imprimir primeiro, DEPOIS cortar
         /// </summary>
-        public bool ImprimirCupom(string nomeProduto, int numeroCaixa = 0, string descricaoCaixa = "")
+        public bool ImprimirCupom(string nomeProduto, int numeroCaixa = 0, string descricaoCaixa = "", decimal preco = 0)
         {
             try
             {
+                // Construir texto do produto com preço
+                string textoImpressao = nomeProduto;
+                if (preco > 0)
+                {
+                    textoImpressao = $"{nomeProduto} - R$ {preco.ToString("F2")}";
+                }
+                
                 // System.Diagnostics.Debug.WriteLine("═══════════════════════════════════════");
-                // System.Diagnostics.Debug.WriteLine($"INICIANDO CUPOM: {nomeProduto}");
+                // System.Diagnostics.Debug.WriteLine($"INICIANDO CUPOM: {textoImpressao}");
                 // System.Diagnostics.Debug.WriteLine("═══════════════════════════════════════");
 
                 // Garantir conexão aberta
@@ -368,13 +375,13 @@ namespace GestorEvento.Services
                 Thread.Sleep(30); // Reduzido de 50ms
                 // System.Diagnostics.Debug.WriteLine("✓ Configurações enviadas");
 
-                // ============ FASE 3: IMPRIMIR TEXTO ============
+                // ============ FASE 3: IMPRIMIR TEXTO COM PREÇO ============
                 // System.Diagnostics.Debug.WriteLine("\n[FASE 3] Imprimindo texto");
-                byte[] productBytes = Encoding.GetEncoding(1252).GetBytes(nomeProduto);
+                byte[] productBytes = Encoding.GetEncoding(1252).GetBytes(textoImpressao);
                 _serialPort.Write(productBytes, 0, productBytes.Length);
                 _serialPort.BaseStream.Flush();
                 Thread.Sleep(50); // Reduzido de 100ms
-                // System.Diagnostics.Debug.WriteLine($"✓ Texto enviado: {nomeProduto}");
+                // System.Diagnostics.Debug.WriteLine($"✓ Texto enviado: {textoImpressao}");
 
                 // ============ FASE 3.5: IMPRIMIR INFORMAÇÕES DE CAIXA ============
                 // 1 linha vazia entre produto e caixa

@@ -186,10 +186,17 @@ namespace GestorEvento.Services
         /// Imprime cupom na impressora
         /// REFATORADO COM TRATATIVA COMPLETA DE ACENTUAÇÃO (v2.0)
         /// </summary>
-        public bool ImprimirCupom(string nomeProduto, int numeroCaixa = 0, string descricaoCaixa = "")
+        public bool ImprimirCupom(string nomeProduto, int numeroCaixa = 0, string descricaoCaixa = "", decimal preco = 0)
         {
             try
             {
+                // Construir texto do produto com preço
+                string textoImpressao = nomeProduto;
+                if (preco > 0)
+                {
+                    textoImpressao = $"{nomeProduto} - R$ {preco.ToString("F2")}";
+                }
+                
                 // Garantir conexão aberta
                 if (!_isConnected)
                 {
@@ -228,8 +235,8 @@ namespace GestorEvento.Services
                 _serialPort.BaseStream.Flush();
                 Thread.Sleep(30);
 
-                // ============ FASE 3: IMPRIMIR TEXTO COM ACENTUAÇÃO ============
-                byte[] productBytes = Encoding.GetEncoding(1252).GetBytes(nomeProduto);
+                // ============ FASE 3: IMPRIMIR TEXTO COM PREÇO ============
+                byte[] productBytes = Encoding.GetEncoding(1252).GetBytes(textoImpressao);
                 _serialPort.Write(productBytes, 0, productBytes.Length);
                 _serialPort.BaseStream.Flush();
                 Thread.Sleep(50);

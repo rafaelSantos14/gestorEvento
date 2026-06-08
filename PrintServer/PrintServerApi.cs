@@ -287,19 +287,19 @@ namespace PrintServer
                     
                     // Extrair vendaId, itens, numeroCaixa e descricaoCaixa do JSON
                     int vendaId = ExtractJsonInt(json, "vendaId");
-                    var itens = ExtractJsonArray(json, "itens");
+                    var itensCompletos = ExtractJsonArrayWithPrice(json, "itens");
                     int numeroCaixa = ExtractJsonInt(json, "numeroCaixa");
                     string descricaoCaixa = ExtractJsonString(json, "descricaoCaixa");
                     
-                    Console.WriteLine($"✓ Venda #{vendaId} recebida - Caixa #{numeroCaixa} - {itens.Count} item(ns)");
+                    Console.WriteLine($"✓ Venda #{vendaId} recebida - Caixa #{numeroCaixa} - {itensCompletos.Count} item(ns)");
                     
-                    // Enfileirar cada item da venda com dados do caixa
-                    foreach (var item in itens)
+                    // Enfileirar cada item da venda com dados do caixa e preço
+                    foreach (var item in itensCompletos)
                     {
-                        _queueManager.EnqueuePrintJob(item, numeroCaixa, descricaoCaixa);
+                        _queueManager.EnqueuePrintJob(item.Key, numeroCaixa, descricaoCaixa, item.Value);
                     }
                     
-                    SendResponse(response, 200, JsonSerialize(new { sucesso = true, vendaId = vendaId, numeroCaixa = numeroCaixa, itens = itens.Count }));
+                    SendResponse(response, 200, JsonSerialize(new { sucesso = true, vendaId = vendaId, numeroCaixa = numeroCaixa, itens = itensCompletos.Count }));
                 }
             }
             catch (Exception ex)
@@ -479,14 +479,13 @@ namespace PrintServer
         }
 
         /// <summary>
-        /// Extrai array de strings do JSON
+        /// Extrai array de itens com preços do JSON (novo formato com objetos {nome, preco})
         /// </summary>
-        private List<string> ExtractJsonArray(string json, string key)
+        private Dictionary<string, decimal> ExtractJsonArrayWithPrice(string json, string key)
         {
-            var result = new List<string>();
+            var result = new Dictionary<string, decimal>();
             try
             {
-                // Regex mais robusta: [\s\S] captura incluindo newlines
                 // Procura por "itens":[...] com espaçamento variável
                 string pattern = $"\"{key}\"\\s*:\\s*\\[([\\s\\S]*?)\\]";
                 var match = System.Text.RegularExpressions.Regex.Match(json, pattern);
@@ -496,13 +495,24 @@ namespace PrintServer
                     string arrayContent = match.Groups[1].Value;
                     Console.WriteLine($"  → Conteúdo array: {arrayContent}");
                     
-                    // Procurar por strings entre aspas (com suporte a acentuação)
-                    var stringMatches = System.Text.RegularExpressions.Regex.Matches(arrayContent, "\"([^\"]*)\"");
-                    foreach (System.Text.RegularExpressions.Match stringMatch in stringMatches)
+                    // Procurar por objetos {nome: "...", preco: ...}
+                    var objectMatches = System.Text.RegularExpressions.Regex.Matches(arrayContent, "\\{[^}]*\"nome\"\\s*:\\s*\"([^\"]*)\"[^}]*\"preco\"\\s*:\\s*([0-9.]+)[^}]*\\}");
+                    
+                    if (objectMatches.Count > 0)
                     {
-                        string item = stringMatch.Groups[1].Value;
-                        result.Add(item);
-                        Console.WriteLine($"  → Item: {item}");
+                        foreach (System.Text.RegularExpressions.Match objMatch in objectMatches)
+                        {
+                            string nome = objMatch.Groups[1].Value;
+                            if (decimal.TryParse(objMatch.Groups[2].Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal preco))
+                            {
+                                result[nome] = preco;
+                                Console.WriteLine($"  → Item: {nome} - R$ {preco:F2}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"  ⚠ Não foi possível extrair objetos com nome e preço");
                     }
                 }
                 else
@@ -512,7 +522,7 @@ namespace PrintServer
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"  ✗ Erro ao extrair array: {ex.Message}");
+                Console.WriteLine($"  ✗ Erro ao extrair array com preços: {ex.Message}");
             }
             return result;
         }

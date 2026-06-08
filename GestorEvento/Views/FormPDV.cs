@@ -517,14 +517,15 @@ namespace GestorEvento.Views
                 // ============ IMPRIMIR VENDA COMPLETA NA IMPRESSORA TÉRMICA ============
                 System.Diagnostics.Debug.WriteLine($"\n[IMPRESSÃO] Enviando venda #{idVenda} para impressão");
 
-                // Coletar TODOS os itens em uma lista
-                List<string> itensPorImprimir = new List<string>();
+                // Coletar TODOS os itens em uma lista com nome e preço
+                List<ItemImpressao> itensPorImprimir = new List<ItemImpressao>();
                 foreach (var linha in _produtosLinhas)
                 {
                     int qtde = linha.GetQuantidade();
+                    decimal preco = linha.GetValor();
                     for (int i = 0; i < qtde; i++)
                     {
-                        itensPorImprimir.Add(linha.NomeProduto);
+                        itensPorImprimir.Add(new ItemImpressao(linha.NomeProduto, preco));
                     }
                 }
 

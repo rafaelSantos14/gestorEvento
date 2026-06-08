@@ -203,6 +203,7 @@
     <Compile Include="Repositories\ReimpressaoRepository.cs" />
     <Compile Include="Utilities\EstiloManager.cs" />
     <Compile Include="Utilities\UiHelper.cs" />
+    <Compile Include="Utilities\ItemImpressao.cs" />
     <Compile Include="Views\DialogoCustomizado.cs">
       <SubType>Form</SubType>
     </Compile>

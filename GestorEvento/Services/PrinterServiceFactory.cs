@@ -38,7 +38,7 @@ namespace GestorEvento.Services
         /// Imprime uma venda completa (todos os itens de uma vez)
         /// Evita race condition entre múltiplas máquinas
         /// </summary>
-        public static bool ImprimirVenda(int vendaId, List<string> itens, int numeroCaixa = 0, string descricaoCaixa = "")
+        public static bool ImprimirVenda(int vendaId, List<ItemImpressao> itens, int numeroCaixa = 0, string descricaoCaixa = "")
         {
             string printMode = ConfigurationManager.AppSettings["PrintMode"] ?? "Local";
 
@@ -58,7 +58,7 @@ namespace GestorEvento.Services
         /// Imprime uma reimpressão (cupom sem debitar estoque)
         /// Segue o mesmo padrão de ImprimirVenda
         /// </summary>
-        public static bool ImprimirReimpressao(int reimpressaoId, List<string> itens, int numeroCaixa = 0, string descricaoCaixa = "")
+        public static bool ImprimirReimpressao(int reimpressaoId, List<ItemImpressao> itens, int numeroCaixa = 0, string descricaoCaixa = "")
         {
             string printMode = ConfigurationManager.AppSettings["PrintMode"] ?? "Local";
 
@@ -77,7 +77,7 @@ namespace GestorEvento.Services
         /// <summary>
         /// Imprime uma venda localmente (todos os itens sequencialmente)
         /// </summary>
-        private static bool ImprimirVendaLocal(int vendaId, List<string> itens, int numeroCaixa = 0, string descricaoCaixa = "")
+        private static bool ImprimirVendaLocal(int vendaId, List<ItemImpressao> itens, int numeroCaixa = 0, string descricaoCaixa = "")
         {
             try
             {
@@ -105,12 +105,12 @@ namespace GestorEvento.Services
                 {
                     try
                     {
-                        printer.ImprimirCupom(item, numeroCaixa, descricaoCaixa);
-                        System.Diagnostics.Debug.WriteLine($"  ✓ Item impresso: {item}");
+                        printer.ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco);
+                        System.Diagnostics.Debug.WriteLine($"  ✓ Item impresso: {item.Nome} - R$ {item.Preco.ToString("F2")}");
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"  ✗ Erro ao imprimir {item}: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"  ✗ Erro ao imprimir {item.Nome}: {ex.Message}");
                     }
                 }
 
@@ -131,7 +131,7 @@ namespace GestorEvento.Services
         /// Imprime uma venda via API HTTP do Print Server (Remote)
         /// Toda a venda é enviada em UMA requisição (atômico)
         /// </summary>
-        private static bool ImprimirVendaViaAPI(int vendaId, List<string> itens, int numeroCaixa = 0, string descricaoCaixa = "")
+        private static bool ImprimirVendaViaAPI(int vendaId, List<ItemImpressao> itens, int numeroCaixa = 0, string descricaoCaixa = "")
         {
             try
             {
@@ -318,10 +318,10 @@ namespace GestorEvento.Services
         /// <summary>
         /// Serializa venda para JSON sem dependências externas
         /// </summary>
-        private static string JsonSerializeVenda(int vendaId, List<string> itens, int numeroCaixa = 0, string descricaoCaixa = "")
+        private static string JsonSerializeVenda(int vendaId, List<ItemImpressao> itens, int numeroCaixa = 0, string descricaoCaixa = "")
         {
-            // Escapar aspas em nomes de itens
-            var itensJson = itens.Select(i => $"\"{EscapeJson(i)}\"");
+            // Serializar cada item como JSON com nome e preço
+            var itensJson = itens.Select(i => $"{{\"nome\":\"{EscapeJson(i.Nome)}\",\"preco\":{i.Preco.ToString("F2").Replace(",", ".")}}}" );
             string caixaJson = $",\"numeroCaixa\":{numeroCaixa},\"descricaoCaixa\":\"{EscapeJson(descricaoCaixa)}\"";
             return $"{{\"vendaId\":{vendaId},\"itens\":[{string.Join(",", itensJson)}]{caixaJson}}}";
         }

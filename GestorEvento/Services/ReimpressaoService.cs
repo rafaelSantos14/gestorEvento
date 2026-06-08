@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GestorEvento.Models;
 using GestorEvento.Repositories;
+using GestorEvento.Utilities;
 
 namespace GestorEvento.Services
 {
@@ -57,19 +58,19 @@ namespace GestorEvento.Services
                 // 5. Tenta imprimir (SEM debitar estoque)
                 try
                 {
-                    // Preparar lista de itens EXATAMENTE como em vendas
+                    // Preparar lista de itens com nome e preço
                     // Cada item é adicionado separadamente pela sua quantidade
-                    var itensParaImprimir = new List<string>();
+                    var itensParaImprimir = new List<ItemImpressao>();
                     foreach (var item in reimpressaoRegistrada.Itens)
                     {
                         string descricao = !string.IsNullOrEmpty(item.DescricaoProduto) 
                             ? item.DescricaoProduto 
                             : $"Produto #{item.IdProdutoEvento}";
                         
-                        // Adiciona cada item qtde vezes (como em vendas)
+                        // Adiciona cada item qtde vezes (como em vendas) com seu preço unitário
                         for (int i = 0; i < item.QtdeReimpressao; i++)
                         {
-                            itensParaImprimir.Add(descricao);
+                            itensParaImprimir.Add(new ItemImpressao(descricao, item.VlUnitario));
                         }
                     }
                     

@@ -24,13 +24,13 @@ namespace PrintServer
         }
 
         /// <summary>
-        /// Adiciona um trabalho de impressão à fila
+        /// Adiciona um trabalho de impressão à fila (com preço opcional)
         /// </summary>
-        public PrintJob EnqueuePrintJob(string productName, int numeroCaixa = 0, string descricaoCaixa = "")
+        public PrintJob EnqueuePrintJob(string productName, int numeroCaixa = 0, string descricaoCaixa = "", decimal preco = 0)
         {
             lock (_lockObj)
             {
-                var job = new PrintJob(productName, numeroCaixa, descricaoCaixa);
+                var job = new PrintJob(productName, numeroCaixa, descricaoCaixa, preco);
                 _printQueue.Enqueue(job);
                 Console.WriteLine($"✓ Trabalho adicionado à fila: {job}");
                 Console.WriteLine($"  Fila atual: {_printQueue.Count} trabalho(s)");
@@ -106,7 +106,7 @@ namespace PrintServer
                     }
 
                     // Imprimir cupom
-                    if (_printerService.ImprimirCupom(job.ProductName, job.NumeroCaixa, job.DescricaoCaixa))
+                    if (_printerService.ImprimirCupom(job.ProductName, job.NumeroCaixa, job.DescricaoCaixa, job.Preco))
                     {
                         job.Success = true;
                         Console.WriteLine($"✓ Cupom impresso: {job.ProductName}");
