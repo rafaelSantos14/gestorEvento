@@ -312,6 +312,36 @@
     <Compile Include="Views\FormRelatorioReimpressao.Designer.cs">
       <DependentUpon>FormRelatorioReimpressao.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FormRelatoriosConsolidados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormRelatoriosConsolidados.Designer.cs">
+      <DependentUpon>FormRelatoriosConsolidados.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RelatorioVendaUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RelatorioVendaUserControl.Designer.cs">
+      <DependentUpon>RelatorioVendaUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RelatorioCaixaUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RelatorioCaixaUserControl.Designer.cs">
+      <DependentUpon>RelatorioCaixaUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RelatorioCortesiaUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RelatorioCortesiaUserControl.Designer.cs">
+      <DependentUpon>RelatorioCortesiaUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RelatorioReimpressaoUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RelatorioReimpressaoUserControl.Designer.cs">
+      <DependentUpon>RelatorioReimpressaoUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\DialogMotivoReimpressao.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -333,6 +363,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\DialogMotivoReimpressao.resx">
+      <DependentUpon>DialogMotivoReimpressao.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\DialogoCustomizado.resx">
       <DependentUpon>DialogoCustomizado.cs</DependentUpon>
     </EmbeddedResource>
@@ -391,6 +424,9 @@
     <EmbeddedResource Include="Views\FormRelatorioCaixa.resx">
       <DependentUpon>FormRelatorioCaixa.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\RelatorioReimpressaoUserControl.resx">
+      <DependentUpon>RelatorioReimpressaoUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="GestorEvento_3_TemporaryKey.pfx" />
     <None Include="packages.config" />

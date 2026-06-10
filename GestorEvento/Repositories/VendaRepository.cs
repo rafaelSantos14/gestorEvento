@@ -324,6 +324,8 @@ namespace GestorEvento.Repositories
                                     CdStatus = reader["cd_status"].ToString(),
                                     TipoOperacao = reader["tp_operacao"].ToString()
                                 };
+                                // Carregar itens da venda
+                                venda.Itens = GetItensByVendaId(venda.IdVenda);
                                 vendas.Add(venda);
                             }
                         }

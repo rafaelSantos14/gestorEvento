@@ -138,6 +138,14 @@ namespace GestorEvento.Views
             // Criar o menu de contexto dinamicamente
             ContextMenuStrip menuRelatorios = new ContextMenuStrip();
             
+            // Adicionar item Relatórios Consolidados (novo)
+            ToolStripMenuItem itemConsolidado = new ToolStripMenuItem("📈 Relatórios Consolidados");
+            itemConsolidado.Click += (s, args) => AbrirRelatoriosConsolidados();
+            menuRelatorios.Items.Add(itemConsolidado);
+            
+            // Separador
+            menuRelatorios.Items.Add(new ToolStripSeparator());
+            
             // Adicionar item Relatório de Vendas
             ToolStripMenuItem itemVendas = new ToolStripMenuItem("📊 Vendas");
             itemVendas.Click += (s, args) => AbrirRelatorioVendas();
@@ -165,6 +173,19 @@ namespace GestorEvento.Views
             
             // Mostrar o menu na frente do botão (ao lado direito)
             menuRelatorios.Show(btnRelatorios, new Point(btnRelatorios.Width, 0));
+        }
+
+        private void AbrirRelatoriosConsolidados()
+        {
+            try
+            {
+                FormRelatoriosConsolidados form = new FormRelatoriosConsolidados();
+                form.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao abrir Relatórios Consolidados: " + ex.Message + "\n" + ex.StackTrace, "Erro");
+            }
         }
 
         private void AbrirRelatorioVendas()

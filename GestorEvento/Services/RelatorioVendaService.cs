@@ -170,7 +170,8 @@ namespace GestorEvento.Services
                     .Where(v => string.Equals(v.TipoOperacao, "CORTESIA", StringComparison.OrdinalIgnoreCase))
                     .ToList();
 
-                resultado.TotalQuantidadeCortesia = cortesias.Count;
+                // Contar quantidade TOTAL DE ITENS de cortesia (não quantidade de vendas-cortesia)
+                resultado.TotalQuantidadeCortesia = cortesias.SelectMany(v => v.Itens).Sum(i => i.Quantidade);
                 resultado.ValorTotalCortesia = cortesias.Sum(v => v.VlTotal);
 
                 var cortesiasPorCaixa = cortesias
@@ -186,6 +187,7 @@ namespace GestorEvento.Services
                         continue;
                     }
 
+                    // Contar quantidade TOTAL DE ITENS por caixa (não quantidade de vendas-cortesia)
                     resultado.DadosPorCaixa.Add(new DadosCaixa
                     {
                         IdCaixa = pontoVenda.IdPontoVenda,
@@ -193,7 +195,7 @@ namespace GestorEvento.Services
                         NumeroCaixa = pontoVenda.NoPontoVenda,
                         ValorTotal = grupo.Sum(v => v.VlTotal),
                         ValorTroco = 0m,
-                        QuantidadeVendas = grupo.Count()
+                        QuantidadeVendas = grupo.SelectMany(v => v.Itens).Sum(i => i.Quantidade)
                     });
                 }
 
