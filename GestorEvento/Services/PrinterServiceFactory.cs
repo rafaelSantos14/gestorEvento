@@ -12,9 +12,48 @@ namespace GestorEvento.Services
     /// <summary>
     /// Factory para decidir qual serviço de impressão usar (Local ou Remote via API)
     /// Baseado na configuração em App.config
+    /// Usa IPrinterService para abstrair implementações específicas
     /// </summary>
     public static class PrinterServiceFactory
     {
+        /// <summary>
+        /// Cria instância do serviço de impressão apropriado
+        /// Baseado em PrintMode (Local/Remote) e PrinterType (COM/USB)
+        /// </summary>
+        public static IPrinterService CreatePrinterService()
+        {
+            string printMode = ConfigurationManager.AppSettings["PrintMode"] ?? "Local";
+            
+            if (printMode.Equals("Remote", StringComparison.OrdinalIgnoreCase))
+            {
+                // Modo Remote usa métodos estáticos (ImprimirViaAPI, ImprimirVendaViaAPI)
+                // Para usar interface IPrinterService, use os métodos públicos estáticos da factory
+                throw new NotImplementedException("Modo Remote com IPrinterService não implementado. Use PrinterServiceFactory.ImprimirCupom/Venda() diretamente.");
+            }
+            
+            // Modo Local - decidir por PrinterType
+            string printerType = ConfigurationManager.AppSettings["PrinterType"] ?? "COM";
+            
+            switch (printerType.ToUpper())
+            {
+                case "USB":
+                    // Impressora USB/Windows (TOMATE MDK-080, HP, Zebra, etc)
+                    string windowsPrinterName = ConfigurationManager.AppSettings["WindowsPrinterName"] ?? "MDK-080";
+                    System.Diagnostics.Debug.WriteLine($"[PrinterServiceFactory] Usando impressora USB: {windowsPrinterName}");
+                    return new WindowsPrinterService(windowsPrinterName);
+                
+                case "COM":
+                default:
+                    // Impressora Serial (Epson TM-20, etc)
+                    string portName = ConfigurationManager.AppSettings["PrinterPortName"] ?? "COM2";
+                    int baudRate = int.TryParse(
+                        ConfigurationManager.AppSettings["PrinterBaudRate"] ?? "9600", 
+                        out int br) ? br : 9600;
+                    System.Diagnostics.Debug.WriteLine($"[PrinterServiceFactory] Usando impressora COM: {portName} @ {baudRate} baud");
+                    return new EpsonTM20Service(portName, baudRate);
+            }
+        }
+
         /// <summary>
         /// Imprime um cupom individual no modo configurado (Local ou Remote)
         /// </summary>
@@ -76,6 +115,7 @@ namespace GestorEvento.Services
 
         /// <summary>
         /// Imprime uma venda localmente (todos os itens sequencialmente)
+        /// Respeita a configuração PrinterType (COM ou USB)
         /// </summary>
         private static bool ImprimirVendaLocal(int vendaId, List<ItemImpressao> itens, int numeroCaixa = 0, string descricaoCaixa = "")
         {
@@ -83,34 +123,21 @@ namespace GestorEvento.Services
             {
                 System.Diagnostics.Debug.WriteLine($"[PrinterServiceFactory] Imprimindo venda #{vendaId} localmente ({itens.Count} itens)");
 
-                string portName = ConfigurationManager.AppSettings["PrinterPortName"] ?? "COM2";
+                // Usar CreatePrinterService() para respeitar configuração PrinterType (COM ou USB)
+                var printer = CreatePrinterService();
 
-                if (!int.TryParse(
-                    ConfigurationManager.AppSettings["PrinterBaudRate"] ?? "9600",
-                    out int baudRate))
-                {
-                    baudRate = 9600;
-                }
-
-                var printer = new EpsonTM20Service(portName, baudRate);
-
-                if (!printer.Conectar())
-                {
-                    UiHelper.ExibirErro("Erro", "Não foi possível conectar à impressora");
-                    return false;
-                }
-
-                // Imprimir todos os itens em sequência
+                // Imprimir cada item como um cupom separado (método antigo que funcionava)
                 foreach (var item in itens)
                 {
-                    try
+                    bool resultado = printer.ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco);
+                    
+                    if (resultado)
                     {
-                        printer.ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco);
-                        System.Diagnostics.Debug.WriteLine($"  ✓ Item impresso: {item.Nome} - R$ {item.Preco.ToString("F2")}");
+                        System.Diagnostics.Debug.WriteLine($"  ✓ Cupom impresso: {item.Nome} - R$ {item.Preco.ToString("F2")}");
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        System.Diagnostics.Debug.WriteLine($"  ✗ Erro ao imprimir {item.Nome}: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"  ✗ Falha ao imprimir cupom: {item.Nome}");
                     }
                 }
 
@@ -205,7 +232,8 @@ namespace GestorEvento.Services
         }
 
         /// <summary>
-        /// Imprime localmente usando a porta serial diretamente
+        /// Imprime localmente usando a impressora configurada
+        /// Respeita a configuração PrinterType (COM ou USB)
         /// </summary>
         private static bool ImprimirLocal(string nomeProduto)
         {
@@ -213,23 +241,9 @@ namespace GestorEvento.Services
             {
                 System.Diagnostics.Debug.WriteLine("[PrinterServiceFactory] Usando modo LOCAL");
 
-                string portName = ConfigurationManager.AppSettings["PrinterPortName"] ?? "COM2";
+                // Usar CreatePrinterService() para respeitar configuração PrinterType (COM ou USB)
+                var printer = CreatePrinterService();
                 
-                if (!int.TryParse(
-                    ConfigurationManager.AppSettings["PrinterBaudRate"] ?? "9600",
-                    out int baudRate))
-                {
-                    baudRate = 9600;
-                }
-
-                var printer = new EpsonTM20Service(portName, baudRate);
-                
-                if (!printer.Conectar())
-                {
-                    UiHelper.ExibirErro("Erro", "Não foi possível conectar à impressora");
-                    return false;
-                }
-
                 bool resultado = printer.ImprimirCupom(nomeProduto);
                 printer.Desconectar();
                 printer.Dispose();

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO.Ports;
 using System.Text;
 using System.Threading;
@@ -11,6 +12,7 @@ namespace GestorEvento.Services
 {
     /// <summary>
     /// Serviço de impressora térmica EPSON TM-20 com ESC/POS
+    /// Implementa IPrinterService para impressoras conectadas via porta COM Serial
     /// 
     /// ANÁLISE DO PROBLEMA:
     /// - Desconectar/Conectar entre impressões causa problemas de fila
@@ -18,7 +20,7 @@ namespace GestorEvento.Services
     /// - Precisa esperar a impressora estar pronta antes de cortar
     /// - Não usar Thread.Sleep genérico, sincronizar com status
     /// </summary>
-    public class EpsonTM20Service
+    public class EpsonTM20Service : IPrinterService
     {
         private SerialPort _serialPort;
         private readonly string _portName;
@@ -552,6 +554,42 @@ namespace GestorEvento.Services
             catch (Exception ex)
             {
                 UiHelper.ExibirErro("Erro de Impressão", $"Erro ao imprimir cupom: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool ImprimirVenda(int vendaId, List<ItemImpressao> itens, int numeroCaixa = 0, string descricaoCaixa = "")
+        {
+            try
+            {
+                // Implementação para vendas - imprime cada item como um cupom
+                foreach (var item in itens)
+                {
+                    ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao imprimir venda: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool ImprimirReimpressao(int reimpressaoId, List<ItemImpressao> itens, int numeroCaixa = 0, string descricaoCaixa = "")
+        {
+            try
+            {
+                // Implementação para reimpressões - imprime cada item como um cupom
+                foreach (var item in itens)
+                {
+                    ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao imprimir reimpressão: {ex.Message}");
                 return false;
             }
         }
