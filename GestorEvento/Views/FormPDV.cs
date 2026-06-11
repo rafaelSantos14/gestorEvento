@@ -161,8 +161,8 @@ namespace GestorEvento.Views
         private void PosicionarBotaoProximoAoTotal()
         {
             // Calcular posição Y baseado na label lblTotalValor
-            int yLabel = lblTotalValor.Location.Y;
-            int alturaLabel = lblTotalValor.Height;
+            int yLabel = lblTrocoValor.Location.Y;
+            int alturaLabel = lblTrocoValor.Height;
             int espacamento = 8; // Pequeno espaçamento entre label e botão
             
             // Definir nova posição Y do botão
@@ -1126,6 +1126,9 @@ namespace GestorEvento.Views
                 
                 // Reposiciona o cursor no final
                 _txtValor.SelectionStart = _txtValor.Text.Length;
+
+                // Chamar método do form parent para atualizar troco
+                _formParent.AtualizarTroco();
             }
 
             public void AddToPanel(Panel panel)

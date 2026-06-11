@@ -26,9 +26,9 @@ namespace GestorEvento.Views
             this.panelConteudo = new System.Windows.Forms.Panel();
             this.panelTotalizacao = new System.Windows.Forms.Panel();
             this.groupBoxTipoOperacao = new System.Windows.Forms.GroupBox();
+            this._rbReimprimir = new System.Windows.Forms.RadioButton();
             this._rbCortesia = new System.Windows.Forms.RadioButton();
             this._rbVenda = new System.Windows.Forms.RadioButton();
-            this._rbReimprimir = new System.Windows.Forms.RadioButton();
             this.lblTrocoValor = new System.Windows.Forms.Label();
             this.btnConfirmarVenda = new System.Windows.Forms.Button();
             this.lblTroco = new System.Windows.Forms.Label();
@@ -141,12 +141,12 @@ namespace GestorEvento.Views
             // 
             this.panelTotalizacao.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.panelTotalizacao.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelTotalizacao.Controls.Add(this.lblTotal);
+            this.panelTotalizacao.Controls.Add(this.lblTotalValor);
             this.panelTotalizacao.Controls.Add(this.groupBoxTipoOperacao);
             this.panelTotalizacao.Controls.Add(this.lblTrocoValor);
             this.panelTotalizacao.Controls.Add(this.btnConfirmarVenda);
             this.panelTotalizacao.Controls.Add(this.lblTroco);
-            this.panelTotalizacao.Controls.Add(this.lblTotalValor);
-            this.panelTotalizacao.Controls.Add(this.lblTotal);
             this.panelTotalizacao.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTotalizacao.Location = new System.Drawing.Point(666, 0);
             this.panelTotalizacao.Name = "panelTotalizacao";
@@ -166,6 +166,17 @@ namespace GestorEvento.Views
             this.groupBoxTipoOperacao.TabIndex = 10;
             this.groupBoxTipoOperacao.TabStop = false;
             this.groupBoxTipoOperacao.Text = "Tipo de Operação";
+            // 
+            // _rbReimprimir
+            // 
+            this._rbReimprimir.AutoSize = true;
+            this._rbReimprimir.Location = new System.Drawing.Point(10, 70);
+            this._rbReimprimir.Name = "_rbReimprimir";
+            this._rbReimprimir.Size = new System.Drawing.Size(90, 19);
+            this._rbReimprimir.TabIndex = 2;
+            this._rbReimprimir.Text = "REIMPRIMIR";
+            this._rbReimprimir.UseVisualStyleBackColor = true;
+            this._rbReimprimir.CheckedChanged += new System.EventHandler(this.RbTipoOperacao_CheckedChanged);
             // 
             // _rbCortesia
             // 
@@ -191,22 +202,11 @@ namespace GestorEvento.Views
             this._rbVenda.UseVisualStyleBackColor = true;
             this._rbVenda.CheckedChanged += new System.EventHandler(this.RbTipoOperacao_CheckedChanged);
             // 
-            // _rbReimprimir
-            // 
-            this._rbReimprimir.AutoSize = true;
-            this._rbReimprimir.Location = new System.Drawing.Point(10, 70);
-            this._rbReimprimir.Name = "_rbReimprimir";
-            this._rbReimprimir.Size = new System.Drawing.Size(100, 19);
-            this._rbReimprimir.TabIndex = 2;
-            this._rbReimprimir.Text = "REIMPRIMIR";
-            this._rbReimprimir.UseVisualStyleBackColor = true;
-            this._rbReimprimir.CheckedChanged += new System.EventHandler(this.RbTipoOperacao_CheckedChanged);
-            // 
             // lblTrocoValor
             // 
             this.lblTrocoValor.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
             this.lblTrocoValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.lblTrocoValor.Location = new System.Drawing.Point(5, 51);
+            this.lblTrocoValor.Location = new System.Drawing.Point(5, 147);
             this.lblTrocoValor.Name = "lblTrocoValor";
             this.lblTrocoValor.Size = new System.Drawing.Size(200, 38);
             this.lblTrocoValor.TabIndex = 3;
@@ -233,7 +233,7 @@ namespace GestorEvento.Views
             // 
             this.lblTroco.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
             this.lblTroco.ForeColor = System.Drawing.Color.Black;
-            this.lblTroco.Location = new System.Drawing.Point(5, 2);
+            this.lblTroco.Location = new System.Drawing.Point(5, 98);
             this.lblTroco.Name = "lblTroco";
             this.lblTroco.Size = new System.Drawing.Size(200, 49);
             this.lblTroco.TabIndex = 2;
@@ -244,7 +244,7 @@ namespace GestorEvento.Views
             // 
             this.lblTotalValor.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
             this.lblTotalValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
-            this.lblTotalValor.Location = new System.Drawing.Point(5, 138);
+            this.lblTotalValor.Location = new System.Drawing.Point(5, 51);
             this.lblTotalValor.Name = "lblTotalValor";
             this.lblTotalValor.Size = new System.Drawing.Size(200, 49);
             this.lblTotalValor.TabIndex = 1;
@@ -255,7 +255,7 @@ namespace GestorEvento.Views
             // 
             this.lblTotal.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTotal.ForeColor = System.Drawing.Color.Black;
-            this.lblTotal.Location = new System.Drawing.Point(5, 89);
+            this.lblTotal.Location = new System.Drawing.Point(5, 2);
             this.lblTotal.Name = "lblTotal";
             this.lblTotal.Size = new System.Drawing.Size(200, 49);
             this.lblTotal.TabIndex = 0;
