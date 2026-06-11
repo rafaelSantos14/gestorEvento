@@ -271,11 +271,11 @@ namespace GestorEvento.Views
             this.panelResumo.BackColor = System.Drawing.Color.White;
             this.panelResumo.Controls.Add(this.dgvResumoCaixas);
             this.panelResumo.Controls.Add(this.lblResumo);
-            this.panelResumo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelResumo.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelResumo.Location = new System.Drawing.Point(0, 460);
             this.panelResumo.Name = "panelResumo";
             this.panelResumo.Padding = new System.Windows.Forms.Padding(15);
-            this.panelResumo.Size = new System.Drawing.Size(992, 0);
+            this.panelResumo.Size = new System.Drawing.Size(992, 220);
             this.panelResumo.TabIndex = 4;
 
             // dgvResumoCaixas

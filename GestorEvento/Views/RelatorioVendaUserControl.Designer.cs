@@ -233,11 +233,11 @@ namespace GestorEvento.Views
             this.panelProdutos.BackColor = System.Drawing.Color.White;
             this.panelProdutos.Controls.Add(this.dgvProdutosVendidos);
             this.panelProdutos.Controls.Add(this.lblProdutosVendidos);
-            this.panelProdutos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelProdutos.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelProdutos.Location = new System.Drawing.Point(0, 460);
             this.panelProdutos.Name = "panelProdutos";
             this.panelProdutos.Padding = new System.Windows.Forms.Padding(15);
-            this.panelProdutos.Size = new System.Drawing.Size(992, 0);
+            this.panelProdutos.Size = new System.Drawing.Size(992, 360);
             this.panelProdutos.TabIndex = 4;
 
             // dgvProdutosVendidos
