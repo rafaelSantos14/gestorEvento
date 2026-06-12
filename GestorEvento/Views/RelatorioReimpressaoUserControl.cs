@@ -179,6 +179,7 @@ namespace GestorEvento.Views
                             item.DescricaoProduto,
                             ObterDescricaoMotivo(reimp.IdMotivo),
                             item.QtdeReimpressao,
+                            $"R$ {item.VlUnitario:N2}",
                             $"R$ {item.VlSubtotal:N2}"
                         );
                     }
@@ -271,7 +272,8 @@ namespace GestorEvento.Views
             dgvItens.Columns.Add(new DataGridViewTextBoxColumn { Name = "NomeProduto", HeaderText = "Produto", FillWeight = 30 });
             dgvItens.Columns.Add(new DataGridViewTextBoxColumn { Name = "DsMotivo", HeaderText = "Motivo", FillWeight = 20 });
             dgvItens.Columns.Add(new DataGridViewTextBoxColumn { Name = "Quantidade", HeaderText = "Qt", FillWeight = 8 });
-            dgvItens.Columns.Add(new DataGridViewTextBoxColumn { Name = "Valor", HeaderText = "Valor", FillWeight = 7 });
+            dgvItens.Columns.Add(new DataGridViewTextBoxColumn { Name = "VlUnitario", HeaderText = "Valor Un.", FillWeight = 10 });
+            dgvItens.Columns.Add(new DataGridViewTextBoxColumn { Name = "Valor", HeaderText = "Subtotal", FillWeight = 10 });
 
             dgvItens.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             EstiloGridPadrao(dgvItens);

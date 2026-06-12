@@ -732,13 +732,14 @@ namespace GestorEvento.Views
                     int qtde = linha.GetQuantidade();
                     if (qtde > 0)
                     {
-                        decimal valor = linha.GetValor();
+                        decimal vlUnitario = linha.GetValor(); // GetValor() já retorna preço unitário
+                        decimal vlSubtotal = vlUnitario * qtde; // Preço unitário × Quantidade
                         reimpressao.Itens.Add(new ReimpressaoItem
                         {
                             IdProdutoEvento = linha.IdProdutoEvento,
                             QtdeReimpressao = qtde,
-                            VlUnitario = valor / qtde, // Preço unitário
-                            VlSubtotal = valor,
+                            VlUnitario = vlUnitario,
+                            VlSubtotal = vlSubtotal,
                             DescricaoProduto = linha.NomeProduto
                         });
                     }
@@ -927,6 +928,9 @@ namespace GestorEvento.Views
                     TextAlign = ContentAlignment.MiddleCenter
                 };
                 _btnMenos.Click += BtnMenos_Click;
+
+                // Atualizar estado de disponibilidade (label vermelha e textbox desabilitado se sem estoque)
+                AtualizarEstadoDisponibilidade();
             }
 
             private void BtnMais_Click(object sender, EventArgs e)
@@ -1037,6 +1041,31 @@ namespace GestorEvento.Views
                 _quantidadeDisponivel = novaQuantidade;
                 // Atualizar o label para refletir a nova quantidade disponível
                 _lblProduto.Text = $"{NomeProduto} - R$ {_valorPadrao.ToString("F2")} - Disp. ({novaQuantidade})";
+                
+                // Atualizar estado de disponibilidade (label vermelha e textbox desabilitado se sem estoque)
+                AtualizarEstadoDisponibilidade();
+            }
+
+            private void AtualizarEstadoDisponibilidade()
+            {
+                if (_quantidadeDisponivel <= 0)
+                {
+                    // Sem estoque: label vermelha e textbox desabilitado
+                    _lblProduto.ForeColor = Color.Red;
+                    _txtQuantidade.Enabled = false;
+                    _txtQuantidade.BackColor = Color.LightGray;
+                    _btnMais.Enabled = false;
+                    _btnMenos.Enabled = false;
+                }
+                else
+                {
+                    // Com estoque: label preta e textbox habilitado
+                    _lblProduto.ForeColor = Color.Black;
+                    _txtQuantidade.Enabled = true;
+                    _txtQuantidade.BackColor = Color.White;
+                    _btnMais.Enabled = true;
+                    _btnMenos.Enabled = true;
+                }
             }
 
             public void SetQuantidade(int quantidade)
