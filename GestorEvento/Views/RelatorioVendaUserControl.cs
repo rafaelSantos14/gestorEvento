@@ -254,16 +254,20 @@ namespace GestorEvento.Views
 
             foreach (var produto in dados.DadosProdutosVendidos)
             {
-                dgvProdutosVendidos.Rows.Add(
-                    produto.NomeProduto,
-                    produto.QuantidadeInicial,
-                    produto.QuantidadeVendida,
-                    produto.QuantidadeCortesia,
-                    produto.QuantidadeDisponivel,
-                    $"R$ {produto.PrecoUnitario:N2}",
-                    $"R$ {produto.ValorTotalVendido:N2}",
-                    $"{produto.PercentualTotalVendas:N1}%"
-                );
+                // Mostrar apenas produtos que tiveram venda
+                if (produto.QuantidadeVendida > 0)
+                {
+                    dgvProdutosVendidos.Rows.Add(
+                        produto.NomeProduto,
+                        produto.QuantidadeInicial,
+                        produto.QuantidadeVendida,
+                        produto.QuantidadeCortesia,
+                        produto.QuantidadeDisponivel,
+                        $"R$ {produto.PrecoUnitario:N2}",
+                        $"R$ {produto.ValorTotalVendido:N2}",
+                        $"{produto.PercentualTotalVendas:N1}%"
+                    );
+                }
             }
         }
     }

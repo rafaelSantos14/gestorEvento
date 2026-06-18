@@ -178,16 +178,20 @@ namespace GestorEvento.Views
 
             foreach (var produto in dados.DadosProdutosVendidos)
             {
-                dgvProdutosCortesia.Rows.Add(
-                    produto.NomeProduto,
-                    produto.QuantidadeInicial,
-                    produto.QuantidadeVendida,
-                    produto.QuantidadeCortesia,
-                    produto.QuantidadeDisponivel,
-                    $"R$ {produto.PrecoUnitario:N2}",
-                    $"R$ {produto.ValorTotalVendido:N2}",
-                    $"{produto.PercentualTotalVendas:N1}%"
-                );
+                // Mostrar apenas produtos que tiveram cortesia
+                if (produto.QuantidadeCortesia > 0)
+                {
+                    dgvProdutosCortesia.Rows.Add(
+                        produto.NomeProduto,
+                        produto.QuantidadeInicial,
+                        produto.QuantidadeVendida,
+                        produto.QuantidadeCortesia,
+                        produto.QuantidadeDisponivel,
+                        $"R$ {produto.PrecoUnitario:N2}",
+                        $"R$ {produto.ValorTotalVendido:N2}",
+                        $"{produto.PercentualTotalVendas:N1}%"
+                    );
+                }
             }
         }
     }
