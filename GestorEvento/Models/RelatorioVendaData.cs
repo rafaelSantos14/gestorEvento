@@ -57,7 +57,9 @@ namespace GestorEvento.Models
     public class DadosProdutoVendido
     {
         public string NomeProduto { get; set; }
+        public int QuantidadeInicial { get; set; }
         public int QuantidadeVendida { get; set; }
+        public int QuantidadeCortesia { get; set; }
         public int QuantidadeDisponivel { get; set; }
         public decimal PrecoUnitario { get; set; }
         public decimal ValorTotalVendido { get; set; }

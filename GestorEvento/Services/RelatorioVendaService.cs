@@ -124,7 +124,7 @@ namespace GestorEvento.Services
 
                 // 8. Produtos vendidos (agrupados por produto e valor unitário)
                 var produtosVendidos = _vendaRepository.ObterResumoProdutosVendidosPorEvento(idEvento);
-                foreach (var (nomeProduto, quantidadeVendida, quantidadeDisponivel, precoUnitario, valorTotalVendido) in produtosVendidos)
+                foreach (var (nomeProduto, quantidadeInicial, quantidadeVendida, quantidadeCortesia, quantidadeDisponivel, precoUnitario, valorTotalVendido) in produtosVendidos)
                 {
                     decimal percentualTotalVendas = resultado.ValorTotalVendido > 0
                         ? (valorTotalVendido / resultado.ValorTotalVendido) * 100
@@ -133,7 +133,9 @@ namespace GestorEvento.Services
                     resultado.DadosProdutosVendidos.Add(new DadosProdutoVendido
                     {
                         NomeProduto = nomeProduto,
+                        QuantidadeInicial = quantidadeInicial,
                         QuantidadeVendida = quantidadeVendida,
+                        QuantidadeCortesia = quantidadeCortesia,
                         QuantidadeDisponivel = quantidadeDisponivel,
                         PrecoUnitario = precoUnitario,
                         ValorTotalVendido = valorTotalVendido,
@@ -204,7 +206,7 @@ namespace GestorEvento.Services
                     .ToList();
 
                 var produtosCortesia = _vendaRepository.ObterResumoProdutosCortesiaPorEvento(idEvento);
-                foreach (var (nomeProduto, quantidadeVendida, quantidadeDisponivel, precoUnitario, valorTotalCortesia) in produtosCortesia)
+                foreach (var (nomeProduto, quantidadeInicial, quantidadeVendida, quantidadeCortesia, quantidadeDisponivel, precoUnitario, valorTotalCortesia) in produtosCortesia)
                 {
                     decimal percentualTotal = resultado.ValorTotalCortesia > 0
                         ? (valorTotalCortesia / resultado.ValorTotalCortesia) * 100
@@ -213,7 +215,9 @@ namespace GestorEvento.Services
                     resultado.DadosProdutosVendidos.Add(new DadosProdutoVendido
                     {
                         NomeProduto = nomeProduto,
+                        QuantidadeInicial = quantidadeInicial,
                         QuantidadeVendida = quantidadeVendida,
+                        QuantidadeCortesia = quantidadeCortesia,
                         QuantidadeDisponivel = quantidadeDisponivel,
                         PrecoUnitario = precoUnitario,
                         ValorTotalVendido = valorTotalCortesia,

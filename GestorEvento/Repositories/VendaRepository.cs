@@ -376,9 +376,9 @@ namespace GestorEvento.Repositories
         /// <summary>
         /// Obtém resumo de produtos vendidos por evento, agrupado por produto e valor unitário
         /// </summary>
-        public List<(string nomeProduto, int quantidadeVendida, int quantidadeDisponivel, decimal precoUnitario, decimal valorTotalVendido)> ObterResumoProdutosVendidosPorEvento(int idEvento)
+        public List<(string nomeProduto, int quantidadeInicial, int quantidadeVendida, int quantidadeCortesia, int quantidadeDisponivel, decimal precoUnitario, decimal valorTotalVendido)> ObterResumoProdutosVendidosPorEvento(int idEvento)
         {
-            var produtos = new List<(string, int, int, decimal, decimal)>();
+            var produtos = new List<(string, int, int, int, int, decimal, decimal)>();
 
             try
             {
@@ -387,10 +387,12 @@ namespace GestorEvento.Repositories
                     connection.Open();
 
                     string query = @"SELECT p.nm_produto,
-                                            SUM(iv.qtde_vendida) AS qtde_vendida,
+                                            pe.qtde_produto,
+                                            SUM(CASE WHEN v.tp_operacao = 'VENDA' THEN iv.qtde_vendida ELSE 0 END) AS qtde_vendida,
+                                            SUM(CASE WHEN v.tp_operacao = 'CORTESIA' THEN iv.qtde_vendida ELSE 0 END) AS qtde_cortesia,
                                             (pe.qtde_produto - COALESCE(pe.qtde_vendida, 0)) AS qtde_disponivel,
                                             iv.vl_unitario,
-                                            SUM(iv.vl_subtotal) AS vl_total_vendido
+                                            SUM(CASE WHEN v.tp_operacao = 'VENDA' THEN iv.vl_subtotal ELSE 0 END) AS vl_total_vendido
                                      FROM ITEM_VENDA iv
                                      INNER JOIN VENDA v ON v.id_venda = iv.id_venda
                                      INNER JOIN PONTO_VENDA pv ON pv.id_ponto_venda = v.id_ponto_venda
@@ -398,7 +400,6 @@ namespace GestorEvento.Repositories
                                      INNER JOIN PRODUTO p ON p.id_produto = pe.id_produto
                                      WHERE pv.id_evento = @idEvento
                                        AND v.cd_status = 'Concluida'
-                                       AND v.tp_operacao = 'VENDA'
                                      GROUP BY iv.vl_unitario, pe.id_produto_evento
                                      ORDER BY p.nm_produto ASC, iv.vl_unitario ASC";
 
@@ -411,12 +412,14 @@ namespace GestorEvento.Repositories
                             while (reader.Read())
                             {
                                 string nomeProduto = reader["nm_produto"].ToString();
+                                int quantidadeInicial = Convert.ToInt32(reader["qtde_produto"]);
                                 int quantidadeVendida = Convert.ToInt32(reader["qtde_vendida"]);
+                                int quantidadeCortesia = Convert.ToInt32(reader["qtde_cortesia"]);
                                 int quantidadeDisponivel = Convert.ToInt32(reader["qtde_disponivel"]);
                                 decimal precoUnitario = Convert.ToDecimal(reader["vl_unitario"]);
                                 decimal valorTotalVendido = Convert.ToDecimal(reader["vl_total_vendido"]);
 
-                                produtos.Add((nomeProduto, quantidadeVendida, quantidadeDisponivel, precoUnitario, valorTotalVendido));
+                                produtos.Add((nomeProduto, quantidadeInicial, quantidadeVendida, quantidadeCortesia, quantidadeDisponivel, precoUnitario, valorTotalVendido));
                             }
                         }
                     }
@@ -435,9 +438,9 @@ namespace GestorEvento.Repositories
         /// <summary>
         /// Obtém resumo de produtos em cortesia por evento, agrupado por produto e valor unitário
         /// </summary>
-        public List<(string nomeProduto, int quantidadeVendida, int quantidadeDisponivel, decimal precoUnitario, decimal valorTotalVendido)> ObterResumoProdutosCortesiaPorEvento(int idEvento)
+        public List<(string nomeProduto, int quantidadeInicial, int quantidadeVendida, int quantidadeCortesia, int quantidadeDisponivel, decimal precoUnitario, decimal valorTotalVendido)> ObterResumoProdutosCortesiaPorEvento(int idEvento)
         {
-            var produtos = new List<(string, int, int, decimal, decimal)>();
+            var produtos = new List<(string, int, int, int, int, decimal, decimal)>();
 
             try
             {
@@ -446,10 +449,12 @@ namespace GestorEvento.Repositories
                     connection.Open();
 
                     string query = @"SELECT p.nm_produto,
-                                            SUM(iv.qtde_vendida) AS qtde_vendida,
+                                            pe.qtde_produto,
+                                            SUM(CASE WHEN v.tp_operacao = 'VENDA' THEN iv.qtde_vendida ELSE 0 END) AS qtde_vendida,
+                                            SUM(CASE WHEN v.tp_operacao = 'CORTESIA' THEN iv.qtde_vendida ELSE 0 END) AS qtde_cortesia,
                                             (pe.qtde_produto - COALESCE(pe.qtde_vendida, 0)) AS qtde_disponivel,
                                             iv.vl_unitario,
-                                            SUM(iv.vl_subtotal) AS vl_total_cortesia
+                                            SUM(CASE WHEN v.tp_operacao = 'CORTESIA' THEN iv.vl_subtotal ELSE 0 END) AS vl_total_cortesia
                                      FROM ITEM_VENDA iv
                                      INNER JOIN VENDA v ON v.id_venda = iv.id_venda
                                      INNER JOIN PONTO_VENDA pv ON pv.id_ponto_venda = v.id_ponto_venda
@@ -457,7 +462,6 @@ namespace GestorEvento.Repositories
                                      INNER JOIN PRODUTO p ON p.id_produto = pe.id_produto
                                      WHERE pv.id_evento = @idEvento
                                        AND v.cd_status = 'Concluida'
-                                       AND v.tp_operacao = 'CORTESIA'
                                      GROUP BY iv.vl_unitario, pe.id_produto_evento
                                      ORDER BY p.nm_produto ASC, iv.vl_unitario ASC";
 
@@ -470,12 +474,14 @@ namespace GestorEvento.Repositories
                             while (reader.Read())
                             {
                                 string nomeProduto = reader["nm_produto"].ToString();
+                                int quantidadeInicial = Convert.ToInt32(reader["qtde_produto"]);
                                 int quantidadeVendida = Convert.ToInt32(reader["qtde_vendida"]);
+                                int quantidadeCortesia = Convert.ToInt32(reader["qtde_cortesia"]);
                                 int quantidadeDisponivel = Convert.ToInt32(reader["qtde_disponivel"]);
                                 decimal precoUnitario = Convert.ToDecimal(reader["vl_unitario"]);
                                 decimal valorTotalCortesia = Convert.ToDecimal(reader["vl_total_cortesia"]);
 
-                                produtos.Add((nomeProduto, quantidadeVendida, quantidadeDisponivel, precoUnitario, valorTotalCortesia));
+                                produtos.Add((nomeProduto, quantidadeInicial, quantidadeVendida, quantidadeCortesia, quantidadeDisponivel, precoUnitario, valorTotalCortesia));
                             }
                         }
                     }

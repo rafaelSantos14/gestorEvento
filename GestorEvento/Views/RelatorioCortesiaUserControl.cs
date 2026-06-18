@@ -156,7 +156,9 @@ namespace GestorEvento.Views
 
             dgvProdutosCortesia.Columns.Clear();
             dgvProdutosCortesia.Columns.Add(new DataGridViewTextBoxColumn { Name = "NomeProduto", HeaderText = "Nome do Produto", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
-            dgvProdutosCortesia.Columns.Add(new DataGridViewTextBoxColumn { Name = "Quantidade", HeaderText = "Qtd. Cortesia", Width = 95 });
+            dgvProdutosCortesia.Columns.Add(new DataGridViewTextBoxColumn { Name = "QuantidadeInicial", HeaderText = "Qtd. Inicial", Width = 90 });
+            dgvProdutosCortesia.Columns.Add(new DataGridViewTextBoxColumn { Name = "QuantidadeVendida", HeaderText = "Qtd. Vendida", Width = 95 });
+            dgvProdutosCortesia.Columns.Add(new DataGridViewTextBoxColumn { Name = "Quantidade", HeaderText = "Qtde Cortesias", Width = 100 });
             dgvProdutosCortesia.Columns.Add(new DataGridViewTextBoxColumn { Name = "QuantidadeDisponivel", HeaderText = "Qtd. Disponível", Width = 105 });
             dgvProdutosCortesia.Columns.Add(new DataGridViewTextBoxColumn { Name = "PrecoUnitario", HeaderText = "Preço Un.", Width = 90 });
             dgvProdutosCortesia.Columns.Add(new DataGridViewTextBoxColumn { Name = "ValorTotal", HeaderText = "Valor Total Cortesia", Width = 140 });
@@ -178,7 +180,9 @@ namespace GestorEvento.Views
             {
                 dgvProdutosCortesia.Rows.Add(
                     produto.NomeProduto,
+                    produto.QuantidadeInicial,
                     produto.QuantidadeVendida,
+                    produto.QuantidadeCortesia,
                     produto.QuantidadeDisponivel,
                     $"R$ {produto.PrecoUnitario:N2}",
                     $"R$ {produto.ValorTotalVendido:N2}",
