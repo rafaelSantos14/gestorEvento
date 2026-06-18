@@ -197,6 +197,23 @@ namespace GestorEvento.Views
                 // Calcular layout dinâmico baseado na altura do painel
                 int alturaDisponivel = panelProdutos.Height - 20; // -20 para padding
                 int alturaItem = 85; // Altura de cada produto
+                int larguraColuna = 240; // Largura padrão da coluna
+                int larguraLabel = 240; // Largura padrão da label
+                
+                // AJUSTE PARA DPI 120: Detectar DPI real e ajustar apenas para 120 DPI
+                float dpiAtual = 96f; // Padrão
+                using (Graphics g = Graphics.FromHwnd(IntPtr.Zero))
+                {
+                    dpiAtual = g.DpiX;
+                }
+
+                if (dpiAtual >= 120)
+                {
+                    alturaItem = 110; // Aumentar altura para evitar truncamento no Slim 3
+                    larguraColuna = 300; // Aumentar largura da coluna para acomodar label de 300px + espaçamento
+                    larguraLabel = 280; // Aumentar largura da label para nomes longos
+                }
+                
                 int produtosPorColuna = Math.Max(1, alturaDisponivel / alturaItem);
                 
                 int xPosition = 10;
@@ -212,7 +229,7 @@ namespace GestorEvento.Views
                         // Se atingiu o limite de produtos na coluna, passar para próxima coluna
                         if (produtoAtual > 0 && produtoAtual % produtosPorColuna == 0)
                         {
-                            xPosition += 240; // Largura de uma coluna (aumentado para mais espaço entre colunas)
+                            xPosition += larguraColuna; // Usar variável (ajustada para DPI 120 se necessário)
                             yPosition = 10;
                         }
                         
@@ -225,6 +242,7 @@ namespace GestorEvento.Views
                             produtoEvento.QuantidadeDisponivel,  // Quantidade disponível para venda
                             xPosition,
                             yPosition,
+                            larguraLabel,  // Passar largura ajustada para DPI 120
                             this
                         );
                         
@@ -232,7 +250,7 @@ namespace GestorEvento.Views
                         _produtosLinhas.Add(produtoLinha);
                         
                         // Incrementar posição vertical
-                        yPosition += 85; // Mesmo valor de alturaItem
+                        yPosition += alturaItem; // Usar variável (ajustada para DPI 120 se necessário)
                         produtoAtual++;
                     }
                 }
@@ -634,12 +652,6 @@ namespace GestorEvento.Views
             AtualizarTotalVenda();
         }
 
-        private void BtnCancelar_Click(object sender, EventArgs e)
-        {
-            // Limpar tudo sem fechar o form
-            LimparTudo();
-        }
-
         private void LimparTudo()
         {
             // Limpar itens da venda
@@ -833,8 +845,17 @@ namespace GestorEvento.Views
         /// Adiciona RadioButtons no painel de totalização com VENDA pré-selecionado
         /// </summary>
         /// <summary>
+        /// Verifica se a operação selecionada é REIMPRIMIR
+        /// </summary>
+        public bool IsOperacaoReimprimir()
+        {
+            return _rbReimprimir != null && _rbReimprimir.Checked;
+        }
+
+        /// <summary>
         /// Handler para mudança no seletor de tipo de operação
         /// Quando CORTESIA ou REIMPRIMIR é selecionado, desabilita os campos de pagamento
+        /// Para REIMPRIMIR, também habilita todos os campos de quantidade
         /// </summary>
         private void RbTipoOperacao_CheckedChanged(object sender, EventArgs e)
         {
@@ -854,6 +875,24 @@ namespace GestorEvento.Views
                     formaPag.SetEnabled(true);
                 }
             }
+
+            // Se REIMPRIMIR foi selecionado, atualizar estado dos campos de quantidade
+            // para permitir reimprimir qualquer quantidade mesmo sem estoque
+            if (_rbReimprimir.Checked)
+            {
+                foreach (var linha in _produtosLinhas)
+                {
+                    linha.AtualizarEstadoParaReimprimir(true);
+                }
+            }
+            else
+            {
+                // Restaurar validação normal de estoque para VENDA
+                foreach (var linha in _produtosLinhas)
+                {
+                    linha.AtualizarEstadoParaReimprimir(false);
+                }
+            }
         }
 
         // ==================== CLASSES INTERNAS ====================
@@ -871,8 +910,9 @@ namespace GestorEvento.Views
             private Button _btnMais;
             private Button _btnMenos;
             private FormPDV _formParent;
+            private bool _isReimprimindo = false;  // Flag para indicar modo REIMPRIMIR
 
-            public ProdutoLinhaVenda(int idProdutoEvento, int idProduto, string nomeProduto, decimal valorPadrao, int quantidadeDisponivel, int xPosition, int yPosition, FormPDV formParent)
+            public ProdutoLinhaVenda(int idProdutoEvento, int idProduto, string nomeProduto, decimal valorPadrao, int quantidadeDisponivel, int xPosition, int yPosition, int larguraLabel, FormPDV formParent)
             {
                 IdProdutoEvento = idProdutoEvento;
                 IdProduto = idProduto;
@@ -886,7 +926,7 @@ namespace GestorEvento.Views
                 {
                     Text = $"{nomeProduto} - R$ {valorPadrao.ToString("F2")} - ({quantidadeDisponivel})",
                     Location = new Point(xPosition, yPosition),
-                    Size = new Size(240, 30),
+                    Size = new Size(larguraLabel, 30),  // Usar parâmetro para ajustar largura
                     Font = new Font("Segoe UI", 10F),
                     AutoSize = false,
                     TextAlign = ContentAlignment.TopLeft
@@ -936,13 +976,19 @@ namespace GestorEvento.Views
             private void BtnMais_Click(object sender, EventArgs e)
             {
                 int qtdeAtual = GetQuantidade();
-                if (qtdeAtual < _quantidadeDisponivel)
+                
+                // Se for REIMPRIMIR, não validar contra estoque - permitir qualquer quantidade
+                if (_isReimprimindo)
+                {
+                    _txtQuantidade.Text = (qtdeAtual + 1).ToString();
+                }
+                else if (qtdeAtual < _quantidadeDisponivel)
                 {
                     _txtQuantidade.Text = (qtdeAtual + 1).ToString();
                 }
                 else
                 {
-                    // Exibir aviso se atingiu o limite
+                    // Exibir aviso se atingiu o limite (apenas para VENDA/CORTESIA)
                     DialogoCustomizado dialogo = new DialogoCustomizado(
                         "Aviso",
                         $"Quantidade máxima disponível: {_quantidadeDisponivel}",
@@ -973,8 +1019,8 @@ namespace GestorEvento.Views
                     {
                         _txtQuantidade.Text = "0";
                     }
-                    // Validar contra estoque disponível
-                    else if (qtde > _quantidadeDisponivel)
+                    // Validar contra estoque disponível APENAS se não for REIMPRIMIR
+                    else if (!_isReimprimindo && qtde > _quantidadeDisponivel)
                     {
                         DialogoCustomizado dialogo = new DialogoCustomizado(
                             "Aviso",
@@ -1048,6 +1094,18 @@ namespace GestorEvento.Views
 
             private void AtualizarEstadoDisponibilidade()
             {
+                // Se está em modo REIMPRIMIR, sempre habilitar campos (não validar estoque)
+                if (_isReimprimindo)
+                {
+                    _lblProduto.ForeColor = Color.Black;
+                    _txtQuantidade.Enabled = true;
+                    _txtQuantidade.BackColor = Color.White;
+                    _btnMais.Enabled = true;
+                    _btnMenos.Enabled = true;
+                    return;
+                }
+
+                // Para VENDA e CORTESIA: validar estoque
                 if (_quantidadeDisponivel <= 0)
                 {
                     // Sem estoque: label vermelha e textbox desabilitado
@@ -1066,6 +1124,16 @@ namespace GestorEvento.Views
                     _btnMais.Enabled = true;
                     _btnMenos.Enabled = true;
                 }
+            }
+
+            /// <summary>
+            /// Atualiza o estado dos campos para modo REIMPRIMIR
+            /// Em REIMPRIMIR, todos os campos ficam habilitados e não há validação de estoque
+            /// </summary>
+            public void AtualizarEstadoParaReimprimir(bool isReimprimindo)
+            {
+                _isReimprimindo = isReimprimindo;
+                AtualizarEstadoDisponibilidade();
             }
 
             public void SetQuantidade(int quantidade)
@@ -1108,7 +1176,7 @@ namespace GestorEvento.Views
                     Size = new Size(150, 50),
                     Enabled = true,
                     Font = new Font("Segoe UI", 16F),
-                    Text = ""
+                    Text = "0,00"
                 };
                 _txtValor.Leave += TxtValor_Leave;
                 _txtValor.TextChanged += TxtValor_TextChanged;
@@ -1205,6 +1273,12 @@ namespace GestorEvento.Views
             public int Quantidade { get; set; }
             public decimal ValorUnitario { get; set; }
             public decimal Subtotal { get; set; }
+        }
+
+        private void btnAtualizarPDV_Click(object sender, EventArgs e)
+        {            
+            LimparTudo();            
+            CarregarProdutos();
         }
     }
 }

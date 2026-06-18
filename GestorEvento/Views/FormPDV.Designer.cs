@@ -37,7 +37,7 @@ namespace GestorEvento.Views
             this.panelPagamento = new System.Windows.Forms.Panel();
             this.panelProdutos = new System.Windows.Forms.Panel();
             this.panelBotoes = new System.Windows.Forms.Panel();
-            this.btnCancelar = new System.Windows.Forms.Button();
+            this.btnAtualizarPDV = new System.Windows.Forms.Button();
             this.panelTitulo.SuspendLayout();
             this.panelInfoCaixa.SuspendLayout();
             this.panelConteudo.SuspendLayout();
@@ -289,7 +289,7 @@ namespace GestorEvento.Views
             // panelBotoes
             // 
             this.panelBotoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.panelBotoes.Controls.Add(this.btnCancelar);
+            this.panelBotoes.Controls.Add(this.btnAtualizarPDV);
             this.panelBotoes.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelBotoes.Location = new System.Drawing.Point(0, 530);
             this.panelBotoes.Name = "panelBotoes";
@@ -297,20 +297,20 @@ namespace GestorEvento.Views
             this.panelBotoes.Size = new System.Drawing.Size(1000, 50);
             this.panelBotoes.TabIndex = 4;
             // 
-            // btnCancelar
+            // btnAtualizarPDV
             // 
-            this.btnCancelar.BackColor = System.Drawing.Color.Red;
-            this.btnCancelar.FlatAppearance.BorderSize = 0;
-            this.btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancelar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.btnCancelar.ForeColor = System.Drawing.Color.White;
-            this.btnCancelar.Location = new System.Drawing.Point(12, 8);
-            this.btnCancelar.Name = "btnCancelar";
-            this.btnCancelar.Size = new System.Drawing.Size(134, 30);
-            this.btnCancelar.TabIndex = 1;
-            this.btnCancelar.Text = "❌ CANCELAR";
-            this.btnCancelar.UseVisualStyleBackColor = false;
-            this.btnCancelar.Click += new System.EventHandler(this.BtnCancelar_Click);
+            this.btnAtualizarPDV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.btnAtualizarPDV.FlatAppearance.BorderSize = 0;
+            this.btnAtualizarPDV.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAtualizarPDV.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnAtualizarPDV.ForeColor = System.Drawing.Color.White;
+            this.btnAtualizarPDV.Location = new System.Drawing.Point(15, 8);
+            this.btnAtualizarPDV.Name = "btnAtualizarPDV";
+            this.btnAtualizarPDV.Size = new System.Drawing.Size(174, 30);
+            this.btnAtualizarPDV.TabIndex = 2;
+            this.btnAtualizarPDV.Text = "🔄 ATUALIZAR/LIMPAR";
+            this.btnAtualizarPDV.UseVisualStyleBackColor = false;
+            this.btnAtualizarPDV.Click += new System.EventHandler(this.btnAtualizarPDV_Click);
             // 
             // FormPDV
             // 
@@ -358,10 +358,10 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Panel panelPagamento;
         private System.Windows.Forms.Panel panelBotoes;
         private System.Windows.Forms.Button btnConfirmarVenda;
-        private System.Windows.Forms.Button btnCancelar;
         private System.Windows.Forms.GroupBox groupBoxTipoOperacao;
         private System.Windows.Forms.RadioButton _rbCortesia;
         private System.Windows.Forms.RadioButton _rbVenda;
         private System.Windows.Forms.RadioButton _rbReimprimir;
+        private System.Windows.Forms.Button btnAtualizarPDV;
     }
 }

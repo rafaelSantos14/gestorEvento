@@ -52,13 +52,8 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>5D51F90803870FB6F7CD76B71BFF5AB1CD0ED626</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>GestorEvento_3_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
@@ -400,6 +395,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormRelatorioReimpressao.resx">
       <DependentUpon>FormRelatorioReimpressao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormRelatoriosConsolidados.resx">
+      <DependentUpon>FormRelatoriosConsolidados.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormSelecionarPontoVenda.resx">
       <DependentUpon>FormSelecionarPontoVenda.cs</DependentUpon>
