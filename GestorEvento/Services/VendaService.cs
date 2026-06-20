@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using GestorEvento.Models;
+using GestorEvento.Models.Exceptions;
 using GestorEvento.Repositories;
 using GestorEvento.Utilities;
 
@@ -14,6 +15,7 @@ namespace GestorEvento.Services
         private readonly MovimentacaoRepository _movimentacaoRepository;
         private readonly PontoVendaRepository _pontoVendaRepository;
         private readonly EventoRepository _eventoRepository;
+        private readonly ProdutoEventoRepository _produtoEventoRepository;
 
         public VendaService()
         {
@@ -22,6 +24,7 @@ namespace GestorEvento.Services
             _movimentacaoRepository = new MovimentacaoRepository();
             _pontoVendaRepository = new PontoVendaRepository();
             _eventoRepository = new EventoRepository();
+            _produtoEventoRepository = new ProdutoEventoRepository();
         }
 
         /// <summary>
@@ -178,7 +181,131 @@ namespace GestorEvento.Services
         }
 
         /// <summary>
-        /// Registra uma venda com recebimentos e troco em uma transaÃ§Ã£o atÃ´mica
+        /// VALIDAÇÃO COMPARTILHADA: Valida dados básicos de venda antes de registrar
+        /// Lança ArgumentException ou ArgumentNullException se houver erro
+        /// </summary>
+        private void ValidarVendaParaRegistro(Venda venda, List<(int idFormaPagamento, decimal valor)> recebimentos)
+        {
+            if (venda == null)
+                throw new ArgumentNullException(nameof(venda), "Venda não pode ser nula");
+
+            if (venda.IdPontoVenda <= 0)
+                throw new ArgumentException("ID do ponto de venda inválido");
+
+            if (venda.VlTotal <= 0)
+                throw new ArgumentException("Valor total da venda deve ser maior que zero");
+
+            if (recebimentos == null || recebimentos.Count == 0)
+            {
+                // CORTESIA pode não ter recebimento
+                if (venda.TipoOperacao != "CORTESIA")
+                    throw new ArgumentException("Venda deve ter pelo menos um recebimento");
+            }
+
+            if (!PodeRegistrarVendaNoEvento(venda.IdPontoVenda))
+                throw new ArgumentException("Não é possível registrar venda para este caixa.");
+        }
+
+        /// <summary>
+        /// Registra uma venda com recebimentos, troco E validação de estoque em uma transação atômica
+        /// Usa SELECT...FOR UPDATE para lock (previne race condition)
+        /// Valida e debita estoque ANTES de registrar venda (garante atomicidade)
+        /// Se algo falhar, faz rollback de tudo (venda + recebimento + estoque não são alterados)
+        /// </summary>
+        public int RegistrarVendaComEstoqueComTransacao(Venda venda, List<(int idFormaPagamento, decimal valor)> recebimentos, decimal vlTroco)
+        {
+            MySqlConnection connection = null;
+            MySqlTransaction transaction = null;
+
+            try
+            {
+                // 1. VALIDAÇÕES COMPARTILHADAS
+                ValidarVendaParaRegistro(venda, recebimentos);
+
+                // Abrir conexão e transação com isolation level READ_COMMITTED
+                connection = new MySqlConnection(Connection.GetConnection());
+                connection.Open();
+                transaction = connection.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+
+                // 2. VALIDAR E DEBITAR ESTOQUE PRIMEIRO (SELECT...FOR UPDATE + UPDATE) - ATÔMICO
+                // ⚠️ CRÍTICO: Fazer isso ANTES de registrar venda garante que se falhar, nada é inserido
+                foreach (var item in venda.Itens)
+                {
+                    _produtoEventoRepository.ValidarEDebitarEstoqueComTransacao(
+                        connection, transaction,
+                        item.IdProdutoEvento,
+                        item.Quantidade,
+                        item.NomeProduto
+                    );
+                }
+
+                // 3. SE ESTOQUE PASSOU: Registrar venda e itens na MESMA transação
+                // ⚠️ AGORA USA: RegistrarVendaComTransacao que NÃO cria transação interna
+                int idVenda = _repository.RegistrarVendaComTransacao(connection, transaction, venda);
+
+                // 4. REGISTRAR RECEBIMENTOS (INSERT RECEBIMENTO) - apenas para VENDA
+                if (venda.TipoOperacao == "VENDA")
+                {
+                    foreach (var (idFormaPagamento, valor) in recebimentos)
+                    {
+                        if (valor > 0)
+                        {
+                            var recebimento = new Recebimento
+                            {
+                                IdVenda = idVenda,
+                                IdFormaPagamento = idFormaPagamento,
+                                VlRecebimento = valor,
+                                DtRecebimento = DateTime.Now
+                            };
+
+                            _recebimentoRepository.RegistrarRecebimentoComTransacao(connection, transaction, recebimento);
+                        }
+                    }
+
+                    // 5. REGISTRAR TROCO (INSERT MOVIMENTACAO) - apenas para VENDA
+                    if (vlTroco > 0)
+                    {
+                        _movimentacaoRepository.RegistrarTrocoComTransacao(connection, transaction, venda.IdPontoVenda, idVenda, vlTroco);
+                    }
+                }
+
+                // 6. Se chegou aqui, tudo OK → commit
+                transaction.Commit();
+
+                return idVenda;
+            }
+            catch (Exception ex)
+            {
+                // Se algo falhou, rollback de tudo
+                if (transaction != null)
+                {
+                    try
+                    {
+                        transaction.Rollback();
+                    }
+                    catch (Exception exRollback)
+                    {
+                    }
+                }
+
+                throw;
+            }
+            finally
+            {
+                if (connection != null)
+                {
+                    try
+                    {
+                        connection.Close();
+                        connection.Dispose();
+                    }
+                    catch { }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Registra uma venda com recebimentos e troco em uma transação atômica (SEM validação de estoque)
         /// Se algo falhar, faz rollback de tudo
         /// </summary>
         public int RegistrarVendaComTrocoComTransacao(Venda venda, List<(int idFormaPagamento, decimal valor)> recebimentos, decimal vlTroco)
@@ -188,25 +315,8 @@ namespace GestorEvento.Services
 
             try
             {
-                // ValidaÃ§Ãµes iniciais
-                if (venda == null)
-                    throw new ArgumentNullException("Venda nÃ£o pode ser nula");
-
-                if (venda.IdPontoVenda <= 0)
-                    throw new ArgumentException("ID do ponto de venda invÃ¡lido");
-
-                if (venda.VlTotal <= 0)
-                    throw new ArgumentException("Valor total da venda deve ser maior que zero");
-
-                if (recebimentos == null || recebimentos.Count == 0)
-                {
-                    // CORTESIA pode nÃ£o ter recebimento
-                    if (venda.TipoOperacao != "CORTESIA")
-                        throw new ArgumentException("Venda deve ter pelo menos um recebimento");
-                }
-
-                if (!PodeRegistrarVendaNoEvento(venda.IdPontoVenda))
-                    throw new ArgumentException("NÃ£o Ã© possÃ­vel registrar venda para este caixa.");
+                // VALIDAÇÕES COMPARTILHADAS
+                ValidarVendaParaRegistro(venda, recebimentos);
 
                 // Abrir conexÃ£o e transaÃ§Ã£o
                 connection = new MySqlConnection(Connection.GetConnection());

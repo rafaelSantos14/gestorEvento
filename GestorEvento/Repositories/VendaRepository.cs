@@ -15,6 +15,62 @@ namespace GestorEvento.Repositories
         }
 
         /// <summary>
+        /// Registra uma venda com seus itens usando uma transação existente
+        /// NOTA: Não faz commit, caller é responsável por isso
+        /// </summary>
+        public int RegistrarVendaComTransacao(MySqlConnection connection, MySqlTransaction transaction, Venda venda)
+        {
+            try
+            {
+                // 1. Inserir venda
+                string queryVenda = @"INSERT INTO VENDA 
+                                      (id_ponto_venda, dt_venda, vl_total, cd_status, tp_operacao) 
+                                      VALUES 
+                                      (@idPontoVenda, @dtVenda, @vlTotal, @cdStatus, @tpOperacao);
+                                      SELECT LAST_INSERT_ID();";
+
+                int idVenda = 0;
+                using (MySqlCommand command = new MySqlCommand(queryVenda, connection, transaction))
+                {
+                    command.Parameters.AddWithValue("@idPontoVenda", venda.IdPontoVenda);
+                    command.Parameters.AddWithValue("@dtVenda", venda.DtVenda);
+                    command.Parameters.AddWithValue("@vlTotal", venda.VlTotal);
+                    command.Parameters.AddWithValue("@cdStatus", "Concluida"); // Status sempre Concluida ao registrar
+                    command.Parameters.AddWithValue("@tpOperacao", venda.TipoOperacao ?? "VENDA"); // Tipo de operação: VENDA ou CORTESIA
+
+                    object result = command.ExecuteScalar();
+                    idVenda = Convert.ToInt32(result);
+                }
+
+                // 2. Inserir itens da venda
+                string queryItem = @"INSERT INTO ITEM_VENDA 
+                                     (id_venda, id_produto_evento, qtde_vendida, vl_unitario, vl_subtotal) 
+                                     VALUES 
+                                     (@idVenda, @idProdutoEvento, @qtdeVendida, @vlUnitario, @vlSubtotal);";
+
+                foreach (var item in venda.Itens)
+                {
+                    using (MySqlCommand command = new MySqlCommand(queryItem, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@idVenda", idVenda);
+                        command.Parameters.AddWithValue("@idProdutoEvento", item.IdProdutoEvento);
+                        command.Parameters.AddWithValue("@qtdeVendida", item.Quantidade);
+                        command.Parameters.AddWithValue("@vlUnitario", item.VlUnitario);
+                        command.Parameters.AddWithValue("@vlSubtotal", item.Subtotal);
+
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                return idVenda;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao registrar venda em transação: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
         /// Registra uma venda com seus itens
         /// </summary>
         public int RegistrarVenda(Venda venda)

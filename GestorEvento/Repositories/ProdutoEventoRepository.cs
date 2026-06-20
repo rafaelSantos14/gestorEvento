@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using GestorEvento.Models;
+using GestorEvento.Models.Exceptions;
 
 namespace GestorEvento.Repositories
 {
@@ -282,6 +283,94 @@ namespace GestorEvento.Repositories
             catch (Exception ex)
             {
                 throw new Exception($"Erro ao registrar estoque: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Valida e debita estoque atomicamente dentro de uma transação existente
+        /// CRÍTICO: Usa SELECT...FOR UPDATE para lock pessimista (previne race condition)
+        /// </summary>
+        /// <remarks>
+        /// Este método DEVE ser chamado dentro de uma transação aberta
+        /// Lança EstoqueInsuficienteException se estoque for insuficiente
+        /// </remarks>
+        public void ValidarEDebitarEstoqueComTransacao(MySqlConnection connection, MySqlTransaction transaction, 
+            int idProdutoEvento, int quantidade, string nomeProduto)
+        {
+            try
+            {
+                if (connection == null || transaction == null)
+                    throw new ArgumentNullException("Connection e Transaction devem estar abertos");
+
+                if (idProdutoEvento <= 0)
+                    throw new ArgumentException("ID do produto evento inválido");
+
+                if (quantidade <= 0)
+                    throw new ArgumentException("Quantidade deve ser maior que zero");
+
+                // 1. SELECIONAR COM LOCK PESSIMISTA (previne race condition)
+                string selectQuery = "SELECT id_produto_evento, qtde_produto, COALESCE(qtde_vendida, 0) as qtde_vendida " +
+                                     "FROM PRODUTO_EVENTO " +
+                                     "WHERE id_produto_evento = @idProdutoEvento " +
+                                     "FOR UPDATE";
+
+                int qtdeTotal = 0;
+                int qtdeJaVendida = 0;
+                int qtdeDisponivel = 0;
+
+                using (MySqlCommand selectCommand = new MySqlCommand(selectQuery, connection, transaction))
+                {
+                    selectCommand.Parameters.AddWithValue("@idProdutoEvento", idProdutoEvento);
+                    selectCommand.CommandTimeout = 30; // Timeout para evitar deadlock
+
+                    using (MySqlDataReader reader = selectCommand.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            qtdeTotal = Convert.ToInt32(reader["qtde_produto"]);
+                            qtdeJaVendida = Convert.ToInt32(reader["qtde_vendida"]);
+                            qtdeDisponivel = qtdeTotal - qtdeJaVendida;
+                        }
+                        else
+                        {
+                            throw new EstoqueInsuficienteException(idProdutoEvento, nomeProduto, 0, quantidade);
+                        }
+                    }
+                }
+
+                // 2. VALIDAR: Quantidade solicitada não pode exceder a disponível
+                if (quantidade > qtdeDisponivel)
+                {
+                    throw new EstoqueInsuficienteException(idProdutoEvento, nomeProduto, qtdeDisponivel, quantidade);
+                }
+
+                // 3. DEBITAR: UPDATE seguro (ainda dentro do lock)
+                string updateQuery = "UPDATE PRODUTO_EVENTO " +
+                                     "SET qtde_vendida = qtde_vendida + @quantidade " +
+                                     "WHERE id_produto_evento = @idProdutoEvento";
+
+                using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection, transaction))
+                {
+                    updateCommand.Parameters.AddWithValue("@idProdutoEvento", idProdutoEvento);
+                    updateCommand.Parameters.AddWithValue("@quantidade", quantidade);
+                    updateCommand.CommandTimeout = 30;
+
+                    int rowsAffected = updateCommand.ExecuteNonQuery();
+                    
+                    if (rowsAffected <= 0)
+                    {
+                        throw new Exception($"Falha ao atualizar estoque para produto {nomeProduto}");
+                    }
+                }
+            }
+            catch (EstoqueInsuficienteException)
+            {
+                // Propagar exception específica de estoque
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao validar e debitar estoque do produto {nomeProduto}: {ex.Message}", ex);
             }
         }
     }

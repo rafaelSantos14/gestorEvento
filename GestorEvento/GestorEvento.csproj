@@ -172,6 +172,7 @@
     <Compile Include="Models\MotivoReimpressao.cs" />
     <Compile Include="Models\Reimpressao.cs" />
     <Compile Include="Models\ReimpressaoItem.cs" />
+    <Compile Include="Models\Exceptions\EstoqueInsuficienteException.cs" />
     <Compile Include="Services\ProdutoService.cs" />
     <Compile Include="Services\EventoService.cs" />
     <Compile Include="Services\PontoVendaService.cs" />
