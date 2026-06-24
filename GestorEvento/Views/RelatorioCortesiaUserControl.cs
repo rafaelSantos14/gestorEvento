@@ -109,7 +109,7 @@ namespace GestorEvento.Views
                 new Axis
                 {
                     Title = "Caixas",
-                    Labels = dados.DadosPorCaixa.Select(c => $"Caixa #{c.NumeroCaixa}").ToList(),
+                    Labels = dados.DadosPorCaixa.Select(c => $"Caixa #{c.NumeroCaixa} - {c.NomeCaixa}").ToList(),
                     Separator = new Separator { Step = 1 }
                 }
             };

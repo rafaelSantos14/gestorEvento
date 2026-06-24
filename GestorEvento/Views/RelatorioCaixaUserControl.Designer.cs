@@ -40,7 +40,7 @@ namespace GestorEvento.Views
             this.panelResumo = new System.Windows.Forms.Panel();
             this.dgvResumoCaixas = new System.Windows.Forms.DataGridView();
             this.lblResumo = new System.Windows.Forms.Label();
-            
+            this.tooltip = new Guna.UI2.WinForms.Guna2HtmlToolTip();
             this.panelCards.SuspendLayout();
             this.pnlCardTicket.SuspendLayout();
             this.pnlCardTroco.SuspendLayout();
@@ -52,8 +52,9 @@ namespace GestorEvento.Views
             this.panelResumo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResumoCaixas)).BeginInit();
             this.SuspendLayout();
-
+            // 
             // panelCards
+            // 
             this.panelCards.BackColor = System.Drawing.Color.White;
             this.panelCards.Controls.Add(this.pnlCardTicket);
             this.panelCards.Controls.Add(this.pnlCardTroco);
@@ -63,10 +64,11 @@ namespace GestorEvento.Views
             this.panelCards.Location = new System.Drawing.Point(0, 0);
             this.panelCards.Name = "panelCards";
             this.panelCards.Padding = new System.Windows.Forms.Padding(15);
-            this.panelCards.Size = new System.Drawing.Size(992, 140);
+            this.panelCards.Size = new System.Drawing.Size(958, 140);
             this.panelCards.TabIndex = 2;
-
+            // 
             // pnlCardTicket
+            // 
             this.pnlCardTicket.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.pnlCardTicket.BorderRadius = 12;
             this.pnlCardTicket.Controls.Add(this.lblTicketMedioValor);
@@ -78,8 +80,9 @@ namespace GestorEvento.Views
             this.pnlCardTicket.ShadowSize = 4;
             this.pnlCardTicket.Size = new System.Drawing.Size(290, 100);
             this.pnlCardTicket.TabIndex = 0;
-
+            // 
             // lblTicketMedioValor
+            // 
             this.lblTicketMedioValor.AutoSize = true;
             this.lblTicketMedioValor.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
             this.lblTicketMedioValor.ForeColor = System.Drawing.Color.DimGray;
@@ -88,18 +91,20 @@ namespace GestorEvento.Views
             this.lblTicketMedioValor.Size = new System.Drawing.Size(69, 37);
             this.lblTicketMedioValor.TabIndex = 1;
             this.lblTicketMedioValor.Text = "R$ -";
-
+            // 
             // lblTicketMedioLabel
+            // 
             this.lblTicketMedioLabel.AutoSize = true;
             this.lblTicketMedioLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblTicketMedioLabel.ForeColor = System.Drawing.Color.DarkGray;
             this.lblTicketMedioLabel.Location = new System.Drawing.Point(10, 10);
             this.lblTicketMedioLabel.Name = "lblTicketMedioLabel";
-            this.lblTicketMedioLabel.Size = new System.Drawing.Size(100, 19);
+            this.lblTicketMedioLabel.Size = new System.Drawing.Size(87, 19);
             this.lblTicketMedioLabel.TabIndex = 0;
             this.lblTicketMedioLabel.Text = "Ticket Médio";
-
+            // 
             // pnlCardTroco
+            // 
             this.pnlCardTroco.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(230)))));
             this.pnlCardTroco.BorderRadius = 12;
             this.pnlCardTroco.Controls.Add(this.lblTrocoTotalValor);
@@ -111,8 +116,9 @@ namespace GestorEvento.Views
             this.pnlCardTroco.ShadowSize = 4;
             this.pnlCardTroco.Size = new System.Drawing.Size(290, 100);
             this.pnlCardTroco.TabIndex = 0;
-
+            // 
             // lblTrocoTotalValor
+            // 
             this.lblTrocoTotalValor.AutoSize = true;
             this.lblTrocoTotalValor.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
             this.lblTrocoTotalValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(140)))), ((int)(((byte)(0)))));
@@ -121,18 +127,20 @@ namespace GestorEvento.Views
             this.lblTrocoTotalValor.Size = new System.Drawing.Size(69, 37);
             this.lblTrocoTotalValor.TabIndex = 1;
             this.lblTrocoTotalValor.Text = "R$ -";
-
+            // 
             // lblTrocoTotalLabel
+            // 
             this.lblTrocoTotalLabel.AutoSize = true;
             this.lblTrocoTotalLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblTrocoTotalLabel.ForeColor = System.Drawing.Color.DarkGray;
             this.lblTrocoTotalLabel.Location = new System.Drawing.Point(10, 10);
             this.lblTrocoTotalLabel.Name = "lblTrocoTotalLabel";
-            this.lblTrocoTotalLabel.Size = new System.Drawing.Size(100, 19);
+            this.lblTrocoTotalLabel.Size = new System.Drawing.Size(75, 19);
             this.lblTrocoTotalLabel.TabIndex = 0;
             this.lblTrocoTotalLabel.Text = "Troco Total";
-
+            // 
             // pnlCardValor
+            // 
             this.pnlCardValor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(245)))), ((int)(((byte)(230)))));
             this.pnlCardValor.BorderRadius = 12;
             this.pnlCardValor.Controls.Add(this.lblValorVendidoValor);
@@ -144,8 +152,9 @@ namespace GestorEvento.Views
             this.pnlCardValor.ShadowSize = 4;
             this.pnlCardValor.Size = new System.Drawing.Size(290, 100);
             this.pnlCardValor.TabIndex = 0;
-
+            // 
             // lblValorVendidoValor
+            // 
             this.lblValorVendidoValor.AutoSize = true;
             this.lblValorVendidoValor.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
             this.lblValorVendidoValor.ForeColor = System.Drawing.Color.Green;
@@ -154,8 +163,9 @@ namespace GestorEvento.Views
             this.lblValorVendidoValor.Size = new System.Drawing.Size(69, 37);
             this.lblValorVendidoValor.TabIndex = 1;
             this.lblValorVendidoValor.Text = "R$ -";
-
+            // 
             // lblValorVendidoLabel
+            // 
             this.lblValorVendidoLabel.AutoSize = true;
             this.lblValorVendidoLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblValorVendidoLabel.ForeColor = System.Drawing.Color.DarkGray;
@@ -164,8 +174,9 @@ namespace GestorEvento.Views
             this.lblValorVendidoLabel.Size = new System.Drawing.Size(127, 19);
             this.lblValorVendidoLabel.TabIndex = 0;
             this.lblValorVendidoLabel.Text = "Valor Total Vendido";
-
+            // 
             // pnlCardCaixas
+            // 
             this.pnlCardCaixas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(240)))), ((int)(((byte)(255)))));
             this.pnlCardCaixas.BorderRadius = 12;
             this.pnlCardCaixas.Controls.Add(this.lblCaixasValor);
@@ -177,8 +188,9 @@ namespace GestorEvento.Views
             this.pnlCardCaixas.ShadowSize = 4;
             this.pnlCardCaixas.Size = new System.Drawing.Size(290, 100);
             this.pnlCardCaixas.TabIndex = 0;
-
+            // 
             // lblCaixasValor
+            // 
             this.lblCaixasValor.AutoSize = true;
             this.lblCaixasValor.Font = new System.Drawing.Font("Segoe UI", 28F, System.Drawing.FontStyle.Bold);
             this.lblCaixasValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
@@ -187,18 +199,20 @@ namespace GestorEvento.Views
             this.lblCaixasValor.Size = new System.Drawing.Size(37, 51);
             this.lblCaixasValor.TabIndex = 1;
             this.lblCaixasValor.Text = "-";
-
+            // 
             // lblCaixasLabel
+            // 
             this.lblCaixasLabel.AutoSize = true;
             this.lblCaixasLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblCaixasLabel.ForeColor = System.Drawing.Color.DarkGray;
             this.lblCaixasLabel.Location = new System.Drawing.Point(10, 10);
             this.lblCaixasLabel.Name = "lblCaixasLabel";
-            this.lblCaixasLabel.Size = new System.Drawing.Size(110, 19);
+            this.lblCaixasLabel.Size = new System.Drawing.Size(99, 19);
             this.lblCaixasLabel.TabIndex = 0;
             this.lblCaixasLabel.Text = "Total de Caixas";
-
+            // 
             // panelGraficos
+            // 
             this.panelGraficos.BackColor = System.Drawing.Color.White;
             this.panelGraficos.Controls.Add(this.panelGraficoPizza);
             this.panelGraficos.Controls.Add(this.panelGraficoBarras);
@@ -206,30 +220,33 @@ namespace GestorEvento.Views
             this.panelGraficos.Location = new System.Drawing.Point(0, 140);
             this.panelGraficos.Name = "panelGraficos";
             this.panelGraficos.Padding = new System.Windows.Forms.Padding(15);
-            this.panelGraficos.Size = new System.Drawing.Size(992, 320);
+            this.panelGraficos.Size = new System.Drawing.Size(958, 320);
             this.panelGraficos.TabIndex = 3;
-
+            // 
             // panelGraficoPizza
+            // 
             this.panelGraficoPizza.Controls.Add(this.lblGraficoPizza);
             this.panelGraficoPizza.Controls.Add(this.chartPizza);
             this.panelGraficoPizza.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelGraficoPizza.Location = new System.Drawing.Point(502, 15);
+            this.panelGraficoPizza.Location = new System.Drawing.Point(468, 15);
             this.panelGraficoPizza.Name = "panelGraficoPizza";
             this.panelGraficoPizza.Size = new System.Drawing.Size(475, 290);
             this.panelGraficoPizza.TabIndex = 1;
-
+            // 
             // lblGraficoPizza
+            // 
             this.lblGraficoPizza.AutoSize = true;
             this.lblGraficoPizza.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblGraficoPizza.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblGraficoPizza.ForeColor = System.Drawing.Color.Black;
             this.lblGraficoPizza.Location = new System.Drawing.Point(0, 0);
             this.lblGraficoPizza.Name = "lblGraficoPizza";
-            this.lblGraficoPizza.Size = new System.Drawing.Size(242, 20);
+            this.lblGraficoPizza.Size = new System.Drawing.Size(166, 20);
             this.lblGraficoPizza.TabIndex = 0;
             this.lblGraficoPizza.Text = "Formas de Pagamento";
-
+            // 
             // chartPizza
+            // 
             this.chartPizza.BackColor = System.Drawing.Color.White;
             this.chartPizza.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartPizza.Location = new System.Drawing.Point(0, 0);
@@ -237,8 +254,9 @@ namespace GestorEvento.Views
             this.chartPizza.Size = new System.Drawing.Size(475, 290);
             this.chartPizza.TabIndex = 1;
             this.chartPizza.Text = "pieChart1";
-
+            // 
             // panelGraficoBarras
+            // 
             this.panelGraficoBarras.Controls.Add(this.lblGraficoBarras);
             this.panelGraficoBarras.Controls.Add(this.chartBarras);
             this.panelGraficoBarras.Dock = System.Windows.Forms.DockStyle.Left;
@@ -246,19 +264,21 @@ namespace GestorEvento.Views
             this.panelGraficoBarras.Name = "panelGraficoBarras";
             this.panelGraficoBarras.Size = new System.Drawing.Size(490, 290);
             this.panelGraficoBarras.TabIndex = 0;
-
+            // 
             // lblGraficoBarras
+            // 
             this.lblGraficoBarras.AutoSize = true;
             this.lblGraficoBarras.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblGraficoBarras.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblGraficoBarras.ForeColor = System.Drawing.Color.Black;
             this.lblGraficoBarras.Location = new System.Drawing.Point(0, 0);
             this.lblGraficoBarras.Name = "lblGraficoBarras";
-            this.lblGraficoBarras.Size = new System.Drawing.Size(156, 20);
+            this.lblGraficoBarras.Size = new System.Drawing.Size(128, 20);
             this.lblGraficoBarras.TabIndex = 0;
             this.lblGraficoBarras.Text = "Vendas por Caixa";
-
+            // 
             // chartBarras
+            // 
             this.chartBarras.BackColor = System.Drawing.Color.White;
             this.chartBarras.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartBarras.Location = new System.Drawing.Point(0, 0);
@@ -266,8 +286,9 @@ namespace GestorEvento.Views
             this.chartBarras.Size = new System.Drawing.Size(490, 290);
             this.chartBarras.TabIndex = 1;
             this.chartBarras.Text = "cartesianChart1";
-
+            // 
             // panelResumo
+            // 
             this.panelResumo.BackColor = System.Drawing.Color.White;
             this.panelResumo.Controls.Add(this.dgvResumoCaixas);
             this.panelResumo.Controls.Add(this.lblResumo);
@@ -275,42 +296,49 @@ namespace GestorEvento.Views
             this.panelResumo.Location = new System.Drawing.Point(0, 460);
             this.panelResumo.Name = "panelResumo";
             this.panelResumo.Padding = new System.Windows.Forms.Padding(15);
-            this.panelResumo.Size = new System.Drawing.Size(992, 220);
+            this.panelResumo.Size = new System.Drawing.Size(958, 220);
             this.panelResumo.TabIndex = 4;
-
+            // 
             // dgvResumoCaixas
+            // 
             this.dgvResumoCaixas.BackgroundColor = System.Drawing.Color.White;
             this.dgvResumoCaixas.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvResumoCaixas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvResumoCaixas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvResumoCaixas.Location = new System.Drawing.Point(15, 35);
             this.dgvResumoCaixas.Name = "dgvResumoCaixas";
-            this.dgvResumoCaixas.Size = new System.Drawing.Size(962, 0);
+            this.dgvResumoCaixas.Size = new System.Drawing.Size(928, 170);
             this.dgvResumoCaixas.TabIndex = 1;
-
+            // 
             // lblResumo
+            // 
             this.lblResumo.AutoSize = true;
             this.lblResumo.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblResumo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblResumo.ForeColor = System.Drawing.Color.Black;
             this.lblResumo.Location = new System.Drawing.Point(15, 15);
             this.lblResumo.Name = "lblResumo";
-            this.lblResumo.Size = new System.Drawing.Size(160, 20);
+            this.lblResumo.Size = new System.Drawing.Size(135, 20);
             this.lblResumo.TabIndex = 0;
             this.lblResumo.Text = "Resumo por Caixa";
-
+            // 
+            // tooltip
+            // 
+            this.tooltip.AllowLinksHandling = true;
+            this.tooltip.MaximumSize = new System.Drawing.Size(0, 0);
+            // 
             // RelatorioCaixaUserControl
-            this.AutoScroll = true;
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.panelResumo);
             this.Controls.Add(this.panelGraficos);
             this.Controls.Add(this.panelCards);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Name = "RelatorioCaixaUserControl";
-            this.Size = new System.Drawing.Size(992, 402);
-
+            this.Size = new System.Drawing.Size(958, 402);
             this.panelCards.ResumeLayout(false);
             this.pnlCardTicket.ResumeLayout(false);
             this.pnlCardTicket.PerformLayout();
@@ -329,6 +357,7 @@ namespace GestorEvento.Views
             this.panelResumo.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResumoCaixas)).EndInit();
             this.ResumeLayout(false);
+
         }
 
         private System.Windows.Forms.Panel panelCards;
@@ -354,5 +383,6 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Panel panelResumo;
         private System.Windows.Forms.DataGridView dgvResumoCaixas;
         private System.Windows.Forms.Label lblResumo;
+        private Guna.UI2.WinForms.Guna2HtmlToolTip tooltip;
     }
 }

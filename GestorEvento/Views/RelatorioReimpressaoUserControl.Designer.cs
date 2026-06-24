@@ -45,7 +45,7 @@ namespace GestorEvento.Views
             this.panelCards.Location = new System.Drawing.Point(0, 0);
             this.panelCards.Name = "panelCards";
             this.panelCards.Padding = new System.Windows.Forms.Padding(15);
-            this.panelCards.Size = new System.Drawing.Size(975, 140);
+            this.panelCards.Size = new System.Drawing.Size(958, 140);
             this.panelCards.TabIndex = 0;
             // 
             // pnlCardValor
@@ -126,7 +126,7 @@ namespace GestorEvento.Views
             this.chartMotivos.Dock = System.Windows.Forms.DockStyle.Top;
             this.chartMotivos.Location = new System.Drawing.Point(0, 140);
             this.chartMotivos.Name = "chartMotivos";
-            this.chartMotivos.Size = new System.Drawing.Size(975, 150);
+            this.chartMotivos.Size = new System.Drawing.Size(958, 150);
             this.chartMotivos.TabIndex = 1;
             this.chartMotivos.Text = "cartesianChart1";
             // 
@@ -156,7 +156,7 @@ namespace GestorEvento.Views
             this.dgvPorProduto.ReadOnly = true;
             this.dgvPorProduto.RowHeadersVisible = false;
             this.dgvPorProduto.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPorProduto.Size = new System.Drawing.Size(975, 270);
+            this.dgvPorProduto.Size = new System.Drawing.Size(958, 270);
             this.dgvPorProduto.TabIndex = 2;
             // 
             // lblDetalhado
@@ -180,12 +180,12 @@ namespace GestorEvento.Views
             this.dgvItens.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvItens.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvItens.Dock = System.Windows.Forms.DockStyle.Top;
-            this.dgvItens.Location = new System.Drawing.Point(0, 612);
+            this.dgvItens.Location = new System.Drawing.Point(0, 630);
             this.dgvItens.Name = "dgvItens";
             this.dgvItens.ReadOnly = true;
             this.dgvItens.RowHeadersVisible = false;
             this.dgvItens.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvItens.Size = new System.Drawing.Size(992, 270);
+            this.dgvItens.Size = new System.Drawing.Size(958, 270);
             this.dgvItens.TabIndex = 3;
             // 
             // RelatorioReimpressaoUserControl
@@ -202,7 +202,7 @@ namespace GestorEvento.Views
             this.Controls.Add(this.panelCards);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Name = "RelatorioReimpressaoUserControl";
-            this.Size = new System.Drawing.Size(975, 620);
+            this.Size = new System.Drawing.Size(958, 620);
             this.panelCards.ResumeLayout(false);
             this.pnlCardValor.ResumeLayout(false);
             this.pnlCardValor.PerformLayout();

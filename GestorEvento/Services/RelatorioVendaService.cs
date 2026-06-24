@@ -73,6 +73,12 @@ namespace GestorEvento.Services
 
                     if (formaPagamento != null)
                     {
+                        // Desconta o troco da forma de pagamento Dinheiro
+                        if (formaPagamento.CdFormaPagamento.Equals("DINHEIRO", StringComparison.OrdinalIgnoreCase))
+                        {
+                            totalPagamento -= resultado.ValorTotalTroco;
+                        }
+
                         resultado.DadosPorFormaPagamento.Add(new DadosPagamento
                         {
                             NomeFormaPagamento = formaPagamento.NmFormaPagamento,

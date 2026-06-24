@@ -21,6 +21,8 @@ namespace GestorEvento.Views
             _relatorioService = new RelatorioVendaService();
             DoubleBuffered = true;
             ConfigurarGridResumo();
+            tooltip.SetToolTip(pnlCardValor, "Valor referente ao total vendido, já descontando o valor do troco.");
+            tooltip.SetToolTip(lblValorVendidoValor, "Valor referente ao total vendido, já descontando o valor do troco.");
         }
 
         /// <summary>
@@ -123,7 +125,7 @@ namespace GestorEvento.Views
                     new Axis
                     {
                         Title = "Caixas (PDV)",
-                        Labels = dados.DadosPorCaixa.Select(c => $"Caixa #{c.NumeroCaixa}").ToList(),
+                        Labels = dados.DadosPorCaixa.Select(c => $"Caixa #{c.NumeroCaixa} - {c.NomeCaixa}").ToList(),
                         Separator = new Separator { Step = 1 }
                     }
                 };

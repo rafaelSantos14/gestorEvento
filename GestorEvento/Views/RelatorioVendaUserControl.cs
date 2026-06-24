@@ -22,6 +22,9 @@ namespace GestorEvento.Views
             _relatorioService = new RelatorioVendaService();
             DoubleBuffered = true;
             ConfigurarGridProdutosVendidos();
+
+            tooltip.SetToolTip(pnlCardValor, "Valor referente ao total vendido, já descontando o valor do troco.");
+            tooltip.SetToolTip(lblValorVendidoValor, "Valor referente ao total vendido, já descontando o valor do troco.");
         }
 
         /// <summary>
