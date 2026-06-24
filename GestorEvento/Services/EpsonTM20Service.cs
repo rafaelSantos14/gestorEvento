@@ -320,7 +320,7 @@ namespace GestorEvento.Services
                 string textoImpressao = nomeProduto;
                 if (preco > 0)
                 {
-                    textoImpressao = $"{nomeProduto} - R$ {preco.ToString("F2")}";
+                    textoImpressao = $"{nomeProduto} R${preco.ToString("F2")}";
                 }
                 
                 // System.Diagnostics.Debug.WriteLine("═══════════════════════════════════════");

@@ -212,7 +212,7 @@ namespace GestorEvento.Views
                 {
                     alturaItem = 110; // Aumentar altura para evitar truncamento no Slim 3
                     larguraColuna = 300; // Aumentar largura da coluna para acomodar label de 300px + espaçamento
-                    larguraLabel = 280; // Aumentar largura da label para nomes longos
+                    larguraLabel = 300; // Aumentar largura da label para nomes longos
                 }
                 
                 int produtosPorColuna = Math.Max(1, alturaDisponivel / alturaItem);
@@ -926,7 +926,7 @@ namespace GestorEvento.Views
                 // Criar label com nome do produto, valor e quantidade disponível - NO TOPO
                 _lblProduto = new Label
                 {
-                    Text = $"{nomeProduto} - R$ {valorPadrao.ToString("F2")} - ({quantidadeDisponivel})",
+                    Text = $"{nomeProduto} R${valorPadrao.ToString("F2")} ({quantidadeDisponivel})",
                     Location = new Point(xPosition, yPosition),
                     Size = new Size(larguraLabel, 30),  // Usar parâmetro para ajustar largura
                     Font = new Font("Segoe UI", 10F),
@@ -1088,7 +1088,7 @@ namespace GestorEvento.Views
             {
                 _quantidadeDisponivel = novaQuantidade;
                 // Atualizar o label para refletir a nova quantidade disponível
-                _lblProduto.Text = $"{NomeProduto} - R$ {_valorPadrao.ToString("F2")} - ({novaQuantidade})";
+                _lblProduto.Text = $"{NomeProduto} R${_valorPadrao.ToString("F2")} ({novaQuantidade})";
                 
                 // Atualizar estado de disponibilidade (label vermelha e textbox desabilitado se sem estoque)
                 AtualizarEstadoDisponibilidade();

@@ -212,7 +212,7 @@ namespace GestorEvento.Services
             string textoImpressao = nomeProduto;
             if (preco > 0)
             {
-                textoImpressao = $"{nomeProduto} - R$ {preco.ToString("F2")}";
+                textoImpressao = $"{nomeProduto} R${preco.ToString("F2")}";
             }
             sb.Append(textoImpressao);
             sb.Append("\n");
@@ -282,7 +282,7 @@ namespace GestorEvento.Services
             string textoImpressao = nomeProduto;
             if (preco > 0)
             {
-                textoImpressao = $"{nomeProduto} - R$ {preco.ToString("F2")}";
+                textoImpressao = $"{nomeProduto}-R${preco.ToString("F2")}";
             }
             sb.Append(textoImpressao);
             sb.Append("\n");
@@ -509,7 +509,7 @@ namespace GestorEvento.Services
                 string textoImpressao = nomeProduto;
                 if (preco > 0)
                 {
-                    textoImpressao = $"{nomeProduto} - R$ {preco.ToString("F2")}";
+                    textoImpressao = $"{nomeProduto}-R${preco.ToString("F2")}";
                 }
                 sb.Append(textoImpressao);
                 sb.Append("\n");
