@@ -22,13 +22,16 @@ namespace GestorEvento.Views
             this.btnSalvar = new System.Windows.Forms.Button();
             this.btnCancelar = new System.Windows.Forms.Button();
             this.txtPreco = new System.Windows.Forms.TextBox();
+            this.lblHistorico = new System.Windows.Forms.Label();
+            this.dgvHistorico = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHistorico)).BeginInit();
             this.SuspendLayout();
             // 
             // lblProduto
             // 
             this.lblProduto.AutoSize = true;
             this.lblProduto.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblProduto.Location = new System.Drawing.Point(113, 14);
+            this.lblProduto.Location = new System.Drawing.Point(8, 9);
             this.lblProduto.Name = "lblProduto";
             this.lblProduto.Size = new System.Drawing.Size(70, 20);
             this.lblProduto.TabIndex = 0;
@@ -38,7 +41,7 @@ namespace GestorEvento.Views
             // 
             this.lblPreco.AutoSize = true;
             this.lblPreco.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblPreco.Location = new System.Drawing.Point(113, 54);
+            this.lblPreco.Location = new System.Drawing.Point(67, 59);
             this.lblPreco.Name = "lblPreco";
             this.lblPreco.Size = new System.Drawing.Size(46, 19);
             this.lblPreco.TabIndex = 1;
@@ -48,7 +51,7 @@ namespace GestorEvento.Views
             // 
             this.lblQuantidade.AutoSize = true;
             this.lblQuantidade.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblQuantidade.Location = new System.Drawing.Point(113, 114);
+            this.lblQuantidade.Location = new System.Drawing.Point(273, 59);
             this.lblQuantidade.Name = "lblQuantidade";
             this.lblQuantidade.Size = new System.Drawing.Size(84, 19);
             this.lblQuantidade.TabIndex = 3;
@@ -58,7 +61,7 @@ namespace GestorEvento.Views
             // 
             this.txtQuantidade.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtQuantidade.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtQuantidade.Location = new System.Drawing.Point(113, 139);
+            this.txtQuantidade.Location = new System.Drawing.Point(273, 84);
             this.txtQuantidade.Name = "txtQuantidade";
             this.txtQuantidade.Size = new System.Drawing.Size(200, 25);
             this.txtQuantidade.TabIndex = 4;
@@ -70,7 +73,7 @@ namespace GestorEvento.Views
             this.btnSalvar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSalvar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSalvar.ForeColor = System.Drawing.Color.White;
-            this.btnSalvar.Location = new System.Drawing.Point(113, 184);
+            this.btnSalvar.Location = new System.Drawing.Point(172, 125);
             this.btnSalvar.Name = "btnSalvar";
             this.btnSalvar.Size = new System.Drawing.Size(95, 35);
             this.btnSalvar.TabIndex = 5;
@@ -85,7 +88,7 @@ namespace GestorEvento.Views
             this.btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancelar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnCancelar.ForeColor = System.Drawing.Color.White;
-            this.btnCancelar.Location = new System.Drawing.Point(218, 184);
+            this.btnCancelar.Location = new System.Drawing.Point(277, 125);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(95, 35);
             this.btnCancelar.TabIndex = 6;
@@ -97,19 +100,43 @@ namespace GestorEvento.Views
             // 
             this.txtPreco.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtPreco.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtPreco.Location = new System.Drawing.Point(113, 79);
+            this.txtPreco.Location = new System.Drawing.Point(67, 84);
             this.txtPreco.Name = "txtPreco";
             this.txtPreco.Size = new System.Drawing.Size(200, 25);
             this.txtPreco.TabIndex = 2;
             this.txtPreco.TextChanged += new System.EventHandler(this.TxtPreco_TextChanged);
             this.txtPreco.Leave += new System.EventHandler(this.TxtPreco_Leave);
             // 
+            // lblHistorico
+            // 
+            this.lblHistorico.AutoSize = true;
+            this.lblHistorico.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblHistorico.Location = new System.Drawing.Point(12, 187);
+            this.lblHistorico.Name = "lblHistorico";
+            this.lblHistorico.Size = new System.Drawing.Size(149, 19);
+            this.lblHistorico.TabIndex = 7;
+            this.lblHistorico.Text = "Histórico de Alterações";
+            // 
+            // dgvHistorico
+            // 
+            this.dgvHistorico.AllowUserToAddRows = false;
+            this.dgvHistorico.AllowUserToDeleteRows = false;
+            this.dgvHistorico.BackgroundColor = System.Drawing.Color.White;
+            this.dgvHistorico.Location = new System.Drawing.Point(16, 209);
+            this.dgvHistorico.Name = "dgvHistorico";
+            this.dgvHistorico.ReadOnly = true;
+            this.dgvHistorico.RowHeadersVisible = false;
+            this.dgvHistorico.Size = new System.Drawing.Size(511, 209);
+            this.dgvHistorico.TabIndex = 8;
+            // 
             // FormVincularProdutoEvento
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(427, 238);
+            this.ClientSize = new System.Drawing.Size(550, 430);
+            this.Controls.Add(this.dgvHistorico);
+            this.Controls.Add(this.lblHistorico);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.txtQuantidade);
@@ -124,6 +151,7 @@ namespace GestorEvento.Views
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Vincular Produto";
             this.Load += new System.EventHandler(this.FormVinculacaoProduto_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHistorico)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -136,5 +164,7 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Button btnSalvar;
         private System.Windows.Forms.Button btnCancelar;
         private System.Windows.Forms.TextBox txtPreco;
+        private System.Windows.Forms.Label lblHistorico;
+        private System.Windows.Forms.DataGridView dgvHistorico;
     }
 }

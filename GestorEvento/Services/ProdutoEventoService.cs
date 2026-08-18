@@ -128,6 +128,27 @@ namespace GestorEvento.Services
         }
 
         /// <summary>
+        /// Obtém o histórico de alterações de preço/quantidade de um produto em um evento
+        /// </summary>
+        public List<ProdutoEventoMovimentacao> GetHistoricoMovimentacoes(int produtoId, int eventoId)
+        {
+            if (produtoId <= 0 || eventoId <= 0)
+            {
+                return new List<ProdutoEventoMovimentacao>();
+            }
+
+            try
+            {
+                return _repository.GetHistoricoMovimentacoes(produtoId, eventoId);
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao obter histórico de movimentações: {ex.Message}");
+                return new List<ProdutoEventoMovimentacao>();
+            }
+        }
+
+        /// <summary>
         /// Reduz a quantidade vendida de um produto em um evento (ao confirmar venda)
         /// </summary>
         public bool RegistrarVendaProduto(int idProdutoEvento, int quantidade)

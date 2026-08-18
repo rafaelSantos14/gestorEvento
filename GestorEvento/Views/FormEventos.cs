@@ -812,13 +812,18 @@ namespace GestorEvento.Views
                 string nomeProduto = row.Cells["Nome"].Value.ToString();
 
                 // Abrir modal para preencher preço e quantidade
-                FormVincularProdutoEvento formModal = new FormVincularProdutoEvento(nomeProduto);
+                FormVincularProdutoEvento formModal = new FormVincularProdutoEvento(nomeProduto, produtoId, _eventoIdSelecionado);
                 if (formModal.ShowDialog(this) == DialogResult.OK)
                 {
                     try
                     {
                         // Vincular no banco de dados
-                        _produtoEventoService.VincularProduto(produtoId, _eventoIdSelecionado, formModal.PrecoDigitado, formModal.QuantidadeDigitada);
+                        bool sucesso = _produtoEventoService.VincularProduto(produtoId, _eventoIdSelecionado, formModal.PrecoDigitado, formModal.QuantidadeDigitada);
+                        if (!sucesso)
+                        {
+                            // O service já exibiu o motivo da falha
+                            return;
+                        }
 
                         // Remover de disponíveis e adicionar a vinculados
                         dgvProdutosDisponiveis.Rows.Remove(row);
@@ -873,13 +878,18 @@ namespace GestorEvento.Views
                 int quantidadeAtual = int.Parse(row.Cells["Quantidade"].Value.ToString());
 
                 // Abrir modal em modo de edição com valores carregados
-                FormVincularProdutoEvento formModal = new FormVincularProdutoEvento(nomeProduto, precoAtual, quantidadeAtual);
+                FormVincularProdutoEvento formModal = new FormVincularProdutoEvento(nomeProduto, produtoId, _eventoIdSelecionado, precoAtual, quantidadeAtual);
                 if (formModal.ShowDialog(this) == DialogResult.OK)
                 {
                     try
                     {
                         // Atualizar no banco de dados
-                        _produtoEventoService.VincularProduto(produtoId, _eventoIdSelecionado, formModal.PrecoDigitado, formModal.QuantidadeDigitada);
+                        bool sucesso = _produtoEventoService.VincularProduto(produtoId, _eventoIdSelecionado, formModal.PrecoDigitado, formModal.QuantidadeDigitada);
+                        if (!sucesso)
+                        {
+                            // O service já exibiu o motivo da falha (ex: quantidade menor que o já vendido)
+                            return;
+                        }
 
                         // Atualizar a linha na grid com os novos valores
                         row.Cells["Preco"].Value = formModal.PrecoDigitado.ToString("F2");
@@ -914,7 +924,12 @@ namespace GestorEvento.Views
                     try
                     {
                         // Remover do banco de dados
-                        _produtoEventoService.RemoverProdutoDoEvento(produtoId, _eventoIdSelecionado);
+                        bool sucesso = _produtoEventoService.RemoverProdutoDoEvento(produtoId, _eventoIdSelecionado);
+                        if (!sucesso)
+                        {
+                            // O service já exibiu o motivo da falha
+                            return;
+                        }
 
                         // Remover de vinculados e adicionar a disponíveis
                         dgvProdutosVinculados.Rows.Remove(row);

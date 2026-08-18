@@ -170,6 +170,7 @@
     <Compile Include="Models\PontoVenda.cs" />
     <Compile Include="Models\Venda.cs" />
     <Compile Include="Models\ProdutoEvento.cs" />
+    <Compile Include="Models\ProdutoEventoMovimentacao.cs" />
     <Compile Include="Models\FormaPagamento.cs" />
     <Compile Include="Models\Recebimento.cs" />
     <Compile Include="Models\Movimentacao.cs" />

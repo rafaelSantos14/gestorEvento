@@ -1,43 +1,96 @@
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using GestorEvento.Models;
+using GestorEvento.Services;
 using GestorEvento.Utilities;
 
 namespace GestorEvento.Views
 {
     public partial class FormVincularProdutoEvento : Form
     {
+        private readonly ProdutoEventoService _produtoEventoService;
+        private readonly int _idProduto;
+        private readonly int _idEvento;
+
         public decimal PrecoDigitado { get; set; }
         public int QuantidadeDigitada { get; set; }
         public string NomeProduto { get; private set; }
 
-        public FormVincularProdutoEvento(string nomeProduto, decimal precoAtual = 0, int quantidadeAtual = 0)
+        public FormVincularProdutoEvento(string nomeProduto, int idProduto, int idEvento, decimal precoAtual = 0, int quantidadeAtual = 0)
         {
             InitializeComponent();
             NomeProduto = nomeProduto;
+            _idProduto = idProduto;
+            _idEvento = idEvento;
             PrecoDigitado = precoAtual;
             QuantidadeDigitada = quantidadeAtual;
 
+            _produtoEventoService = new ProdutoEventoService();
+
             // Aplicar estilos
-            
+
             this.BackColor = System.Drawing.Color.White;
             EstiloManager.AplicarEstiloSalvar(btnSalvar);
             EstiloManager.AplicarEstiloLimpar(btnCancelar);
+            ConfigurarGridHistorico();
         }
 
         private void FormVinculacaoProduto_Load(object sender, EventArgs e)
         {
             lblProduto.Text = $"{NomeProduto}";
-            
+
             if (PrecoDigitado > 0)
                 txtPreco.Text = PrecoDigitado.ToString("F2");
-            
+
             if (QuantidadeDigitada > 0)
                 txtQuantidade.Text = QuantidadeDigitada.ToString();
 
             // Focar no campo de preço
             txtPreco.Focus();
+
+            CarregarHistorico();
+        }
+
+        private void ConfigurarGridHistorico()
+        {
+            dgvHistorico.AutoGenerateColumns = false;
+            dgvHistorico.Columns.Clear();
+
+            dgvHistorico.Columns.Add(new DataGridViewTextBoxColumn { Name = "DataHora", HeaderText = "Data/Hora", FillWeight = 130 });
+            dgvHistorico.Columns.Add(new DataGridViewTextBoxColumn { Name = "PrecoAnterior", HeaderText = "Preço Antes", FillWeight = 100 });
+            dgvHistorico.Columns.Add(new DataGridViewTextBoxColumn { Name = "PrecoNovo", HeaderText = "Preço Depois", FillWeight = 100 });
+            dgvHistorico.Columns.Add(new DataGridViewTextBoxColumn { Name = "QtdeAnterior", HeaderText = "Qtde Antes", FillWeight = 100 });
+            dgvHistorico.Columns.Add(new DataGridViewTextBoxColumn { Name = "QtdeNova", HeaderText = "Qtde Depois", FillWeight = 100 });
+
+            dgvHistorico.DefaultCellStyle.ForeColor = Color.Black;
+            dgvHistorico.DefaultCellStyle.BackColor = Color.White;
+            dgvHistorico.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(25, 118, 210);
+            dgvHistorico.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvHistorico.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            dgvHistorico.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgvHistorico.ColumnHeadersHeight = 40;
+            dgvHistorico.EnableHeadersVisualStyles = false;
+            dgvHistorico.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
+            dgvHistorico.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
+        private void CarregarHistorico()
+        {
+            dgvHistorico.Rows.Clear();
+
+            var historico = _produtoEventoService.GetHistoricoMovimentacoes(_idProduto, _idEvento);
+            foreach (var item in historico)
+            {
+                dgvHistorico.Rows.Add(
+                    item.DataMovimentacao.ToString("dd/MM/yyyy HH:mm"),
+                    item.ValorAnterior.ToString("F2"),
+                    item.ValorNovo.ToString("F2"),
+                    item.QuantidadeAnterior,
+                    item.QuantidadeNova
+                );
+            }
         }
 
         private void btnSalvar_Click(object sender, EventArgs e)

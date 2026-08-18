@@ -5,7 +5,8 @@ DROP TABLE IF EXISTS MOVIMENTACAO_PONTO_VENDA;
 DROP TABLE IF EXISTS REIMPRESSAO;             
 DROP TABLE IF EXISTS VENDA;                   
 DROP TABLE IF EXISTS PONTO_VENDA;             
-DROP TABLE IF EXISTS PRODUTO_EVENTO;          
+DROP TABLE IF EXISTS PRODUTO_EVENTO_MOVIMENTACAO;
+DROP TABLE IF EXISTS PRODUTO_EVENTO;
 DROP TABLE IF EXISTS FORMA_PAGAMENTO;
 DROP TABLE IF EXISTS MOTIVOS_REIMPRESSAO;
 DROP TABLE IF EXISTS EVENTO;
@@ -39,7 +40,21 @@ CREATE TABLE PRODUTO_EVENTO (
     fl_ativo VARCHAR(3) DEFAULT 'SIM',
     CONSTRAINT UQ_PRODUTO_EVENTO_ID_PRODUTO_ID_EVENTO UNIQUE (id_produto, id_evento),
     FOREIGN KEY (id_produto) REFERENCES PRODUTO(id_produto) ,
-    FOREIGN KEY (id_evento) REFERENCES EVENTO(id_evento) 
+    FOREIGN KEY (id_evento) REFERENCES EVENTO(id_evento)
+);
+
+-- Tabela PRODUTO_EVENTO_MOVIMENTACAO (histórico de alterações de preço/quantidade)
+CREATE TABLE PRODUTO_EVENTO_MOVIMENTACAO (
+    id_produto_evento_movimentacao INT AUTO_INCREMENT PRIMARY KEY,
+    id_produto_evento INT NOT NULL,
+    vl_produto_anterior DECIMAL(10, 2) NOT NULL,
+    vl_produto_novo DECIMAL(10, 2) NOT NULL,
+    qtde_produto_anterior INT NOT NULL,
+    qtde_produto_novo INT NOT NULL,
+    dt_movimentacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_produto_evento) REFERENCES PRODUTO_EVENTO(id_produto_evento),
+    INDEX idx_produto_evento_movimentacao (id_produto_evento),
+    INDEX idx_produto_evento_movimentacao_dt (dt_movimentacao)
 );
 
 CREATE TABLE FORMA_PAGAMENTO (
