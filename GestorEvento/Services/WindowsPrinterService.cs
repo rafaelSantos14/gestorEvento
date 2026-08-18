@@ -239,7 +239,11 @@ namespace GestorEvento.Services
             // ============ FASE 6: DATA E HORA ============
             sb.Append("\x1B\x61\x02"); // Align right
             sb.Append("\x1D\x21\x00"); // Font pequena
-            
+
+            // Identificação da venda (acima da data/hora)
+            sb.Append($"Venda: #{vendaId}");
+            sb.Append("\n");
+
             string dataHora = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
             sb.Append(dataHora);
             sb.Append("\n");
@@ -313,7 +317,11 @@ namespace GestorEvento.Services
             // ============ FASE 7: DATA E HORA ============
             sb.Append("\x1B\x61\x02"); // Align right
             sb.Append("\x1D\x21\x00"); // Font pequena
-            
+
+            // Identificação da reimpressão (acima da data/hora)
+            sb.Append($"Reimpressão: #{reimpressaoId}");
+            sb.Append("\n");
+
             string dataHora = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
             sb.Append(dataHora);
             sb.Append("\n");
@@ -479,7 +487,7 @@ namespace GestorEvento.Services
         /// Imprime um cupom individual com dados ESC/POS
         /// Implementação compatível com interface IPrinterService
         /// </summary>
-        public bool ImprimirCupom(string nomeProduto, int numeroCaixa = 0, string descricaoCaixa = "", decimal preco = 0)
+        public bool ImprimirCupom(string nomeProduto, int numeroCaixa = 0, string descricaoCaixa = "", decimal preco = 0, int idImpressao = 0, bool isReimpressao = false)
         {
             try
             {
@@ -544,7 +552,15 @@ namespace GestorEvento.Services
                 
                 // Fonte pequena para data
                 sb.Append("\x1D\x21\x00"); // GS ! 00
-                
+
+                // Identificação da venda/reimpressão (acima da data/hora)
+                if (idImpressao > 0)
+                {
+                    string rotuloId = isReimpressao ? $"Reimpressão: #{idImpressao}" : $"Venda: #{idImpressao}";
+                    sb.Append(rotuloId);
+                    sb.Append("\n");
+                }
+
                 // Data e hora
                 string dataHora = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                 sb.Append(dataHora);

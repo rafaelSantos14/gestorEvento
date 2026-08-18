@@ -312,7 +312,7 @@ namespace GestorEvento.Services
         /// REFATORADO COMPLETAMENTE
         /// Estratégia: Imprimir primeiro, DEPOIS cortar
         /// </summary>
-        public bool ImprimirCupom(string nomeProduto, int numeroCaixa = 0, string descricaoCaixa = "", decimal preco = 0)
+        public bool ImprimirCupom(string nomeProduto, int numeroCaixa = 0, string descricaoCaixa = "", decimal preco = 0, int idImpressao = 0, bool isReimpressao = false)
         {
             try
             {
@@ -455,7 +455,17 @@ namespace GestorEvento.Services
                 // Fonte pequena para data
                 byte[] fontSmall = { 0x1D, 0x21, 0x00 };
                 _serialPort.Write(fontSmall, 0, fontSmall.Length);
-                
+
+                // Identificação da venda/reimpressão (acima da data/hora)
+                if (idImpressao > 0)
+                {
+                    string rotuloId = isReimpressao ? $"Reimpressão: #{idImpressao}" : $"Venda: #{idImpressao}";
+                    byte[] rotuloIdBytes = Encoding.GetEncoding(1252).GetBytes(rotuloId);
+                    _serialPort.Write(rotuloIdBytes, 0, rotuloIdBytes.Length);
+                    _serialPort.BaseStream.Flush();
+                    _serialPort.Write(lineFeed, 0, lineFeed.Length);
+                }
+
                 // Data e hora
                 string dataHora = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                 byte[] dataHoraBytes = Encoding.GetEncoding(1252).GetBytes(dataHora);
@@ -565,7 +575,7 @@ namespace GestorEvento.Services
                 // Implementação para vendas - imprime cada item como um cupom
                 foreach (var item in itens)
                 {
-                    ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco);
+                    ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco, vendaId, false);
                 }
                 return true;
             }
@@ -583,7 +593,7 @@ namespace GestorEvento.Services
                 // Implementação para reimpressões - imprime cada item como um cupom
                 foreach (var item in itens)
                 {
-                    ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco);
+                    ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco, reimpressaoId, true);
                 }
                 return true;
             }

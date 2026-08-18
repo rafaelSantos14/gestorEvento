@@ -13,8 +13,11 @@ namespace GestorEvento.Services
         /// <summary>
         /// Imprime um cupom individual
         /// </summary>
-        bool ImprimirCupom(string nomeProduto, int numeroCaixa = 0, 
-                          string descricaoCaixa = "", decimal preco = 0);
+        /// <param name="idImpressao">ID da venda (ou cortesia) ou da reimpressão, impresso acima da data/hora</param>
+        /// <param name="isReimpressao">Quando true, rotula o idImpressao como "Reimpressão:" ao invés de "Venda:"</param>
+        bool ImprimirCupom(string nomeProduto, int numeroCaixa = 0,
+                          string descricaoCaixa = "", decimal preco = 0,
+                          int idImpressao = 0, bool isReimpressao = false);
 
         /// <summary>
         /// Imprime uma venda completa com múltiplos itens

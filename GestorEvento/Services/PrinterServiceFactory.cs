@@ -109,7 +109,7 @@ namespace GestorEvento.Services
             }
             else
             {
-                return ImprimirVendaLocal(reimpressaoId, itens, numeroCaixa, descricaoCaixa);
+                return ImprimirReimpressaoLocal(reimpressaoId, itens, numeroCaixa, descricaoCaixa);
             }
         }
 
@@ -129,8 +129,8 @@ namespace GestorEvento.Services
                 // Imprimir cada item como um cupom separado (método antigo que funcionava)
                 foreach (var item in itens)
                 {
-                    bool resultado = printer.ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco);
-                    
+                    bool resultado = printer.ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco, vendaId, false);
+
                     if (resultado)
                     {
                         System.Diagnostics.Debug.WriteLine($"  ✓ Cupom impresso: {item.Nome} - R$ {item.Preco.ToString("F2")}");
@@ -150,6 +150,46 @@ namespace GestorEvento.Services
             catch (Exception ex)
             {
                 UiHelper.ExibirErro("Erro", $"Erro ao imprimir venda localmente: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Imprime uma reimpressão localmente (todos os itens sequencialmente)
+        /// Respeita a configuração PrinterType (COM ou USB)
+        /// </summary>
+        private static bool ImprimirReimpressaoLocal(int reimpressaoId, List<ItemImpressao> itens, int numeroCaixa = 0, string descricaoCaixa = "")
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"[PrinterServiceFactory] Imprimindo reimpressão #{reimpressaoId} localmente ({itens.Count} itens)");
+
+                // Usar CreatePrinterService() para respeitar configuração PrinterType (COM ou USB)
+                var printer = CreatePrinterService();
+
+                foreach (var item in itens)
+                {
+                    bool resultado = printer.ImprimirCupom(item.Nome, numeroCaixa, descricaoCaixa, item.Preco, reimpressaoId, true);
+
+                    if (resultado)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"  ✓ Cupom impresso: {item.Nome} - R$ {item.Preco.ToString("F2")}");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"  ✗ Falha ao imprimir cupom: {item.Nome}");
+                    }
+                }
+
+                printer.Desconectar();
+                printer.Dispose();
+
+                System.Diagnostics.Debug.WriteLine($"✓ Reimpressão #{reimpressaoId} finalizada");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao imprimir reimpressão localmente: {ex.Message}");
                 return false;
             }
         }
