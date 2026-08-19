@@ -192,13 +192,13 @@ namespace GestorEvento.Services
             if (venda.IdPontoVenda <= 0)
                 throw new ArgumentException("ID do ponto de venda inválido");
 
-            if (venda.VlTotal <= 0)
-                throw new ArgumentException("Valor total da venda deve ser maior que zero");
+            if (venda.VlTotal < 0)
+                throw new ArgumentException("Valor total da venda não pode ser negativo");
 
             if (recebimentos == null || recebimentos.Count == 0)
             {
-                // CORTESIA pode não ter recebimento
-                if (venda.TipoOperacao != "CORTESIA")
+                // CORTESIA pode não ter recebimento; VENDA com total zerado (itens com valor permitido zerado) também não precisa
+                if (venda.TipoOperacao != "CORTESIA" && venda.VlTotal > 0)
                     throw new ArgumentException("Venda deve ter pelo menos um recebimento");
             }
 

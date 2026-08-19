@@ -38,10 +38,14 @@ CREATE TABLE PRODUTO_EVENTO (
     qtde_produto INT NOT NULL,
 	qtde_vendida INT NOT NULL,
     fl_ativo VARCHAR(3) DEFAULT 'SIM',
+    fl_permite_vl_zerado VARCHAR(3) DEFAULT 'NAO',
     CONSTRAINT UQ_PRODUTO_EVENTO_ID_PRODUTO_ID_EVENTO UNIQUE (id_produto, id_evento),
     FOREIGN KEY (id_produto) REFERENCES PRODUTO(id_produto) ,
     FOREIGN KEY (id_evento) REFERENCES EVENTO(id_evento)
 );
+
+ALTER TABLE PRODUTO_EVENTO ADD COLUMN fl_permite_vl_zerado VARCHAR(3) DEFAULT 'NAO';
+
 
 -- Tabela PRODUTO_EVENTO_MOVIMENTACAO (histórico de alterações de preço/quantidade)
 CREATE TABLE PRODUTO_EVENTO_MOVIMENTACAO (

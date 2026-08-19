@@ -16,9 +16,10 @@ namespace GestorEvento.Views
 
         public decimal PrecoDigitado { get; set; }
         public int QuantidadeDigitada { get; set; }
+        public bool PermiteValorZerado { get; set; }
         public string NomeProduto { get; private set; }
 
-        public FormVincularProdutoEvento(string nomeProduto, int idProduto, int idEvento, decimal precoAtual = 0, int quantidadeAtual = 0)
+        public FormVincularProdutoEvento(string nomeProduto, int idProduto, int idEvento, decimal precoAtual = 0, int quantidadeAtual = 0, bool permiteValorZeradoAtual = false)
         {
             InitializeComponent();
             NomeProduto = nomeProduto;
@@ -26,6 +27,7 @@ namespace GestorEvento.Views
             _idEvento = idEvento;
             PrecoDigitado = precoAtual;
             QuantidadeDigitada = quantidadeAtual;
+            PermiteValorZerado = permiteValorZeradoAtual;
 
             _produtoEventoService = new ProdutoEventoService();
 
@@ -46,6 +48,8 @@ namespace GestorEvento.Views
 
             if (QuantidadeDigitada > 0)
                 txtQuantidade.Text = QuantidadeDigitada.ToString();
+
+            chkPermiteValorZerado.Checked = PermiteValorZerado;
 
             // Focar no campo de preço
             txtPreco.Focus();
@@ -100,6 +104,7 @@ namespace GestorEvento.Views
 
             PrecoDigitado = decimal.Parse(txtPreco.Text);
             QuantidadeDigitada = int.Parse(txtQuantidade.Text);
+            PermiteValorZerado = chkPermiteValorZerado.Checked;
 
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -121,9 +126,18 @@ namespace GestorEvento.Views
                 return false;
             }
 
-            if (!decimal.TryParse(txtPreco.Text, out decimal preco) || preco <= 0)
+            if (!decimal.TryParse(txtPreco.Text, out decimal preco) || preco < 0)
             {
-                DialogoCustomizado dialogo = new DialogoCustomizado("Aviso", "Preço deve ser um número maior que zero", TipoDialogo.Aviso, TipoButton.Ok);
+                DialogoCustomizado dialogo = new DialogoCustomizado("Aviso", "Preço deve ser um número válido e não pode ser negativo", TipoDialogo.Aviso, TipoButton.Ok);
+                dialogo.ShowDialog();
+                txtPreco.Clear();
+                txtPreco.Focus();
+                return false;
+            }
+
+            if (preco == 0 && !chkPermiteValorZerado.Checked)
+            {
+                DialogoCustomizado dialogo = new DialogoCustomizado("Aviso", "Preço deve ser um número maior que zero (ou marque \"Já pago na inscrição\" para permitir valor zerado)", TipoDialogo.Aviso, TipoButton.Ok);
                 dialogo.ShowDialog();
                 txtPreco.Clear();
                 txtPreco.Focus();

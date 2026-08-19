@@ -62,7 +62,7 @@ namespace GestorEvento.Services
         /// <summary>
         /// Vincula um produto a um evento com preço e quantidade
         /// </summary>
-        public bool VincularProduto(int produtoId, int eventoId, decimal preco, int quantidade)
+        public bool VincularProduto(int produtoId, int eventoId, decimal preco, int quantidade, bool permiteValorZerado = false)
         {
             if (produtoId <= 0)
             {
@@ -76,7 +76,13 @@ namespace GestorEvento.Services
                 return false;
             }
 
-            if (preco <= 0)
+            if (preco < 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "Preço não pode ser negativo");
+                return false;
+            }
+
+            if (preco == 0 && !permiteValorZerado)
             {
                 UiHelper.ExibirAviso("Aviso", "Preço deve ser maior que zero");
                 return false;
@@ -90,7 +96,7 @@ namespace GestorEvento.Services
 
             try
             {
-                return _repository.CreateVinculacao(produtoId, eventoId, preco, quantidade);
+                return _repository.CreateVinculacao(produtoId, eventoId, preco, quantidade, permiteValorZerado);
             }
             catch (Exception ex)
             {

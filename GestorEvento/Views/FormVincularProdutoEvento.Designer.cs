@@ -22,6 +22,7 @@ namespace GestorEvento.Views
             this.btnSalvar = new System.Windows.Forms.Button();
             this.btnCancelar = new System.Windows.Forms.Button();
             this.txtPreco = new System.Windows.Forms.TextBox();
+            this.chkPermiteValorZerado = new System.Windows.Forms.CheckBox();
             this.lblHistorico = new System.Windows.Forms.Label();
             this.dgvHistorico = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHistorico)).BeginInit();
@@ -73,7 +74,7 @@ namespace GestorEvento.Views
             this.btnSalvar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSalvar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSalvar.ForeColor = System.Drawing.Color.White;
-            this.btnSalvar.Location = new System.Drawing.Point(172, 125);
+            this.btnSalvar.Location = new System.Drawing.Point(172, 150);
             this.btnSalvar.Name = "btnSalvar";
             this.btnSalvar.Size = new System.Drawing.Size(95, 35);
             this.btnSalvar.TabIndex = 5;
@@ -88,7 +89,7 @@ namespace GestorEvento.Views
             this.btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancelar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnCancelar.ForeColor = System.Drawing.Color.White;
-            this.btnCancelar.Location = new System.Drawing.Point(277, 125);
+            this.btnCancelar.Location = new System.Drawing.Point(277, 150);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(95, 35);
             this.btnCancelar.TabIndex = 6;
@@ -107,14 +108,25 @@ namespace GestorEvento.Views
             this.txtPreco.TextChanged += new System.EventHandler(this.TxtPreco_TextChanged);
             this.txtPreco.Leave += new System.EventHandler(this.TxtPreco_Leave);
             // 
+            // chkPermiteValorZerado
+            // 
+            this.chkPermiteValorZerado.AutoSize = true;
+            this.chkPermiteValorZerado.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.chkPermiteValorZerado.Location = new System.Drawing.Point(67, 116);
+            this.chkPermiteValorZerado.Name = "chkPermiteValorZerado";
+            this.chkPermiteValorZerado.Size = new System.Drawing.Size(150, 21);
+            this.chkPermiteValorZerado.TabIndex = 5;
+            this.chkPermiteValorZerado.Text = "Permitir valor zerado";
+            this.chkPermiteValorZerado.UseVisualStyleBackColor = true;
+            // 
             // lblHistorico
             // 
             this.lblHistorico.AutoSize = true;
             this.lblHistorico.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblHistorico.Location = new System.Drawing.Point(12, 187);
+            this.lblHistorico.Location = new System.Drawing.Point(12, 212);
             this.lblHistorico.Name = "lblHistorico";
             this.lblHistorico.Size = new System.Drawing.Size(149, 19);
-            this.lblHistorico.TabIndex = 7;
+            this.lblHistorico.TabIndex = 8;
             this.lblHistorico.Text = "Histórico de Alterações";
             // 
             // dgvHistorico
@@ -122,21 +134,22 @@ namespace GestorEvento.Views
             this.dgvHistorico.AllowUserToAddRows = false;
             this.dgvHistorico.AllowUserToDeleteRows = false;
             this.dgvHistorico.BackgroundColor = System.Drawing.Color.White;
-            this.dgvHistorico.Location = new System.Drawing.Point(16, 209);
+            this.dgvHistorico.Location = new System.Drawing.Point(16, 234);
             this.dgvHistorico.Name = "dgvHistorico";
             this.dgvHistorico.ReadOnly = true;
             this.dgvHistorico.RowHeadersVisible = false;
             this.dgvHistorico.Size = new System.Drawing.Size(511, 209);
-            this.dgvHistorico.TabIndex = 8;
+            this.dgvHistorico.TabIndex = 9;
             // 
             // FormVincularProdutoEvento
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(550, 430);
+            this.ClientSize = new System.Drawing.Size(550, 455);
             this.Controls.Add(this.dgvHistorico);
             this.Controls.Add(this.lblHistorico);
+            this.Controls.Add(this.chkPermiteValorZerado);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.txtQuantidade);
@@ -164,6 +177,7 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Button btnSalvar;
         private System.Windows.Forms.Button btnCancelar;
         private System.Windows.Forms.TextBox txtPreco;
+        private System.Windows.Forms.CheckBox chkPermiteValorZerado;
         private System.Windows.Forms.Label lblHistorico;
         private System.Windows.Forms.DataGridView dgvHistorico;
     }
