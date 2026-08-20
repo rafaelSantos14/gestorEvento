@@ -1458,9 +1458,53 @@ namespace GestorEvento.Views
         }
 
         private void btnAtualizarPDV_Click(object sender, EventArgs e)
-        {            
-            LimparTudo();            
+        {
+            LimparTudo();
             CarregarProdutos();
+        }
+
+        private void btnMovimentacaoCaixa_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var pontoVendaAtual = _pontoVendaService.GetPontoVendaById(_caixaIdSelecionado);
+                if (pontoVendaAtual == null || !string.Equals(pontoVendaAtual.CdStatus, "Aberto", StringComparison.OrdinalIgnoreCase))
+                {
+                    DialogoCustomizado caixaFechado = new DialogoCustomizado(
+                        "Aviso",
+                        "Caixa fechado. Não é possível registrar movimentação.",
+                        TipoDialogo.Aviso,
+                        TipoButton.Ok
+                    );
+                    caixaFechado.ShowDialog();
+                    return;
+                }
+
+                if (new EventoService().EventoEstaEncerrado(_eventoIdSelecionado))
+                {
+                    DialogoCustomizado eventoEncerrado = new DialogoCustomizado(
+                        "Aviso",
+                        "Evento encerrado. Movimentações não podem ser registradas.",
+                        TipoDialogo.Aviso,
+                        TipoButton.Ok
+                    );
+                    eventoEncerrado.ShowDialog();
+                    return;
+                }
+
+                FormMovimentacaoCaixa formMovimentacao = new FormMovimentacaoCaixa(_caixaIdSelecionado);
+                formMovimentacao.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                DialogoCustomizado erro = new DialogoCustomizado(
+                    "Erro",
+                    $"Erro ao abrir movimentação de caixa: {ex.Message}",
+                    TipoDialogo.Erro,
+                    TipoButton.Ok
+                );
+                erro.ShowDialog();
+            }
         }
     }
 }

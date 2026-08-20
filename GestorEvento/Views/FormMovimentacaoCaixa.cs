@@ -31,6 +31,7 @@ namespace GestorEvento.Views
         private void CarregarTiposMovimento()
         {
             cmbTipoMovimento.Items.Clear();
+            cmbTipoMovimento.Items.Add("Selecione...");
             cmbTipoMovimento.Items.Add("Entrada de Troco");
             cmbTipoMovimento.Items.Add("Sangria");
             cmbTipoMovimento.SelectedIndex = 0;
@@ -38,8 +39,8 @@ namespace GestorEvento.Views
 
         private void BtnSalvar_Click(object sender, EventArgs e)
         {
-            // Validar seleção do tipo de movimentação
-            if (cmbTipoMovimento.SelectedIndex < 0)
+            // Validar seleção do tipo de movimentação (índice 0 é o placeholder "Selecione...")
+            if (cmbTipoMovimento.SelectedIndex <= 0)
             {
                 DialogoCustomizado dialogo = new DialogoCustomizado(
                     "Aviso",
