@@ -13,6 +13,7 @@ namespace GestorEvento.Services
         private readonly VendaRepository _repository;
         private readonly RecebimentoRepository _recebimentoRepository;
         private readonly MovimentacaoRepository _movimentacaoRepository;
+        private readonly DoacaoVendaRepository _doacaoVendaRepository;
         private readonly PontoVendaRepository _pontoVendaRepository;
         private readonly EventoRepository _eventoRepository;
         private readonly ProdutoEventoRepository _produtoEventoRepository;
@@ -22,6 +23,7 @@ namespace GestorEvento.Services
             _repository = new VendaRepository();
             _recebimentoRepository = new RecebimentoRepository();
             _movimentacaoRepository = new MovimentacaoRepository();
+            _doacaoVendaRepository = new DoacaoVendaRepository();
             _pontoVendaRepository = new PontoVendaRepository();
             _eventoRepository = new EventoRepository();
             _produtoEventoRepository = new ProdutoEventoRepository();
@@ -212,7 +214,7 @@ namespace GestorEvento.Services
         /// Valida e debita estoque ANTES de registrar venda (garante atomicidade)
         /// Se algo falhar, faz rollback de tudo (venda + recebimento + estoque não são alterados)
         /// </summary>
-        public int RegistrarVendaComEstoqueComTransacao(Venda venda, List<(int idFormaPagamento, decimal valor)> recebimentos, decimal vlTroco)
+        public int RegistrarVendaComEstoqueComTransacao(Venda venda, List<(int idFormaPagamento, decimal valor)> recebimentos, decimal vlTroco, List<(int idFormaPagamento, decimal valor)> doacoes = null)
         {
             MySqlConnection connection = null;
             MySqlTransaction transaction = null;
@@ -266,6 +268,20 @@ namespace GestorEvento.Services
                     if (vlTroco > 0)
                     {
                         _movimentacaoRepository.RegistrarTrocoComTransacao(connection, transaction, venda.IdPontoVenda, idVenda, vlTroco);
+                    }
+
+                    // 5.1 REGISTRAR DOAÇÕES (INSERT DOACAO_VENDA) - apenas para VENDA
+                    // Independente do troco/recebimento: não entra em nenhuma validação nem desconta o troco registrado acima
+                    if (doacoes != null)
+                    {
+                        foreach (var (idFormaPagamento, valor) in doacoes)
+                        {
+                            if (valor > 0)
+                            {
+                                var doacao = new DoacaoVenda(idVenda, idFormaPagamento, valor);
+                                _doacaoVendaRepository.RegistrarDoacaoComTransacao(connection, transaction, doacao);
+                            }
+                        }
                     }
                 }
 

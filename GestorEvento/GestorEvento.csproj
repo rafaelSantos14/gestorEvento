@@ -165,6 +165,7 @@
     <Compile Include="Repositories\FormaPagamentoRepository.cs" />
     <Compile Include="Repositories\RecebimentoRepository.cs" />
     <Compile Include="Repositories\MovimentacaoRepository.cs" />
+    <Compile Include="Repositories\DoacaoVendaRepository.cs" />
     <Compile Include="Models\Produto.cs" />
     <Compile Include="Models\Evento.cs" />
     <Compile Include="Models\PontoVenda.cs" />
@@ -173,6 +174,7 @@
     <Compile Include="Models\ProdutoEventoMovimentacao.cs" />
     <Compile Include="Models\FormaPagamento.cs" />
     <Compile Include="Models\Recebimento.cs" />
+    <Compile Include="Models\DoacaoVenda.cs" />
     <Compile Include="Models\Movimentacao.cs" />
     <Compile Include="Models\ResumoFechamentoCaixa.cs" />
     <Compile Include="Models\RelatorioVendaData.cs" />
@@ -187,6 +189,7 @@
     <Compile Include="Services\ProdutoEventoService.cs" />
     <Compile Include="Services\FormaPagamentoService.cs" />
     <Compile Include="Services\RecebimentoService.cs" />
+    <Compile Include="Services\DoacaoVendaService.cs" />
     <Compile Include="Services\MovimentacaoService.cs" />
     <Compile Include="Services\RelatorioVendaService.cs" />
     <Compile Include="Services\IPrinterService.cs" />

@@ -202,6 +202,14 @@ namespace GestorEvento.Views
                     $"[RELATÓRIO VENDA] Cortesias neste evento: Qtd={dados.TotalQuantidadeCortesia}, Valor=R${dados.ValorTotalCortesia:N2}"
                 );
             }
+
+            // Log de doações para auditoria (se houver) - separado do total de vendas
+            if (dados.ValorTotalDoacao > 0)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"[RELATÓRIO VENDA] Doações neste evento: Valor=R${dados.ValorTotalDoacao:N2}"
+                );
+            }
         }
 
         private void LimparCards()

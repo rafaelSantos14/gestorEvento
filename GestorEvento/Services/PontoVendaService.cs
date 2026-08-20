@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GestorEvento.Models;
 using GestorEvento.Repositories;
 using GestorEvento.Utilities;
@@ -12,6 +13,7 @@ namespace GestorEvento.Services
         private readonly VendaService _vendaService;
         private readonly RecebimentoService _recebimentoService;
         private readonly MovimentacaoService _movimentacaoService;
+        private readonly DoacaoVendaService _doacaoVendaService;
         private readonly EventoRepository _eventoRepository;
 
         public PontoVendaService()
@@ -20,6 +22,7 @@ namespace GestorEvento.Services
             _vendaService = new VendaService();
             _recebimentoService = new RecebimentoService();
             _movimentacaoService = new MovimentacaoService();
+            _doacaoVendaService = new DoacaoVendaService();
             _eventoRepository = new EventoRepository();
         }
 
@@ -166,13 +169,18 @@ namespace GestorEvento.Services
                 decimal totalSangria = _movimentacaoService.GetTotalMovimentacaoPorTipo(idPontoVenda, TipoMovimento.SANGRIA);
                 decimal totalEntradaTroco = _movimentacaoService.GetTotalMovimentacaoPorTipo(idPontoVenda, TipoMovimento.ENTRADA_TROCO);
 
+                // Doações: a parte em dinheiro fica fisicamente no caixa sem passar por RECEBIMENTO_VENDA
+                // nem por MOVIMENTACAO_PONTO_VENDA, então precisa entrar explicitamente no total esperado
+                decimal totalDoacaoDinheiro = _doacaoVendaService.GetTotalDoacaoDinheiro(idPontoVenda);
+
                 // Calcular total esperado com movimentações
-                // TotalEsperado = VlInicial + DINHEIRO - TROCO - SANGRIA + ENTRADA_TROCO
-                decimal totalEsperado = pontoVenda.VlInicial 
-                    + totalVendasDinheiro 
-                    - totalTroco 
-                    - totalSangria 
-                    + totalEntradaTroco;
+                // TotalEsperado = VlInicial + DINHEIRO - TROCO - SANGRIA + ENTRADA_TROCO + DOACAO_DINHEIRO
+                decimal totalEsperado = pontoVenda.VlInicial
+                    + totalVendasDinheiro
+                    - totalTroco
+                    - totalSangria
+                    + totalEntradaTroco
+                    + totalDoacaoDinheiro;
 
                 // Obter resumo por forma de pagamento
                 var recebimentosPorForma = new List<ResumoRecebimentoPorForma>();
@@ -186,6 +194,17 @@ namespace GestorEvento.Services
                     });
                 }
 
+                // Obter resumo de doações por forma de pagamento (informativo)
+                var doacoesPorForma = new List<ResumoDoacaoPorForma>();
+                foreach (var (idFormaPagamento, nomeFormaPagamento, totalDoacao) in _doacaoVendaService.GetResumoDoacoesByPontoVenda(idPontoVenda))
+                {
+                    doacoesPorForma.Add(new ResumoDoacaoPorForma
+                    {
+                        IdFormaPagamento = idFormaPagamento,
+                        NomeFormaPagamento = nomeFormaPagamento,
+                        TotalDoacao = totalDoacao
+                    });
+                }
                 // Obter vendas simplificadas
                 var vendas = new List<ResumoVendaFechamento>();
                 foreach (var (idVenda, dtVenda, vlTotal, tipoOperacao) in _vendaService.GetResumoVendasByPontoVenda(idPontoVenda))
@@ -234,7 +253,9 @@ namespace GestorEvento.Services
                     VlInicial = pontoVenda.VlInicial,
                     TotalVendasDinheiro = totalVendasDinheiro,
                     TotalEsperado = totalEsperado,
+                    TotalDoacoesDinheiro = totalDoacaoDinheiro,
                     RecebimentosPorForma = recebimentosPorForma,
+                    DoacoesPorForma = doacoesPorForma,
                     Vendas = vendas,
                     Movimentacoes = movimentacoesDetalhadas
                 };

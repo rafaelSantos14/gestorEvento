@@ -27,6 +27,9 @@ namespace GestorEvento.Views
             this.pnlCardQtde = new GestorEvento.Components.ModernCard();
             this.lblQtdeValor = new System.Windows.Forms.Label();
             this.lblQtdeLabel = new System.Windows.Forms.Label();
+            this.pnlCardDoacao = new GestorEvento.Components.ModernCard();
+            this.lblDoacaoValor = new System.Windows.Forms.Label();
+            this.lblDoacaoLabel = new System.Windows.Forms.Label();
             this.panelGraficos = new System.Windows.Forms.Panel();
             this.panelGraficoPizza = new System.Windows.Forms.Panel();
             this.lblGraficoPizza = new System.Windows.Forms.Label();
@@ -42,6 +45,7 @@ namespace GestorEvento.Views
             this.pnlCardTroco.SuspendLayout();
             this.pnlCardValor.SuspendLayout();
             this.pnlCardQtde.SuspendLayout();
+            this.pnlCardDoacao.SuspendLayout();
             this.panelGraficos.SuspendLayout();
             this.panelGraficoPizza.SuspendLayout();
             this.panelGraficoBarras.SuspendLayout();
@@ -52,6 +56,7 @@ namespace GestorEvento.Views
             // panelCards
             // 
             this.panelCards.BackColor = System.Drawing.Color.White;
+            this.panelCards.Controls.Add(this.pnlCardDoacao);
             this.panelCards.Controls.Add(this.pnlCardTroco);
             this.panelCards.Controls.Add(this.pnlCardValor);
             this.panelCards.Controls.Add(this.pnlCardQtde);
@@ -169,7 +174,43 @@ namespace GestorEvento.Views
             this.lblQtdeLabel.Size = new System.Drawing.Size(181, 19);
             this.lblQtdeLabel.TabIndex = 0;
             this.lblQtdeLabel.Text = "Quantidade Total de Vendas";
-            // 
+            //
+            // pnlCardDoacao
+            //
+            this.pnlCardDoacao.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(230)))), ((int)(((byte)(250)))));
+            this.pnlCardDoacao.BorderRadius = 12;
+            this.pnlCardDoacao.Controls.Add(this.lblDoacaoValor);
+            this.pnlCardDoacao.Controls.Add(this.lblDoacaoLabel);
+            this.pnlCardDoacao.ForeColor = System.Drawing.Color.Black;
+            this.pnlCardDoacao.Location = new System.Drawing.Point(1017, 20);
+            this.pnlCardDoacao.Name = "pnlCardDoacao";
+            this.pnlCardDoacao.ShadowColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.pnlCardDoacao.ShadowSize = 4;
+            this.pnlCardDoacao.Size = new System.Drawing.Size(290, 100);
+            this.pnlCardDoacao.TabIndex = 0;
+            //
+            // lblDoacaoValor
+            //
+            this.lblDoacaoValor.AutoSize = true;
+            this.lblDoacaoValor.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
+            this.lblDoacaoValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(51)))), ((int)(((byte)(234)))));
+            this.lblDoacaoValor.Location = new System.Drawing.Point(10, 45);
+            this.lblDoacaoValor.Name = "lblDoacaoValor";
+            this.lblDoacaoValor.Size = new System.Drawing.Size(69, 37);
+            this.lblDoacaoValor.TabIndex = 1;
+            this.lblDoacaoValor.Text = "R$ -";
+            //
+            // lblDoacaoLabel
+            //
+            this.lblDoacaoLabel.AutoSize = true;
+            this.lblDoacaoLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblDoacaoLabel.ForeColor = System.Drawing.Color.DarkGray;
+            this.lblDoacaoLabel.Location = new System.Drawing.Point(10, 10);
+            this.lblDoacaoLabel.Name = "lblDoacaoLabel";
+            this.lblDoacaoLabel.Size = new System.Drawing.Size(110, 19);
+            this.lblDoacaoLabel.TabIndex = 0;
+            this.lblDoacaoLabel.Text = "Valor Total Doações";
+            //
             // panelGraficos
             // 
             this.panelGraficos.BackColor = System.Drawing.Color.White;
@@ -305,6 +346,8 @@ namespace GestorEvento.Views
             this.pnlCardValor.PerformLayout();
             this.pnlCardQtde.ResumeLayout(false);
             this.pnlCardQtde.PerformLayout();
+            this.pnlCardDoacao.ResumeLayout(false);
+            this.pnlCardDoacao.PerformLayout();
             this.panelGraficos.ResumeLayout(false);
             this.panelGraficoPizza.ResumeLayout(false);
             this.panelGraficoPizza.PerformLayout();
@@ -327,6 +370,9 @@ namespace GestorEvento.Views
         private ModernCard pnlCardTroco;
         private System.Windows.Forms.Label lblTrocoValor;
         private System.Windows.Forms.Label lblTrocoLabel;
+        private ModernCard pnlCardDoacao;
+        private System.Windows.Forms.Label lblDoacaoValor;
+        private System.Windows.Forms.Label lblDoacaoLabel;
         private System.Windows.Forms.Panel panelGraficos;
         private System.Windows.Forms.Panel panelGraficoBarras;
         private LiveCharts.WinForms.CartesianChart chartBarras;

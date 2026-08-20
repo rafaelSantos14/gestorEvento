@@ -15,14 +15,19 @@ namespace GestorEvento.Models
         // Métricas de CORTESIA (separadas de VENDA para não contaminar financeiro)
         public int TotalQuantidadeCortesia { get; set; }
         public decimal ValorTotalCortesia { get; set; }
-        
+
+        // Total arrecadado em doações do evento (separado do total de vendas)
+        public decimal ValorTotalDoacao { get; set; }
+
         public List<DadosPagamento> DadosPorFormaPagamento { get; set; }
+        public List<DadosPagamento> DadosPorFormaDoacao { get; set; }
         public List<DadosCaixa> DadosPorCaixa { get; set; }
         public List<DadosProdutoVendido> DadosProdutosVendidos { get; set; }
 
         public RelatorioVendaData()
         {
             DadosPorFormaPagamento = new List<DadosPagamento>();
+            DadosPorFormaDoacao = new List<DadosPagamento>();
             DadosPorCaixa = new List<DadosCaixa>();
             DadosProdutosVendidos = new List<DadosProdutoVendido>();
         }

@@ -35,6 +35,10 @@ namespace GestorEvento.Views
             this.btnConfirmarVenda = new System.Windows.Forms.Button();
             this.lblTroco = new System.Windows.Forms.Label();
             this.panelPagamento = new System.Windows.Forms.Panel();
+            this.panelDoacao = new System.Windows.Forms.Panel();
+            this.chkDoacao = new System.Windows.Forms.CheckBox();
+            this.lblSetaDoacao = new System.Windows.Forms.Label();
+            this.panelCamposDoacao = new System.Windows.Forms.Panel();
             this.panelProdutos = new System.Windows.Forms.Panel();
             this.panelBotoes = new System.Windows.Forms.Panel();
             this.btnAtualizarPDV = new System.Windows.Forms.Button();
@@ -43,6 +47,7 @@ namespace GestorEvento.Views
             this.panelConteudo.SuspendLayout();
             this.panelTotalizacao.SuspendLayout();
             this.groupBoxTipoOperacao.SuspendLayout();
+            this.panelDoacao.SuspendLayout();
             this.panelBotoes.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -273,7 +278,50 @@ namespace GestorEvento.Views
             this.panelPagamento.Padding = new System.Windows.Forms.Padding(10);
             this.panelPagamento.Size = new System.Drawing.Size(333, 455);
             this.panelPagamento.TabIndex = 4;
-            // 
+            //
+            // panelDoacao
+            //
+            this.panelDoacao.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+            this.panelDoacao.Controls.Add(this.chkDoacao);
+            this.panelDoacao.Controls.Add(this.lblSetaDoacao);
+            this.panelDoacao.Controls.Add(this.panelCamposDoacao);
+            this.panelDoacao.Location = new System.Drawing.Point(10, 10);
+            this.panelDoacao.Name = "panelDoacao";
+            this.panelDoacao.Size = new System.Drawing.Size(300, 30);
+            this.panelDoacao.TabIndex = 5;
+            //
+            // chkDoacao
+            //
+            this.chkDoacao.AutoSize = true;
+            this.chkDoacao.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.chkDoacao.Location = new System.Drawing.Point(3, 3);
+            this.chkDoacao.Name = "chkDoacao";
+            this.chkDoacao.Size = new System.Drawing.Size(160, 24);
+            this.chkDoacao.TabIndex = 0;
+            this.chkDoacao.Text = "Adicionar doação";
+            this.chkDoacao.UseVisualStyleBackColor = true;
+            this.chkDoacao.CheckedChanged += new System.EventHandler(this.ChkDoacao_CheckedChanged);
+            //
+            // lblSetaDoacao
+            //
+            this.lblSetaDoacao.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblSetaDoacao.Location = new System.Drawing.Point(270, 2);
+            this.lblSetaDoacao.Name = "lblSetaDoacao";
+            this.lblSetaDoacao.Size = new System.Drawing.Size(25, 24);
+            this.lblSetaDoacao.TabIndex = 1;
+            this.lblSetaDoacao.Text = "▼";
+            this.lblSetaDoacao.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            //
+            // panelCamposDoacao
+            //
+            this.panelCamposDoacao.BackColor = System.Drawing.Color.White;
+            this.panelCamposDoacao.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelCamposDoacao.Location = new System.Drawing.Point(0, 30);
+            this.panelCamposDoacao.Name = "panelCamposDoacao";
+            this.panelCamposDoacao.Size = new System.Drawing.Size(300, 160);
+            this.panelCamposDoacao.TabIndex = 2;
+            this.panelCamposDoacao.Visible = false;
+            //
             // panelProdutos
             // 
             this.panelProdutos.AutoScroll = true;
@@ -335,6 +383,8 @@ namespace GestorEvento.Views
             this.panelTotalizacao.ResumeLayout(false);
             this.groupBoxTipoOperacao.ResumeLayout(false);
             this.groupBoxTipoOperacao.PerformLayout();
+            this.panelDoacao.ResumeLayout(false);
+            this.panelDoacao.PerformLayout();
             this.panelBotoes.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -356,6 +406,10 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Label lblTroco;
         private System.Windows.Forms.Label lblTrocoValor;
         private System.Windows.Forms.Panel panelPagamento;
+        private System.Windows.Forms.Panel panelDoacao;
+        private System.Windows.Forms.CheckBox chkDoacao;
+        private System.Windows.Forms.Label lblSetaDoacao;
+        private System.Windows.Forms.Panel panelCamposDoacao;
         private System.Windows.Forms.Panel panelBotoes;
         private System.Windows.Forms.Button btnConfirmarVenda;
         private System.Windows.Forms.GroupBox groupBoxTipoOperacao;

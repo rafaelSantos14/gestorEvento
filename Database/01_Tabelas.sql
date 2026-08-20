@@ -1,4 +1,5 @@
-DROP TABLE IF EXISTS ITEM_VENDA;              
+DROP TABLE IF EXISTS ITEM_VENDA;  
+DROP TABLE IF EXISTS DOACAO_VENDA;            
 DROP TABLE IF EXISTS RECEBIMENTO_VENDA;       
 DROP TABLE IF EXISTS REIMPRESSAO_ITENS;       
 DROP TABLE IF EXISTS MOVIMENTACAO_PONTO_VENDA;
@@ -113,6 +114,18 @@ CREATE TABLE RECEBIMENTO_VENDA (
     id_forma_pagamento INT NOT NULL,
     vl_recebimento_venda DECIMAL(10,2) NOT NULL,
     dt_recebimento_venda DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_venda) REFERENCES VENDA(id_venda),
+    FOREIGN KEY (id_forma_pagamento) REFERENCES FORMA_PAGAMENTO(id_forma_pagamento)
+);
+
+-- Doações registradas na venda (ex.: cliente deixa o troco, ou parte dele, como doação)
+-- Independente do cálculo de troco/recebimento: apenas um registro adicional vinculado à venda
+CREATE TABLE DOACAO_VENDA (
+    id_doacao_venda INT AUTO_INCREMENT PRIMARY KEY,
+    id_venda INT NOT NULL,
+    id_forma_pagamento INT NOT NULL,
+    vl_doacao_venda DECIMAL(10,2) NOT NULL,
+    dt_doacao_venda DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_venda) REFERENCES VENDA(id_venda),
     FOREIGN KEY (id_forma_pagamento) REFERENCES FORMA_PAGAMENTO(id_forma_pagamento)
 );

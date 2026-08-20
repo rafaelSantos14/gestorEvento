@@ -11,6 +11,7 @@ namespace GestorEvento.Services
     {
         private readonly VendaRepository _vendaRepository;
         private readonly RecebimentoRepository _recebimentoRepository;
+        private readonly DoacaoVendaRepository _doacaoVendaRepository;
         private readonly FormaPagamentoRepository _formaPagamentoRepository;
         private readonly PontoVendaRepository _pontoVendaRepository;
 
@@ -18,6 +19,7 @@ namespace GestorEvento.Services
         {
             _vendaRepository = new VendaRepository();
             _recebimentoRepository = new RecebimentoRepository();
+            _doacaoVendaRepository = new DoacaoVendaRepository();
             _formaPagamentoRepository = new FormaPagamentoRepository();
             _pontoVendaRepository = new PontoVendaRepository();
         }
@@ -87,6 +89,36 @@ namespace GestorEvento.Services
                         });
                     }
                 }
+
+                // 4.1 Obter todas as doações do evento (independentes do troco/recebimento)
+                var doacoes = _doacaoVendaRepository.ObterDoacoesPorEvento(idEvento);
+                resultado.ValorTotalDoacao = doacoes.Sum(d => d.VlDoacao);
+
+                var doacoesAgrupadas = doacoes
+                    .GroupBy(d => d.IdFormaPagamento)
+                    .ToList();
+
+                foreach (var grupo in doacoesAgrupadas)
+                {
+                    var idFormaPagamento = grupo.Key;
+                    var formaPagamento = _formaPagamentoRepository.GetFormaPagamentoById(idFormaPagamento);
+                    var totalDoacao = grupo.Sum(d => d.VlDoacao);
+                    var quantidadeDoacoes = grupo.Count();
+
+                    if (formaPagamento != null)
+                    {
+                        resultado.DadosPorFormaDoacao.Add(new DadosPagamento
+                        {
+                            NomeFormaPagamento = formaPagamento.NmFormaPagamento,
+                            ValorTotal = totalDoacao,
+                            Quantidade = quantidadeDoacoes
+                        });
+                    }
+                }
+
+                resultado.DadosPorFormaDoacao = resultado.DadosPorFormaDoacao
+                    .OrderByDescending(d => d.ValorTotal)
+                    .ToList();
 
                 // 5. Agrupar dados por ponto de venda (caixa) - apenas VENDA
                 var vendasAgrupadas = vendas

@@ -85,7 +85,10 @@ namespace GestorEvento.Views
 
             // Card 3: Valor Total Troco
             lblTrocoValor.Text = $"R$ {dados.ValorTotalTroco:N2}";
-            
+
+            // Card 4: Valor Total Doações (separado do total de vendas)
+            lblDoacaoValor.Text = $"R$ {dados.ValorTotalDoacao:N2}";
+
             // Log de cortesias para auditoria (se houver)
             if (dados.TotalQuantidadeCortesia > 0)
             {
@@ -100,6 +103,7 @@ namespace GestorEvento.Views
             lblQtdeValor.Text = "-";
             lblValorVendidoValor.Text = "-";
             lblTrocoValor.Text = "-";
+            lblDoacaoValor.Text = "-";
         }
 
         private void AtualizarGraficos(RelatorioVendaData dados)

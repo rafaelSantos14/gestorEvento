@@ -24,6 +24,7 @@ namespace GestorEvento.Views
         private List<VendaItem> _itensVenda = new List<VendaItem>();
         private List<ProdutoLinhaVenda> _produtosLinhas = new List<ProdutoLinhaVenda>();
         private List<FormaPagamentoInput> _formasPagamento = new List<FormaPagamentoInput>();
+        private List<DoacaoFormaInput> _formasDoacao = new List<DoacaoFormaInput>();
         private bool _isDragging = false;
         private Point _dragPoint;
         private VendaService _vendaService;
@@ -304,9 +305,20 @@ namespace GestorEvento.Views
                     
                     formaPagamento.AddToPanel(panelPagamento);
                     _formasPagamento.Add(formaPagamento);
-                    
+
                     yPosition += 130;  // Aumentado de 100 para acomodar tamanho maior
                 }
+
+                // Seção de Doação, logo abaixo do último campo de pagamento
+                // Largura calculada a partir do espaço real de panelPagamento (que é dinâmico, ver AjustarLayoutPaineis)
+                int larguraSecaoDoacao = Math.Max(180, panelPagamento.ClientSize.Width - 20);
+                panelDoacao.Width = larguraSecaoDoacao;
+                panelCamposDoacao.Width = larguraSecaoDoacao;
+                lblSetaDoacao.Location = new Point(larguraSecaoDoacao - 26, 2);
+
+                panelDoacao.Location = new Point(10, yPosition + 5);
+                panelPagamento.Controls.Add(panelDoacao);
+                CarregarFormasDoacao();
             }
             catch (Exception ex)
             {
@@ -318,6 +330,78 @@ namespace GestorEvento.Views
                 );
                 dialogo.ShowDialog();
             }
+        }
+
+        // Carrega os campos de valor da seção de Doação, um por forma de pagamento (mesma fonte de CarregarFormasPagamento)
+        private void CarregarFormasDoacao()
+        {
+            panelCamposDoacao.Controls.Clear();
+            _formasDoacao.Clear();
+
+            try
+            {
+                var formas = _formaPagamentoService.GetAllFormasPagamento();
+
+                int yPosition = 5;
+                foreach (var forma in formas)
+                {
+                    var doacaoInput = new DoacaoFormaInput(forma.Id, forma.NmFormaPagamento, yPosition, panelCamposDoacao.Width);
+                    doacaoInput.AddToPanel(panelCamposDoacao);
+                    _formasDoacao.Add(doacaoInput);
+
+                    yPosition += 32;
+                }
+
+                panelCamposDoacao.Height = yPosition + 5;
+                AtualizarAlturaPanelDoacao();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro ao carregar formas de doação: {ex.Message}");
+            }
+        }
+
+        // Ajusta a altura do container da seção de Doação conforme está recolhida ou expandida
+        private void AtualizarAlturaPanelDoacao()
+        {
+            panelDoacao.Height = chkDoacao.Checked ? (30 + panelCamposDoacao.Height) : 30;
+        }
+
+        private void ChkDoacao_CheckedChanged(object sender, EventArgs e)
+        {
+            panelCamposDoacao.Visible = chkDoacao.Checked;
+            lblSetaDoacao.Text = chkDoacao.Checked ? "▲" : "▼";
+            AtualizarAlturaPanelDoacao();
+
+            if (!chkDoacao.Checked)
+            {
+                foreach (var doacaoInput in _formasDoacao)
+                {
+                    doacaoInput.Limpar();
+                }
+            }
+        }
+
+        // Retorna as doações informadas (vazio se a seção estiver desmarcada) - já no formato usado pelo VendaService
+        private List<(int idFormaPagamento, decimal valor)> GetDoacoes()
+        {
+            var doacoes = new List<(int idFormaPagamento, decimal valor)>();
+
+            if (!chkDoacao.Checked)
+            {
+                return doacoes;
+            }
+
+            foreach (var doacaoInput in _formasDoacao)
+            {
+                decimal valor = doacaoInput.GetValor();
+                if (valor > 0)
+                {
+                    doacoes.Add((doacaoInput.IdFormaPagamento, valor));
+                }
+            }
+
+            return doacoes;
         }
 
         // MÉTODO PÚBLICO CHAMADO PELOS EVENTOS LEAVE DAS LINHAS DE PRODUTOS
@@ -543,9 +627,12 @@ namespace GestorEvento.Views
                     }
                 }
 
+                // Preparar lista de doações (independente do troco/pagamento)
+                var doacoes = GetDoacoes();
+
                 // Registrar TUDO em uma transação atômica com validação de estoque
                 // (Se algo falhar, rollback completo: VENDA + RECEBIMENTO + ESTOQUE)
-                int idVenda = _vendaService.RegistrarVendaComEstoqueComTransacao(venda, recebimentos, vlTroco);
+                int idVenda = _vendaService.RegistrarVendaComEstoqueComTransacao(venda, recebimentos, vlTroco, doacoes);
 
                 System.Diagnostics.Debug.WriteLine($"[TRANSAÇÃO] Venda #{idVenda} registrada com sucesso com estoque debitado");
 
@@ -768,7 +855,14 @@ namespace GestorEvento.Views
             {
                 forma.Limpar();
             }
-            
+
+            // Recolher e limpar a seção de Doação
+            chkDoacao.Checked = false;
+            foreach (var doacaoInput in _formasDoacao)
+            {
+                doacaoInput.Limpar();
+            }
+
             // Resetar seletor de tipo de operação para VENDA
             if (_rbVenda != null)
             {
@@ -868,6 +962,10 @@ namespace GestorEvento.Views
                 {
                     formaPag.SetEnabled(false);
                 }
+
+                // Doação não se aplica a CORTESIA/REIMPRIMIR - desmarca e desabilita (o desmarcar já recolhe e limpa)
+                chkDoacao.Checked = false;
+                chkDoacao.Enabled = false;
             }
             else
             {
@@ -876,6 +974,8 @@ namespace GestorEvento.Views
                 {
                     formaPag.SetEnabled(true);
                 }
+
+                chkDoacao.Enabled = true;
             }
 
             // Se REIMPRIMIR foi selecionado, atualizar estado dos campos de quantidade
@@ -1265,6 +1365,85 @@ namespace GestorEvento.Views
                     _txtValor.BackColor = System.Drawing.Color.White;
                     _txtValor.ForeColor = System.Drawing.Color.Black;
                 }
+            }
+        }
+
+        // Classe que representa um campo de doação (Label + TextBox Valor, lado a lado)
+        private class DoacaoFormaInput
+        {
+            public int IdFormaPagamento { get; set; }
+            public string NomeFormaPagamento { get; set; }
+            private Label _lblForma;
+            private TextBox _txtValor;
+
+            public DoacaoFormaInput(int idFormaPagamento, string nomeFormaPagamento, int yPosition, int larguraPanel)
+            {
+                IdFormaPagamento = idFormaPagamento;
+                NomeFormaPagamento = nomeFormaPagamento;
+
+                int larguraLabel = 62;
+                int xValor = larguraLabel + 6;
+                int larguraValor = Math.Max(55, larguraPanel - xValor - 10);
+
+                _lblForma = new Label
+                {
+                    Text = nomeFormaPagamento,
+                    Location = new Point(4, yPosition),
+                    Size = new Size(larguraLabel, 24),
+                    Font = new Font("Segoe UI", 8.5F),
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+
+                _txtValor = new TextBox
+                {
+                    Location = new Point(xValor, yPosition),
+                    Size = new Size(larguraValor, 24),
+                    Font = new Font("Segoe UI", 9F),
+                    Text = "0,00"
+                };
+                _txtValor.TextChanged += TxtValor_TextChanged;
+            }
+
+            private void TxtValor_TextChanged(object sender, EventArgs e)
+            {
+                // Remove caracteres não numéricos
+                string texto = new string(_txtValor.Text.Where(c => char.IsDigit(c)).ToArray());
+
+                if (string.IsNullOrEmpty(texto))
+                {
+                    texto = "0";
+                }
+
+                // Formata com 2 casas decimais
+                decimal valor = decimal.Parse(texto) / 100;
+
+                _txtValor.Text = valor.ToString("F2");
+                _txtValor.SelectionStart = _txtValor.Text.Length;
+            }
+
+            public void AddToPanel(Panel panel)
+            {
+                panel.Controls.Add(_lblForma);
+                panel.Controls.Add(_txtValor);
+            }
+
+            public decimal GetValor()
+            {
+                if (decimal.TryParse(_txtValor.Text, out decimal valor))
+                    return valor;
+                return 0m;
+            }
+
+            public void Limpar()
+            {
+                _txtValor.Text = "0,00";
+            }
+
+            public void SetEnabled(bool enabled)
+            {
+                _lblForma.Enabled = enabled;
+                _txtValor.Enabled = enabled;
+                _txtValor.BackColor = enabled ? Color.White : Color.LightGray;
             }
         }
 

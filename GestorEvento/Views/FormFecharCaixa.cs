@@ -45,6 +45,7 @@ namespace GestorEvento.Views
                 // Preencher dados
                 PreencherResumoExecutivo();
                 PreencherTabelaFormasPagamento();
+                PreencherTabelaDoacoes();
 
                 // Ajustar tamanho da janela responsivamente
                 AdjustarTamanhoDaJanela();
@@ -70,7 +71,7 @@ namespace GestorEvento.Views
             int larguraDisponivel = telaAtiva.WorkingArea.Width;
 
             // Definir tamanho com margem de segurança (100px para taskbar do Windows)
-            int alturaPadrao = 700;
+            int alturaPadrao = 740;
             int larguraPadrao = 850;
             int margemSeguranca = 100;
 
@@ -135,6 +136,10 @@ namespace GestorEvento.Views
             lblTotalVendas.Text = AlinharComPontos("Total de Vendas", $"{totalVendas}", comprimentoBase);
             lblTotalCortesias.Text = AlinharComPontos("Total de Cortesias", $"{totalCortesias}", comprimentoBase);
             lblValorTotalCortesias.Text = AlinharComPontos("Valor Total Cortesias", $"R$ {valorTotalCortesias:F2}", comprimentoBase);
+
+            // Só a parte em Dinheiro (é a que efetivamente afeta a conferência do caixa físico);
+            // o detalhamento com todas as formas fica na aba "Doações"
+            lblTotalDoacoes.Text = AlinharComPontos("Total Doações (Dinheiro)", $"R$ {_resumoFechamento.TotalDoacoesDinheiro:F2}", comprimentoBase);
         }
 
         private string AlinharComPontos(string descricao, string valor, int comprimentoTotal)
@@ -167,6 +172,31 @@ namespace GestorEvento.Views
             int lastRow = dgvFormasPagamento.Rows.Count - 1;
             dgvFormasPagamento.Rows[lastRow].DefaultCellStyle.BackColor = Color.LightGray;
             dgvFormasPagamento.Rows[lastRow].DefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        }
+
+        private void PreencherTabelaDoacoes()
+        {
+            dgvDoacoes.Rows.Clear();
+
+            foreach (var resumo in _resumoFechamento.DoacoesPorForma)
+            {
+                dgvDoacoes.Rows.Add(
+                    resumo.NomeFormaPagamento,
+                    $"R$ {resumo.TotalDoacao:F2}"
+                );
+            }
+
+            // Adicionar linha de total
+            decimal totalGeral = _resumoFechamento.DoacoesPorForma.Sum(d => d.TotalDoacao);
+            dgvDoacoes.Rows.Add(
+                "TOTAL",
+                $"R$ {totalGeral:F2}"
+            );
+
+            // Colorir última linha (TOTAL)
+            int lastRow = dgvDoacoes.Rows.Count - 1;
+            dgvDoacoes.Rows[lastRow].DefaultCellStyle.BackColor = Color.LightGray;
+            dgvDoacoes.Rows[lastRow].DefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         }
 
         private void TxtValorContado_TextChanged(object sender, EventArgs e)

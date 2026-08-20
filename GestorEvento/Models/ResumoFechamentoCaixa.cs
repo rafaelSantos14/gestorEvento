@@ -18,14 +18,20 @@ namespace GestorEvento.Models
         public decimal TotalVendasDinheiro { get; set; }
         public decimal TotalEsperado { get; set; }
 
+        // Só a parte em Dinheiro (é a que efetivamente afeta a conferência do caixa físico;
+        // o detalhamento com todas as formas fica em DoacoesPorForma)
+        public decimal TotalDoacoesDinheiro { get; set; }
+
         // Listas de detalhamento
         public List<ResumoRecebimentoPorForma> RecebimentosPorForma { get; set; }
+        public List<ResumoDoacaoPorForma> DoacoesPorForma { get; set; }
         public List<ResumoVendaFechamento> Vendas { get; set; }
         public List<MovimentacaoDetalhada> Movimentacoes { get; set; }
 
         public ResumoFechamentoCaixa()
         {
             RecebimentosPorForma = new List<ResumoRecebimentoPorForma>();
+            DoacoesPorForma = new List<ResumoDoacaoPorForma>();
             Vendas = new List<ResumoVendaFechamento>();
             Movimentacoes = new List<MovimentacaoDetalhada>();
         }
@@ -39,6 +45,16 @@ namespace GestorEvento.Models
         public int IdFormaPagamento { get; set; }
         public string NomeFormaPagamento { get; set; }
         public decimal TotalRecebimento { get; set; }
+    }
+
+    /// <summary>
+    /// Resumo de doações agrupadas por forma de pagamento
+    /// </summary>
+    public class ResumoDoacaoPorForma
+    {
+        public int IdFormaPagamento { get; set; }
+        public string NomeFormaPagamento { get; set; }
+        public decimal TotalDoacao { get; set; }
     }
 
     /// <summary>
