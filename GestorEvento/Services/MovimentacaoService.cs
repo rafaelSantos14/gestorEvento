@@ -156,6 +156,28 @@ namespace GestorEvento.Services
         }
 
         /// <summary>
+        /// Obtém o valor de troco gerado por uma venda específica
+        /// </summary>
+        public decimal GetTrocoByVendaId(int idVenda)
+        {
+            if (idVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID da venda inválido");
+                return 0;
+            }
+
+            try
+            {
+                return _repository.GetTrocoByVendaId(idVenda);
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao obter troco da venda: {ex.Message}");
+                return 0;
+            }
+        }
+
+        /// <summary>
         /// Obtém o total de movimentações de um tipo específico
         /// </summary>
         public decimal GetTotalMovimentacaoPorTipo(int idPontoVenda, TipoMovimento tipo)

@@ -210,9 +210,11 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = @"SELECT id_item_venda, id_venda, id_produto_evento, qtde_vendida, vl_unitario, vl_subtotal 
-                                     FROM ITEM_VENDA 
-                                     WHERE id_venda = @idVenda";
+                    string query = @"SELECT iv.id_item_venda, iv.id_venda, iv.id_produto_evento, iv.qtde_vendida, iv.vl_unitario, iv.vl_subtotal, p.nm_produto
+                                     FROM ITEM_VENDA iv
+                                     LEFT JOIN PRODUTO_EVENTO pe ON pe.id_produto_evento = iv.id_produto_evento
+                                     LEFT JOIN Produto p ON p.id_produto = pe.id_produto
+                                     WHERE iv.id_venda = @idVenda";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
@@ -227,6 +229,7 @@ namespace GestorEvento.Repositories
                                     IdItemVenda = Convert.ToInt32(reader["id_item_venda"]),
                                     IdVenda = Convert.ToInt32(reader["id_venda"]),
                                     IdProdutoEvento = Convert.ToInt32(reader["id_produto_evento"]),
+                                    NomeProduto = reader["nm_produto"] == DBNull.Value ? "Produto Removido" : reader["nm_produto"].ToString(),
                                     Quantidade = Convert.ToInt32(reader["qtde_vendida"]),
                                     VlUnitario = Convert.ToDecimal(reader["vl_unitario"]),
                                     Subtotal = Convert.ToDecimal(reader["vl_subtotal"])

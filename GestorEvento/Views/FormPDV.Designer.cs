@@ -43,6 +43,7 @@ namespace GestorEvento.Views
             this.panelBotoes = new System.Windows.Forms.Panel();
             this.btnAtualizarPDV = new System.Windows.Forms.Button();
             this.btnMovimentacaoCaixa = new System.Windows.Forms.Button();
+            this.btnConsultarVenda = new System.Windows.Forms.Button();
             this.panelTitulo.SuspendLayout();
             this.panelInfoCaixa.SuspendLayout();
             this.panelConteudo.SuspendLayout();
@@ -340,6 +341,7 @@ namespace GestorEvento.Views
             this.panelBotoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.panelBotoes.Controls.Add(this.btnAtualizarPDV);
             this.panelBotoes.Controls.Add(this.btnMovimentacaoCaixa);
+            this.panelBotoes.Controls.Add(this.btnConsultarVenda);
             this.panelBotoes.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelBotoes.Location = new System.Drawing.Point(0, 530);
             this.panelBotoes.Name = "panelBotoes";
@@ -376,6 +378,21 @@ namespace GestorEvento.Views
             this.btnMovimentacaoCaixa.Text = "💰 TROCO/SANGRIA";
             this.btnMovimentacaoCaixa.UseVisualStyleBackColor = false;
             this.btnMovimentacaoCaixa.Click += new System.EventHandler(this.btnMovimentacaoCaixa_Click);
+            //
+            // btnConsultarVenda
+            //
+            this.btnConsultarVenda.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.btnConsultarVenda.FlatAppearance.BorderSize = 0;
+            this.btnConsultarVenda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnConsultarVenda.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnConsultarVenda.ForeColor = System.Drawing.Color.White;
+            this.btnConsultarVenda.Location = new System.Drawing.Point(383, 8);
+            this.btnConsultarVenda.Name = "btnConsultarVenda";
+            this.btnConsultarVenda.Size = new System.Drawing.Size(174, 30);
+            this.btnConsultarVenda.TabIndex = 4;
+            this.btnConsultarVenda.Text = "🔎 CONSULTAR VENDA";
+            this.btnConsultarVenda.UseVisualStyleBackColor = false;
+            this.btnConsultarVenda.Click += new System.EventHandler(this.btnConsultarVenda_Click);
             // 
             // FormPDV
             // 
@@ -435,5 +452,6 @@ namespace GestorEvento.Views
         private System.Windows.Forms.RadioButton _rbReimprimir;
         private System.Windows.Forms.Button btnAtualizarPDV;
         private System.Windows.Forms.Button btnMovimentacaoCaixa;
+        private System.Windows.Forms.Button btnConsultarVenda;
     }
 }

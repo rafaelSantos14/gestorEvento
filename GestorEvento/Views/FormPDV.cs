@@ -1463,6 +1463,12 @@ namespace GestorEvento.Views
             CarregarProdutos();
         }
 
+        private void btnConsultarVenda_Click(object sender, EventArgs e)
+        {
+            FormConsultaVenda formConsultaVenda = new FormConsultaVenda();
+            formConsultaVenda.ShowDialog();
+        }
+
         private void btnMovimentacaoCaixa_Click(object sender, EventArgs e)
         {
             try

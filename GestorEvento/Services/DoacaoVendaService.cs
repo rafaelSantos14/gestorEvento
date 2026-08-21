@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GestorEvento.Models;
 using GestorEvento.Repositories;
 using GestorEvento.Utilities;
 
@@ -33,6 +34,28 @@ namespace GestorEvento.Services
             {
                 UiHelper.ExibirErro("Erro", $"Erro ao obter resumo de doações: {ex.Message}");
                 return new List<(int, string, decimal)>();
+            }
+        }
+
+        /// <summary>
+        /// Obtém todas as doações de uma venda
+        /// </summary>
+        public List<DoacaoVenda> GetDoacoesByVendaId(int idVenda)
+        {
+            if (idVenda <= 0)
+            {
+                UiHelper.ExibirAviso("Aviso", "ID da venda inválido");
+                return new List<DoacaoVenda>();
+            }
+
+            try
+            {
+                return _repository.GetDoacoesByVendaId(idVenda);
+            }
+            catch (Exception ex)
+            {
+                UiHelper.ExibirErro("Erro", $"Erro ao obter doações da venda: {ex.Message}");
+                return new List<DoacaoVenda>();
             }
         }
 

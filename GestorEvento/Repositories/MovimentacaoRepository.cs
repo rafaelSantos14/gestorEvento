@@ -200,6 +200,42 @@ namespace GestorEvento.Repositories
         }
 
         /// <summary>
+        /// Obtém o valor de troco gerado por uma venda específica
+        /// </summary>
+        public decimal GetTrocoByVendaId(int idVenda)
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"SELECT vl_movimento
+                                     FROM MOVIMENTACAO_PONTO_VENDA
+                                     WHERE id_venda = @idVenda
+                                     AND tipo_movimento = @tipoMovimento";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@idVenda", idVenda);
+                        command.Parameters.AddWithValue("@tipoMovimento", TipoMovimento.TROCO.ToString());
+
+                        object result = command.ExecuteScalar();
+                        if (result != null && !Convert.IsDBNull(result))
+                        {
+                            return Convert.ToDecimal(result);
+                        }
+                        return 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter troco da venda: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
         /// Registra um troco dentro de uma transação existente
         /// </summary>
         public int RegistrarTrocoComTransacao(MySqlConnection connection, MySqlTransaction transaction, int idPontoVenda, int idVenda, decimal vlTroco)
