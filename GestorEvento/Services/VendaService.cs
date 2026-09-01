@@ -17,6 +17,7 @@ namespace GestorEvento.Services
         private readonly PontoVendaRepository _pontoVendaRepository;
         private readonly EventoRepository _eventoRepository;
         private readonly ProdutoEventoRepository _produtoEventoRepository;
+        private readonly InscricaoEventoRepository _inscricaoEventoRepository;
 
         public VendaService()
         {
@@ -27,6 +28,7 @@ namespace GestorEvento.Services
             _pontoVendaRepository = new PontoVendaRepository();
             _eventoRepository = new EventoRepository();
             _produtoEventoRepository = new ProdutoEventoRepository();
+            _inscricaoEventoRepository = new InscricaoEventoRepository();
         }
 
         /// <summary>
@@ -214,7 +216,7 @@ namespace GestorEvento.Services
         /// Valida e debita estoque ANTES de registrar venda (garante atomicidade)
         /// Se algo falhar, faz rollback de tudo (venda + recebimento + estoque não são alterados)
         /// </summary>
-        public int RegistrarVendaComEstoqueComTransacao(Venda venda, List<(int idFormaPagamento, decimal valor)> recebimentos, decimal vlTroco, List<(int idFormaPagamento, decimal valor)> doacoes = null)
+        public int RegistrarVendaComEstoqueComTransacao(Venda venda, List<(int idFormaPagamento, decimal valor)> recebimentos, decimal vlTroco, List<(int idFormaPagamento, decimal valor)> doacoes = null, int? idInscricaoEvento = null)
         {
             MySqlConnection connection = null;
             MySqlTransaction transaction = null;
@@ -229,7 +231,14 @@ namespace GestorEvento.Services
                 connection.Open();
                 transaction = connection.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
 
-                // 2. VALIDAR E DEBITAR ESTOQUE PRIMEIRO (SELECT...FOR UPDATE + UPDATE) - ATÔMICO
+                // 2. SE HOUVER INSCRIÇÃO ANTECIPADA VINCULADA: travar e retirar PRIMEIRO (fail-fast)
+                // ⚠️ CRÍTICO: se outro terminal já retirou esta inscrição, aborta ANTES de debitar estoque
+                if (idInscricaoEvento.HasValue)
+                {
+                    _inscricaoEventoRepository.ValidarERetirarComTransacao(connection, transaction, idInscricaoEvento.Value);
+                }
+
+                // 3. VALIDAR E DEBITAR ESTOQUE (SELECT...FOR UPDATE + UPDATE) - ATÔMICO
                 // ⚠️ CRÍTICO: Fazer isso ANTES de registrar venda garante que se falhar, nada é inserido
                 foreach (var item in venda.Itens)
                 {
@@ -241,11 +250,12 @@ namespace GestorEvento.Services
                     );
                 }
 
-                // 3. SE ESTOQUE PASSOU: Registrar venda e itens na MESMA transação
+                // 4. SE ESTOQUE PASSOU: Registrar venda e itens na MESMA transação
                 // ⚠️ AGORA USA: RegistrarVendaComTransacao que NÃO cria transação interna
+                venda.IdInscricaoEvento = idInscricaoEvento;
                 int idVenda = _repository.RegistrarVendaComTransacao(connection, transaction, venda);
 
-                // 4. REGISTRAR RECEBIMENTOS (INSERT RECEBIMENTO) - apenas para VENDA
+                // 5. REGISTRAR RECEBIMENTOS (INSERT RECEBIMENTO) - apenas para VENDA
                 if (venda.TipoOperacao == "VENDA")
                 {
                     foreach (var (idFormaPagamento, valor) in recebimentos)
@@ -264,13 +274,13 @@ namespace GestorEvento.Services
                         }
                     }
 
-                    // 5. REGISTRAR TROCO (INSERT MOVIMENTACAO) - apenas para VENDA
+                    // 6. REGISTRAR TROCO (INSERT MOVIMENTACAO) - apenas para VENDA
                     if (vlTroco > 0)
                     {
                         _movimentacaoRepository.RegistrarTrocoComTransacao(connection, transaction, venda.IdPontoVenda, idVenda, vlTroco);
                     }
 
-                    // 5.1 REGISTRAR DOAÇÕES (INSERT DOACAO_VENDA) - apenas para VENDA
+                    // 6.1 REGISTRAR DOAÇÕES (INSERT DOACAO_VENDA) - apenas para VENDA
                     // Independente do troco/recebimento: não entra em nenhuma validação nem desconta o troco registrado acima
                     if (doacoes != null)
                     {
@@ -285,14 +295,14 @@ namespace GestorEvento.Services
                     }
                 }
 
-                // 6. Se chegou aqui, tudo OK → commit
+                // 7. Se chegou aqui, tudo OK → commit
                 transaction.Commit();
 
                 return idVenda;
             }
             catch (Exception ex)
             {
-                // Se algo falhou, rollback de tudo
+                // Se algo falhou, rollback de tudo (inclui reverter a retirada da inscrição, se houver)
                 if (transaction != null)
                 {
                     try

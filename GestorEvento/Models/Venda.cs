@@ -11,6 +11,7 @@ namespace GestorEvento.Models
         public decimal VlTotal { get; set; }
         public string CdStatus { get; set; } // Pendente, Concluida
         public string TipoOperacao { get; set; } = "VENDA"; // VENDA ou CORTESIA
+        public int? IdInscricaoEvento { get; set; } // inscrição antecipada retirada por esta venda (se houver)
         public List<ItemVenda> Itens { get; set; }
 
         // Constructors

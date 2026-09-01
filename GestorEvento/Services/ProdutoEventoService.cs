@@ -62,7 +62,7 @@ namespace GestorEvento.Services
         /// <summary>
         /// Vincula um produto a um evento com preço e quantidade
         /// </summary>
-        public bool VincularProduto(int produtoId, int eventoId, decimal preco, int quantidade, bool permiteValorZerado = false)
+        public bool VincularProduto(int produtoId, int eventoId, decimal preco, int quantidade, bool permiteValorZerado = false, bool antecipado = false)
         {
             if (produtoId <= 0)
             {
@@ -96,7 +96,7 @@ namespace GestorEvento.Services
 
             try
             {
-                return _repository.CreateVinculacao(produtoId, eventoId, preco, quantidade, permiteValorZerado);
+                return _repository.CreateVinculacao(produtoId, eventoId, preco, quantidade, permiteValorZerado, antecipado);
             }
             catch (Exception ex)
             {

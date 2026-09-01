@@ -28,7 +28,7 @@ namespace GestorEvento.Repositories
                 {
                     connection.Open();
 
-                    string query = "SELECT id_produto_evento, id_produto, id_evento, vl_produto, qtde_produto, COALESCE(qtde_vendida, 0) as qtde_vendida, fl_permite_vl_zerado FROM PRODUTO_EVENTO WHERE id_evento = @eventoId AND fl_ativo = 'SIM'";
+                    string query = "SELECT id_produto_evento, id_produto, id_evento, vl_produto, qtde_produto, COALESCE(qtde_vendida, 0) as qtde_vendida, fl_permite_vl_zerado, fl_antecipado FROM PRODUTO_EVENTO WHERE id_evento = @eventoId AND fl_ativo = 'SIM'";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
@@ -46,7 +46,8 @@ namespace GestorEvento.Repositories
                                     Preco = Convert.ToDecimal(reader["vl_produto"]),
                                     Quantidade = Convert.ToInt32(reader["qtde_produto"]),
                                     QuantidadeVendida = Convert.ToInt32(reader["qtde_vendida"]),
-                                    PermiteValorZerado = reader["fl_permite_vl_zerado"]?.ToString() == "SIM"
+                                    PermiteValorZerado = reader["fl_permite_vl_zerado"]?.ToString() == "SIM",
+                                    Antecipado = reader["fl_antecipado"]?.ToString() == "SIM"
                                 };
                                 produtos.Add(produtoEvento);
                             }
@@ -88,7 +89,7 @@ namespace GestorEvento.Repositories
         /// <summary>
         /// Vincula um produto a um evento com preço e quantidade
         /// </summary>
-        public bool CreateVinculacao(int produtoId, int eventoId, decimal preco, int quantidade, bool permiteValorZerado)
+        public bool CreateVinculacao(int produtoId, int eventoId, decimal preco, int quantidade, bool permiteValorZerado, bool antecipado = false)
         {
             try
             {
@@ -140,12 +141,13 @@ namespace GestorEvento.Repositories
                             {
                                 try
                                 {
-                                    string updateQuery = "UPDATE PRODUTO_EVENTO SET vl_produto = @preco, qtde_produto = @quantidade, fl_permite_vl_zerado = @permiteValorZerado WHERE id_produto = @produtoId AND id_evento = @eventoId";
+                                    string updateQuery = "UPDATE PRODUTO_EVENTO SET vl_produto = @preco, qtde_produto = @quantidade, fl_permite_vl_zerado = @permiteValorZerado, fl_antecipado = @antecipado WHERE id_produto = @produtoId AND id_evento = @eventoId";
                                     using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection, transaction))
                                     {
                                         updateCommand.Parameters.AddWithValue("@preco", preco);
                                         updateCommand.Parameters.AddWithValue("@quantidade", quantidade);
                                         updateCommand.Parameters.AddWithValue("@permiteValorZerado", permiteValorZerado ? "SIM" : "NAO");
+                                        updateCommand.Parameters.AddWithValue("@antecipado", antecipado ? "SIM" : "NAO");
                                         updateCommand.Parameters.AddWithValue("@produtoId", produtoId);
                                         updateCommand.Parameters.AddWithValue("@eventoId", eventoId);
 
@@ -170,7 +172,7 @@ namespace GestorEvento.Repositories
                     }
 
                     // Insere nova vinculação
-                    string query = "INSERT INTO PRODUTO_EVENTO (id_produto, id_evento, vl_produto, qtde_produto, fl_permite_vl_zerado) VALUES (@produtoId, @eventoId, @preco, @quantidade, @permiteValorZerado)";
+                    string query = "INSERT INTO PRODUTO_EVENTO (id_produto, id_evento, vl_produto, qtde_produto, fl_permite_vl_zerado, fl_antecipado) VALUES (@produtoId, @eventoId, @preco, @quantidade, @permiteValorZerado, @antecipado)";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
@@ -179,6 +181,7 @@ namespace GestorEvento.Repositories
                         command.Parameters.AddWithValue("@preco", preco);
                         command.Parameters.AddWithValue("@quantidade", quantidade);
                         command.Parameters.AddWithValue("@permiteValorZerado", permiteValorZerado ? "SIM" : "NAO");
+                        command.Parameters.AddWithValue("@antecipado", antecipado ? "SIM" : "NAO");
 
                         command.ExecuteNonQuery();
                         return true;

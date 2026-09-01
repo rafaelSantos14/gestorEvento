@@ -31,6 +31,7 @@ namespace GestorEvento.Views
             this.lblNome = new System.Windows.Forms.Label();
             this.txtNome = new System.Windows.Forms.TextBox();
             this.lblData = new System.Windows.Forms.Label();
+            this.btnImportarInscricoes = new System.Windows.Forms.Button();
             this.btnSalvar = new System.Windows.Forms.Button();
             this.btnCancelar = new System.Windows.Forms.Button();
             this.mtbData = new System.Windows.Forms.MaskedTextBox();
@@ -68,13 +69,27 @@ namespace GestorEvento.Views
             this.lblData.TabIndex = 3;
             this.lblData.Text = "Data:";
             // 
+            // btnImportarInscricoes
+            // 
+            this.btnImportarInscricoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.btnImportarInscricoes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnImportarInscricoes.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnImportarInscricoes.ForeColor = System.Drawing.Color.White;
+            this.btnImportarInscricoes.Location = new System.Drawing.Point(12, 113);
+            this.btnImportarInscricoes.Name = "btnImportarInscricoes";
+            this.btnImportarInscricoes.Size = new System.Drawing.Size(376, 33);
+            this.btnImportarInscricoes.TabIndex = 4;
+            this.btnImportarInscricoes.Text = "📥 IMPORTAR PLANILHA DE INSCRIÇÕES";
+            this.btnImportarInscricoes.UseVisualStyleBackColor = false;
+            this.btnImportarInscricoes.Click += new System.EventHandler(this.btnImportarInscricoes_Click);
+            // 
             // btnSalvar
             // 
             this.btnSalvar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(142)))), ((int)(((byte)(60)))));
             this.btnSalvar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSalvar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSalvar.ForeColor = System.Drawing.Color.White;
-            this.btnSalvar.Location = new System.Drawing.Point(150, 123);
+            this.btnSalvar.Location = new System.Drawing.Point(150, 158);
             this.btnSalvar.Name = "btnSalvar";
             this.btnSalvar.Size = new System.Drawing.Size(100, 35);
             this.btnSalvar.TabIndex = 5;
@@ -88,11 +103,11 @@ namespace GestorEvento.Views
             this.btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancelar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnCancelar.ForeColor = System.Drawing.Color.White;
-            this.btnCancelar.Location = new System.Drawing.Point(270, 123);
+            this.btnCancelar.Location = new System.Drawing.Point(270, 158);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(100, 35);
             this.btnCancelar.TabIndex = 6;
-            this.btnCancelar.Text = "CANCELAR";
+            this.btnCancelar.Text = "FECHAR";
             this.btnCancelar.UseVisualStyleBackColor = false;
             this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
             // 
@@ -122,11 +137,12 @@ namespace GestorEvento.Views
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(400, 195);
+            this.ClientSize = new System.Drawing.Size(400, 230);
             this.Controls.Add(this.mtbData);
             this.Controls.Add(this.dtpData);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnSalvar);
+            this.Controls.Add(this.btnImportarInscricoes);
             this.Controls.Add(this.lblData);
             this.Controls.Add(this.txtNome);
             this.Controls.Add(this.lblNome);
@@ -147,6 +163,7 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Label lblNome;
         private System.Windows.Forms.TextBox txtNome;
         private System.Windows.Forms.Label lblData;
+        private System.Windows.Forms.Button btnImportarInscricoes;
         private System.Windows.Forms.Button btnSalvar;
         private System.Windows.Forms.Button btnCancelar;
         private System.Windows.Forms.MaskedTextBox mtbData;

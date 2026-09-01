@@ -717,6 +717,9 @@ namespace GestorEvento.Views
             var colPermiteValorZerado = new DataGridViewTextBoxColumn { Name = "PermiteValorZerado", HeaderText = "PermiteValorZerado", Visible = false };
             dgvProdutosVinculados.Columns.Add(colPermiteValorZerado);
 
+            var colAntecipado = new DataGridViewTextBoxColumn { Name = "Antecipado", HeaderText = "Antecipado", Visible = false };
+            dgvProdutosVinculados.Columns.Add(colAntecipado);
+
             var colEditar = new DataGridViewButtonColumn
             { 
                 Name = "Editar", 
@@ -770,7 +773,8 @@ namespace GestorEvento.Views
                         todosProdutos.First(p => p.Id == produtoVinculado.IdProduto).Nome,
                         produtoVinculado.Preco.ToString("F2"),
                         produtoVinculado.Quantidade,
-                        produtoVinculado.PermiteValorZerado
+                        produtoVinculado.PermiteValorZerado,
+                        produtoVinculado.Antecipado
                     );
                     _produtosVinculados.Add(produtoVinculado.IdProduto);
                 }
@@ -822,7 +826,7 @@ namespace GestorEvento.Views
                     try
                     {
                         // Vincular no banco de dados
-                        bool sucesso = _produtoEventoService.VincularProduto(produtoId, _eventoIdSelecionado, formModal.PrecoDigitado, formModal.QuantidadeDigitada, formModal.PermiteValorZerado);
+                        bool sucesso = _produtoEventoService.VincularProduto(produtoId, _eventoIdSelecionado, formModal.PrecoDigitado, formModal.QuantidadeDigitada, formModal.PermiteValorZerado, formModal.Antecipado);
                         if (!sucesso)
                         {
                             // O service já exibiu o motivo da falha
@@ -836,7 +840,8 @@ namespace GestorEvento.Views
                             nomeProduto,
                             formModal.PrecoDigitado.ToString("F2"),
                             formModal.QuantidadeDigitada,
-                            formModal.PermiteValorZerado
+                            formModal.PermiteValorZerado,
+                            formModal.Antecipado
                         );
                         _produtosVinculados.Add(produtoId);
 
@@ -882,15 +887,16 @@ namespace GestorEvento.Views
                 decimal precoAtual = decimal.Parse(row.Cells["Preco"].Value.ToString());
                 int quantidadeAtual = int.Parse(row.Cells["Quantidade"].Value.ToString());
                 bool permiteValorZeradoAtual = Convert.ToBoolean(row.Cells["PermiteValorZerado"].Value);
+                bool antecipadoAtual = row.Cells["Antecipado"].Value != null && Convert.ToBoolean(row.Cells["Antecipado"].Value);
 
                 // Abrir modal em modo de edição com valores carregados
-                FormVincularProdutoEvento formModal = new FormVincularProdutoEvento(nomeProduto, produtoId, _eventoIdSelecionado, precoAtual, quantidadeAtual, permiteValorZeradoAtual);
+                FormVincularProdutoEvento formModal = new FormVincularProdutoEvento(nomeProduto, produtoId, _eventoIdSelecionado, precoAtual, quantidadeAtual, permiteValorZeradoAtual, antecipadoAtual);
                 if (formModal.ShowDialog(this) == DialogResult.OK)
                 {
                     try
                     {
                         // Atualizar no banco de dados
-                        bool sucesso = _produtoEventoService.VincularProduto(produtoId, _eventoIdSelecionado, formModal.PrecoDigitado, formModal.QuantidadeDigitada, formModal.PermiteValorZerado);
+                        bool sucesso = _produtoEventoService.VincularProduto(produtoId, _eventoIdSelecionado, formModal.PrecoDigitado, formModal.QuantidadeDigitada, formModal.PermiteValorZerado, formModal.Antecipado);
                         if (!sucesso)
                         {
                             // O service já exibiu o motivo da falha (ex: quantidade menor que o já vendido)
@@ -901,6 +907,7 @@ namespace GestorEvento.Views
                         row.Cells["Preco"].Value = formModal.PrecoDigitado.ToString("F2");
                         row.Cells["Quantidade"].Value = formModal.QuantidadeDigitada;
                         row.Cells["PermiteValorZerado"].Value = formModal.PermiteValorZerado;
+                        row.Cells["Antecipado"].Value = formModal.Antecipado;
 
                         DialogoCustomizado dialogo = new DialogoCustomizado("Sucesso", $"Produto {nomeProduto} atualizado com sucesso!", TipoDialogo.Sucesso, TipoButton.Ok);
                         dialogo.ShowDialog();

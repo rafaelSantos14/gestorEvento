@@ -31,6 +31,7 @@ namespace GestorEvento.Views
             this.tabPageCaixa = new System.Windows.Forms.TabPage();
             this.tabPageCortesias = new System.Windows.Forms.TabPage();
             this.tabPageReimpressoes = new System.Windows.Forms.TabPage();
+            this.tabPageInscricoes = new System.Windows.Forms.TabPage();
             this.panelTitulo.SuspendLayout();
             this.panelFiltro.SuspendLayout();
             this.tabControlRelatorios.SuspendLayout();
@@ -178,6 +179,7 @@ namespace GestorEvento.Views
             this.tabControlRelatorios.Controls.Add(this.tabPageCaixa);
             this.tabControlRelatorios.Controls.Add(this.tabPageCortesias);
             this.tabControlRelatorios.Controls.Add(this.tabPageReimpressoes);
+            this.tabControlRelatorios.Controls.Add(this.tabPageInscricoes);
             this.tabControlRelatorios.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlRelatorios.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tabControlRelatorios.Location = new System.Drawing.Point(0, 150);
@@ -226,7 +228,17 @@ namespace GestorEvento.Views
             this.tabPageReimpressoes.Size = new System.Drawing.Size(992, 402);
             this.tabPageReimpressoes.TabIndex = 3;
             this.tabPageReimpressoes.Text = "Reimpressões";
-            // 
+            //
+            // tabPageInscricoes
+            //
+            this.tabPageInscricoes.BackColor = System.Drawing.Color.White;
+            this.tabPageInscricoes.Location = new System.Drawing.Point(4, 24);
+            this.tabPageInscricoes.Name = "tabPageInscricoes";
+            this.tabPageInscricoes.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageInscricoes.Size = new System.Drawing.Size(992, 402);
+            this.tabPageInscricoes.TabIndex = 4;
+            this.tabPageInscricoes.Text = "Inscrições";
+            //
             // FormRelatoriosConsolidados
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -266,5 +278,6 @@ namespace GestorEvento.Views
         private System.Windows.Forms.TabPage tabPageCaixa;
         private System.Windows.Forms.TabPage tabPageCortesias;
         private System.Windows.Forms.TabPage tabPageReimpressoes;
+        private System.Windows.Forms.TabPage tabPageInscricoes;
     }
 }

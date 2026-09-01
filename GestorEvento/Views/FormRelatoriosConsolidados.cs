@@ -20,12 +20,14 @@ namespace GestorEvento.Views
         private bool _caixaCarregada = false;
         private bool _cortesiaCarregada = false;
         private bool _reimpressaoCarregada = false;
+        private bool _inscricaoCarregada = false;
 
         // Referências aos UserControls (serão criados e adicionados nas TabPages)
         private RelatorioVendaUserControl ucVendas;
         private RelatorioCaixaUserControl ucCaixa;
         private RelatorioCortesiaUserControl ucCortesia;
         private RelatorioReimpressaoUserControl ucReimpressao;
+        private RelatorioInscricaoUserControl ucInscricoes;
 
         public FormRelatoriosConsolidados()
         {
@@ -77,7 +79,14 @@ namespace GestorEvento.Views
                 ucReimpressao.BackColor = Color.White;
                 tabPageReimpressoes.Controls.Add(ucReimpressao);
                 _ = ucReimpressao.Handle;
-                
+
+                ucInscricoes = new RelatorioInscricaoUserControl();
+                tabPageInscricoes.Controls.Clear();
+                ucInscricoes.Dock = DockStyle.Fill;
+                ucInscricoes.BackColor = Color.White;
+                tabPageInscricoes.Controls.Add(ucInscricoes);
+                _ = ucInscricoes.Handle;
+
                 // Processar eventos para garantir que tudo foi renderizado
                 Application.DoEvents();
             }
@@ -131,7 +140,8 @@ namespace GestorEvento.Views
                 _caixaCarregada = false;
                 _cortesiaCarregada = false;
                 _reimpressaoCarregada = false;
-                
+                _inscricaoCarregada = false;
+
                 // Carregar a aba ativa (que é a aba atual selecionada)
                 CarregarAbaSelecionada(idEvento);
             }
@@ -260,6 +270,14 @@ namespace GestorEvento.Views
                         {
                             ucReimpressao.CarregarDados(idEvento);
                             _reimpressaoCarregada = true;
+                        }
+                        break;
+
+                    case 4: // Aba Inscrições
+                        if (!_inscricaoCarregada)
+                        {
+                            ucInscricoes.CarregarDados(idEvento);
+                            _inscricaoCarregada = true;
                         }
                         break;
                 }

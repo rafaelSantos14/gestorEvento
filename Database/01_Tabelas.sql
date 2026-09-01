@@ -4,8 +4,9 @@ DROP TABLE IF EXISTS RECEBIMENTO_VENDA;
 DROP TABLE IF EXISTS REIMPRESSAO_ITENS;       
 DROP TABLE IF EXISTS MOVIMENTACAO_PONTO_VENDA;
 DROP TABLE IF EXISTS REIMPRESSAO;             
-DROP TABLE IF EXISTS VENDA;                   
-DROP TABLE IF EXISTS PONTO_VENDA;             
+DROP TABLE IF EXISTS VENDA;
+DROP TABLE IF EXISTS INSCRICAO_EVENTO;
+DROP TABLE IF EXISTS PONTO_VENDA;
 DROP TABLE IF EXISTS PRODUTO_EVENTO_MOVIMENTACAO;
 DROP TABLE IF EXISTS PRODUTO_EVENTO;
 DROP TABLE IF EXISTS FORMA_PAGAMENTO;
@@ -40,12 +41,32 @@ CREATE TABLE PRODUTO_EVENTO (
 	qtde_vendida INT NOT NULL,
     fl_ativo VARCHAR(3) DEFAULT 'SIM',
     fl_permite_vl_zerado VARCHAR(3) DEFAULT 'NAO',
+    fl_antecipado VARCHAR(3) DEFAULT 'NAO',    -- produto retirável automaticamente via inscrição prévia no PDV
     CONSTRAINT UQ_PRODUTO_EVENTO_ID_PRODUTO_ID_EVENTO UNIQUE (id_produto, id_evento),
     FOREIGN KEY (id_produto) REFERENCES PRODUTO(id_produto) ,
     FOREIGN KEY (id_evento) REFERENCES EVENTO(id_evento)
 );
 
 ALTER TABLE PRODUTO_EVENTO ADD COLUMN fl_permite_vl_zerado VARCHAR(3) DEFAULT 'NAO';
+
+-- Tabela INSCRICAO_EVENTO
+-- Descricao: Inscrições importadas de planilha (almoço/produto comprado antecipadamente fora do sistema),
+-- vinculadas a um evento e retiradas automaticamente no PDV via pesquisa por nome/CPF/e-mail
+CREATE TABLE IF NOT EXISTS INSCRICAO_EVENTO (
+    id_inscricao_evento INT AUTO_INCREMENT PRIMARY KEY,
+    id_evento INT NOT NULL,
+    nm_participante VARCHAR(255) NOT NULL,
+    ds_email VARCHAR(255) NULL,
+    nr_cpf_cnpj VARCHAR(20) NOT NULL,          -- normalizado: somente dígitos
+    nr_celular VARCHAR(15) NULL,               -- normalizado: somente dígitos
+    qtde_antecipada INT NOT NULL,
+    cd_status VARCHAR(20) NOT NULL DEFAULT 'Pendente',   -- Pendente | Retirado
+    dt_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    dt_retirada DATETIME NULL,
+    CONSTRAINT UQ_INSCRICAO_EVENTO_ID_EVENTO_CPF UNIQUE (id_evento, nr_cpf_cnpj),
+    CONSTRAINT fk_inscricao_evento_evento FOREIGN KEY (id_evento) REFERENCES EVENTO(id_evento),
+    INDEX idx_inscricao_evento_status (id_evento, cd_status)
+);
 
 
 -- Tabela PRODUTO_EVENTO_MOVIMENTACAO (histórico de alterações de preço/quantidade)
@@ -84,15 +105,20 @@ CREATE TABLE PONTO_VENDA (
 );
 
 -- Transação de venda (pode ter múltiplos produtos)
+-- id_inscricao_evento: venda que retirou uma inscrição antecipada (se houver). FK fica em VENDA
+-- (não em INSCRICAO_EVENTO) para já suportar, sem migração futura, uma mesma inscrição gerando mais de uma venda
 CREATE TABLE VENDA (
     id_venda INT AUTO_INCREMENT PRIMARY KEY,
     id_ponto_venda INT NOT NULL,
-	cd_status VARCHAR(50) NOT NULL, 
+	cd_status VARCHAR(50) NOT NULL,
     vl_total DECIMAL(10,2) NOT NULL,
     tp_operacao ENUM('VENDA', 'CORTESIA') NOT NULL DEFAULT 'VENDA',
     dt_venda DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id_inscricao_evento INT NULL,
     FOREIGN KEY (id_ponto_venda) REFERENCES PONTO_VENDA(id_ponto_venda),
-    INDEX idx_venda_tp_operacao (tp_operacao)
+    CONSTRAINT fk_venda_inscricao_evento FOREIGN KEY (id_inscricao_evento) REFERENCES INSCRICAO_EVENTO(id_inscricao_evento),
+    INDEX idx_venda_tp_operacao (tp_operacao),
+    INDEX idx_venda_id_inscricao_evento (id_inscricao_evento)
 );
 
 -- Cada produto vendido naquela transação

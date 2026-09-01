@@ -77,6 +77,7 @@ namespace GestorEvento.Views
                     dtpData.Enabled = false;
                     mtbData.Enabled = false;
                     btnSalvar.Enabled = false;
+                    btnImportarInscricoes.Enabled = false;
 
                     DialogoCustomizado aviso = new DialogoCustomizado(
                         "Informação",
@@ -183,6 +184,12 @@ namespace GestorEvento.Views
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void btnImportarInscricoes_Click(object sender, EventArgs e)
+        {
+            var formImportar = new FormImportarInscricoes(_eventoId);
+            formImportar.ShowDialog(this);
         }
 
         private void DtpData_ValueChanged(object sender, EventArgs e)

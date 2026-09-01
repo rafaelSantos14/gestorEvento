@@ -23,6 +23,7 @@ namespace GestorEvento.Views
             this.btnCancelar = new System.Windows.Forms.Button();
             this.txtPreco = new System.Windows.Forms.TextBox();
             this.chkPermiteValorZerado = new System.Windows.Forms.CheckBox();
+            this.chkAntecipado = new System.Windows.Forms.CheckBox();
             this.lblHistorico = new System.Windows.Forms.Label();
             this.dgvHistorico = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHistorico)).BeginInit();
@@ -74,7 +75,7 @@ namespace GestorEvento.Views
             this.btnSalvar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSalvar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSalvar.ForeColor = System.Drawing.Color.White;
-            this.btnSalvar.Location = new System.Drawing.Point(172, 150);
+            this.btnSalvar.Location = new System.Drawing.Point(172, 170);
             this.btnSalvar.Name = "btnSalvar";
             this.btnSalvar.Size = new System.Drawing.Size(95, 35);
             this.btnSalvar.TabIndex = 5;
@@ -89,7 +90,7 @@ namespace GestorEvento.Views
             this.btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancelar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnCancelar.ForeColor = System.Drawing.Color.White;
-            this.btnCancelar.Location = new System.Drawing.Point(277, 150);
+            this.btnCancelar.Location = new System.Drawing.Point(277, 170);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(95, 35);
             this.btnCancelar.TabIndex = 6;
@@ -118,6 +119,17 @@ namespace GestorEvento.Views
             this.chkPermiteValorZerado.TabIndex = 5;
             this.chkPermiteValorZerado.Text = "Permitir valor zerado";
             this.chkPermiteValorZerado.UseVisualStyleBackColor = true;
+            // 
+            // chkAntecipado
+            // 
+            this.chkAntecipado.AutoSize = true;
+            this.chkAntecipado.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.chkAntecipado.Location = new System.Drawing.Point(67, 143);
+            this.chkAntecipado.Name = "chkAntecipado";
+            this.chkAntecipado.Size = new System.Drawing.Size(277, 21);
+            this.chkAntecipado.TabIndex = 7;
+            this.chkAntecipado.Text = "Produto antecipado (retirável via inscrição)";
+            this.chkAntecipado.UseVisualStyleBackColor = true;
             // 
             // lblHistorico
             // 
@@ -149,6 +161,7 @@ namespace GestorEvento.Views
             this.ClientSize = new System.Drawing.Size(550, 455);
             this.Controls.Add(this.dgvHistorico);
             this.Controls.Add(this.lblHistorico);
+            this.Controls.Add(this.chkAntecipado);
             this.Controls.Add(this.chkPermiteValorZerado);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnSalvar);
@@ -178,6 +191,7 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Button btnCancelar;
         private System.Windows.Forms.TextBox txtPreco;
         private System.Windows.Forms.CheckBox chkPermiteValorZerado;
+        private System.Windows.Forms.CheckBox chkAntecipado;
         private System.Windows.Forms.Label lblHistorico;
         private System.Windows.Forms.DataGridView dgvHistorico;
     }

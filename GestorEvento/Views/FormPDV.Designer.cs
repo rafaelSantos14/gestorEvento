@@ -23,6 +23,7 @@ namespace GestorEvento.Views
             this.lblTitulo = new System.Windows.Forms.Label();
             this.panelInfoCaixa = new System.Windows.Forms.Panel();
             this.lblInfoCaixa = new System.Windows.Forms.Label();
+            this.lblInscricaoVinculada = new System.Windows.Forms.Label();
             this.panelConteudo = new System.Windows.Forms.Panel();
             this.panelTotalizacao = new System.Windows.Forms.Panel();
             this.lblTotal = new System.Windows.Forms.Label();
@@ -44,6 +45,8 @@ namespace GestorEvento.Views
             this.btnAtualizarPDV = new System.Windows.Forms.Button();
             this.btnMovimentacaoCaixa = new System.Windows.Forms.Button();
             this.btnConsultarVenda = new System.Windows.Forms.Button();
+            this.btnVincularInscricao = new System.Windows.Forms.Button();
+            this.btnCancelarInscricao = new System.Windows.Forms.Button();
             this.panelTitulo.SuspendLayout();
             this.panelInfoCaixa.SuspendLayout();
             this.panelConteudo.SuspendLayout();
@@ -115,6 +118,7 @@ namespace GestorEvento.Views
             // 
             this.panelInfoCaixa.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.panelInfoCaixa.Controls.Add(this.lblInfoCaixa);
+            this.panelInfoCaixa.Controls.Add(this.lblInscricaoVinculada);
             this.panelInfoCaixa.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelInfoCaixa.Location = new System.Drawing.Point(0, 40);
             this.panelInfoCaixa.Name = "panelInfoCaixa";
@@ -132,6 +136,17 @@ namespace GestorEvento.Views
             this.lblInfoCaixa.Size = new System.Drawing.Size(194, 25);
             this.lblInfoCaixa.TabIndex = 0;
             this.lblInfoCaixa.Text = "Caixa: Não selecionado";
+            // 
+            // lblInscricaoVinculada
+            // 
+            this.lblInscricaoVinculada.AutoSize = true;
+            this.lblInscricaoVinculada.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblInscricaoVinculada.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.lblInscricaoVinculada.Location = new System.Drawing.Point(400, 8);
+            this.lblInscricaoVinculada.Name = "lblInscricaoVinculada";
+            this.lblInscricaoVinculada.Size = new System.Drawing.Size(0, 21);
+            this.lblInscricaoVinculada.TabIndex = 1;
+            this.lblInscricaoVinculada.Visible = false;
             // 
             // panelConteudo
             // 
@@ -342,6 +357,8 @@ namespace GestorEvento.Views
             this.panelBotoes.Controls.Add(this.btnAtualizarPDV);
             this.panelBotoes.Controls.Add(this.btnMovimentacaoCaixa);
             this.panelBotoes.Controls.Add(this.btnConsultarVenda);
+            this.panelBotoes.Controls.Add(this.btnVincularInscricao);
+            this.panelBotoes.Controls.Add(this.btnCancelarInscricao);
             this.panelBotoes.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelBotoes.Location = new System.Drawing.Point(0, 530);
             this.panelBotoes.Name = "panelBotoes";
@@ -378,9 +395,9 @@ namespace GestorEvento.Views
             this.btnMovimentacaoCaixa.Text = "💰 TROCO/SANGRIA";
             this.btnMovimentacaoCaixa.UseVisualStyleBackColor = false;
             this.btnMovimentacaoCaixa.Click += new System.EventHandler(this.btnMovimentacaoCaixa_Click);
-            //
+            // 
             // btnConsultarVenda
-            //
+            // 
             this.btnConsultarVenda.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
             this.btnConsultarVenda.FlatAppearance.BorderSize = 0;
             this.btnConsultarVenda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -393,6 +410,37 @@ namespace GestorEvento.Views
             this.btnConsultarVenda.Text = "🔎 CONSULTAR VENDA";
             this.btnConsultarVenda.UseVisualStyleBackColor = false;
             this.btnConsultarVenda.Click += new System.EventHandler(this.btnConsultarVenda_Click);
+            // 
+            // btnVincularInscricao
+            // 
+            this.btnVincularInscricao.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.btnVincularInscricao.FlatAppearance.BorderSize = 0;
+            this.btnVincularInscricao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnVincularInscricao.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnVincularInscricao.ForeColor = System.Drawing.Color.White;
+            this.btnVincularInscricao.Location = new System.Drawing.Point(567, 8);
+            this.btnVincularInscricao.Name = "btnVincularInscricao";
+            this.btnVincularInscricao.Size = new System.Drawing.Size(174, 30);
+            this.btnVincularInscricao.TabIndex = 5;
+            this.btnVincularInscricao.Text = "🎫 INSCRIÇÃO";
+            this.btnVincularInscricao.UseVisualStyleBackColor = false;
+            this.btnVincularInscricao.Click += new System.EventHandler(this.btnVincularInscricao_Click);
+            // 
+            // btnCancelarInscricao
+            // 
+            this.btnCancelarInscricao.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.btnCancelarInscricao.FlatAppearance.BorderSize = 0;
+            this.btnCancelarInscricao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCancelarInscricao.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnCancelarInscricao.ForeColor = System.Drawing.Color.White;
+            this.btnCancelarInscricao.Location = new System.Drawing.Point(751, 8);
+            this.btnCancelarInscricao.Name = "btnCancelarInscricao";
+            this.btnCancelarInscricao.Size = new System.Drawing.Size(174, 30);
+            this.btnCancelarInscricao.TabIndex = 6;
+            this.btnCancelarInscricao.Text = "❌ CANCELAR INSCRIÇÃO";
+            this.btnCancelarInscricao.UseVisualStyleBackColor = false;
+            this.btnCancelarInscricao.Visible = false;
+            this.btnCancelarInscricao.Click += new System.EventHandler(this.btnCancelarInscricao_Click);
             // 
             // FormPDV
             // 
@@ -432,6 +480,7 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.Panel panelInfoCaixa;
         private System.Windows.Forms.Label lblInfoCaixa;
+        private System.Windows.Forms.Label lblInscricaoVinculada;
         private System.Windows.Forms.Panel panelConteudo;
         private System.Windows.Forms.Panel panelProdutos;
         private System.Windows.Forms.Panel panelTotalizacao;
@@ -453,5 +502,7 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Button btnAtualizarPDV;
         private System.Windows.Forms.Button btnMovimentacaoCaixa;
         private System.Windows.Forms.Button btnConsultarVenda;
+        private System.Windows.Forms.Button btnVincularInscricao;
+        private System.Windows.Forms.Button btnCancelarInscricao;
     }
 }

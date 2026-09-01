@@ -59,6 +59,12 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Protobuf, Version=3.11.4.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.11.4\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
@@ -181,7 +187,11 @@
     <Compile Include="Models\MotivoReimpressao.cs" />
     <Compile Include="Models\Reimpressao.cs" />
     <Compile Include="Models\ReimpressaoItem.cs" />
+    <Compile Include="Models\InscricaoEvento.cs" />
+    <Compile Include="Models\ImportacaoInscricaoResultado.cs" />
+    <Compile Include="Models\PreparacaoImportacaoInscricao.cs" />
     <Compile Include="Models\Exceptions\EstoqueInsuficienteException.cs" />
+    <Compile Include="Models\Exceptions\InscricaoIndisponivelException.cs" />
     <Compile Include="Services\ProdutoService.cs" />
     <Compile Include="Services\EventoService.cs" />
     <Compile Include="Services\PontoVendaService.cs" />
@@ -198,6 +208,7 @@
     <Compile Include="Services\PrinterServiceFactory.cs" />
     <Compile Include="Services\MotivoReimpressaoService.cs" />
     <Compile Include="Services\ReimpressaoService.cs" />
+    <Compile Include="Services\InscricaoEventoService.cs" />
     <Compile Include="Repositories\Connection.cs" />
     <Compile Include="Repositories\EventoRepository.cs" />
     <Compile Include="Repositories\ProdutoRepository.cs" />
@@ -209,6 +220,7 @@
     <Compile Include="Repositories\MovimentacaoRepository.cs" />
     <Compile Include="Repositories\MotivoReimpressaoRepository.cs" />
     <Compile Include="Repositories\ReimpressaoRepository.cs" />
+    <Compile Include="Repositories\InscricaoEventoRepository.cs" />
     <Compile Include="Utilities\EstiloManager.cs" />
     <Compile Include="Utilities\UiHelper.cs" />
     <Compile Include="Utilities\ItemImpressao.cs" />
@@ -302,6 +314,18 @@
     <Compile Include="Views\FormEditarEvento.Designer.cs">
       <DependentUpon>FormEditarEvento.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FormImportarInscricoes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormImportarInscricoes.Designer.cs">
+      <DependentUpon>FormImportarInscricoes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormPesquisarInscricaoEvento.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormPesquisarInscricaoEvento.Designer.cs">
+      <DependentUpon>FormPesquisarInscricaoEvento.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\FormRelatorioVenda.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -356,6 +380,12 @@
     <Compile Include="Views\RelatorioReimpressaoUserControl.Designer.cs">
       <DependentUpon>RelatorioReimpressaoUserControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\RelatorioInscricaoUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RelatorioInscricaoUserControl.Designer.cs">
+      <DependentUpon>RelatorioInscricaoUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\DialogMotivoReimpressao.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -392,6 +422,9 @@
     <EmbeddedResource Include="Views\FormEditarEvento.resx">
       <DependentUpon>FormEditarEvento.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormPesquisarInscricaoEvento.resx">
+      <DependentUpon>FormPesquisarInscricaoEvento.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormPrincipal.resx">
       <DependentUpon>FormPrincipal.cs</DependentUpon>

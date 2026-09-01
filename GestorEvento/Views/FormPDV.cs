@@ -25,10 +25,12 @@ namespace GestorEvento.Views
         private List<ProdutoLinhaVenda> _produtosLinhas = new List<ProdutoLinhaVenda>();
         private List<FormaPagamentoInput> _formasPagamento = new List<FormaPagamentoInput>();
         private List<DoacaoFormaInput> _formasDoacao = new List<DoacaoFormaInput>();
+        private InscricaoEvento _inscricaoVinculada = null;
         private bool _isDragging = false;
         private Point _dragPoint;
         private VendaService _vendaService;
         private ProdutoEventoService _produtoEventoService;
+        private InscricaoEventoService _inscricaoEventoService;
         private ProdutoService _produtoService;
         private PontoVendaService _pontoVendaService;
         private FormaPagamentoService _formaPagamentoService;
@@ -43,6 +45,7 @@ namespace GestorEvento.Views
             _caixaIdSelecionado = caixaId;
             _vendaService = new VendaService();
             _produtoEventoService = new ProdutoEventoService();
+            _inscricaoEventoService = new InscricaoEventoService();
             _produtoService = new ProdutoService();
             _pontoVendaService = new PontoVendaService();
             _formaPagamentoService = new FormaPagamentoService();
@@ -245,6 +248,7 @@ namespace GestorEvento.Views
                             xPosition,
                             yPosition,
                             larguraLabel,  // Passar largura ajustada para DPI 120
+                            produtoEvento.Antecipado,  // Produto antecipado: quantidade sempre bloqueada para edição manual
                             this
                         );
                         
@@ -306,7 +310,7 @@ namespace GestorEvento.Views
                     formaPagamento.AddToPanel(panelPagamento);
                     _formasPagamento.Add(formaPagamento);
 
-                    yPosition += 130;  // Aumentado de 100 para acomodar tamanho maior
+                    yPosition += 100;
                 }
 
                 // Seção de Doação, logo abaixo do último campo de pagamento
@@ -631,8 +635,8 @@ namespace GestorEvento.Views
                 var doacoes = GetDoacoes();
 
                 // Registrar TUDO em uma transação atômica com validação de estoque
-                // (Se algo falhar, rollback completo: VENDA + RECEBIMENTO + ESTOQUE)
-                int idVenda = _vendaService.RegistrarVendaComEstoqueComTransacao(venda, recebimentos, vlTroco, doacoes);
+                // (Se algo falhar, rollback completo: VENDA + RECEBIMENTO + ESTOQUE + retirada da inscrição)
+                int idVenda = _vendaService.RegistrarVendaComEstoqueComTransacao(venda, recebimentos, vlTroco, doacoes, _inscricaoVinculada?.Id);
 
                 System.Diagnostics.Debug.WriteLine($"[TRANSAÇÃO] Venda #{idVenda} registrada com sucesso com estoque debitado");
 
@@ -725,6 +729,21 @@ namespace GestorEvento.Views
                 }
                 
                 // NÃO limpar a tela - usuário pode corrigir e tentar novamente
+            }
+            catch (InscricaoIndisponivelException exInscricao)
+            {
+                // ERRO ESPECÍFICO: a inscrição vinculada já não está mais Pendente (retirada por
+                // outro terminal/operador entre a seleção e a confirmação). A transação já deu
+                // rollback e nada foi debitado (a inscrição é travada antes do estoque).
+                DialogoCustomizado erro = new DialogoCustomizado(
+                    "Inscrição Indisponível",
+                    $"{exInscricao.Message}\n\nDesvincule esta inscrição e selecione outra, se necessário.",
+                    TipoDialogo.Erro,
+                    TipoButton.Ok
+                );
+                erro.ShowDialog();
+
+                // NÃO limpar a tela - usuário pode clicar em CANCELAR INSCRIÇÃO e tentar com outra
             }
             catch (Exception ex)
             {
@@ -843,12 +862,15 @@ namespace GestorEvento.Views
         {
             // Limpar itens da venda
             _itensVenda.Clear();
-            
+
             // Desmarcar e limpar todos os produtos
             foreach (var linha in _produtosLinhas)
             {
                 linha.Limpar();
             }
+
+            // Desfazer qualquer vínculo de inscrição antecipada, para não vazar para a próxima venda
+            DesvincularInscricao();
             
             // Limpar todas as formas de pagamento
             foreach (var forma in _formasPagamento)
@@ -1005,6 +1027,7 @@ namespace GestorEvento.Views
             public int IdProdutoEvento { get; set; }  // ID da vinculação produto-evento
             public int IdProduto { get; set; }
             public string NomeProduto { get; set; }
+            public bool Antecipado { get; private set; }  // fl_antecipado: quantidade só pode ser definida via SetQuantidade (rotina de inscrição), nunca manualmente
             private decimal _valorPadrao;
             private int _quantidadeDisponivel;  // Quantidade que pode ser vendida
             private Label _lblProduto;
@@ -1014,19 +1037,20 @@ namespace GestorEvento.Views
             private FormPDV _formParent;
             private bool _isReimprimindo = false;  // Flag para indicar modo REIMPRIMIR
 
-            public ProdutoLinhaVenda(int idProdutoEvento, int idProduto, string nomeProduto, decimal valorPadrao, int quantidadeDisponivel, int xPosition, int yPosition, int larguraLabel, FormPDV formParent)
+            public ProdutoLinhaVenda(int idProdutoEvento, int idProduto, string nomeProduto, decimal valorPadrao, int quantidadeDisponivel, int xPosition, int yPosition, int larguraLabel, bool antecipado, FormPDV formParent)
             {
                 IdProdutoEvento = idProdutoEvento;
                 IdProduto = idProduto;
                 NomeProduto = nomeProduto;
+                Antecipado = antecipado;
                 _valorPadrao = valorPadrao;
                 _quantidadeDisponivel = quantidadeDisponivel;
                 _formParent = formParent;
-                
+
                 // Criar label com nome do produto, valor e quantidade disponível - NO TOPO
                 _lblProduto = new Label
                 {
-                    Text = $"{nomeProduto} R${valorPadrao.ToString("F2")} ({quantidadeDisponivel})",
+                    Text = $"{nomeProduto} R${valorPadrao.ToString("F2")} ({quantidadeDisponivel})" + (antecipado ? " [ANTECIPADO]" : ""),
                     Location = new Point(xPosition, yPosition),
                     Size = new Size(larguraLabel, 30),  // Usar parâmetro para ajustar largura
                     Font = new Font("Segoe UI", 10F),
@@ -1188,8 +1212,8 @@ namespace GestorEvento.Views
             {
                 _quantidadeDisponivel = novaQuantidade;
                 // Atualizar o label para refletir a nova quantidade disponível
-                _lblProduto.Text = $"{NomeProduto} R${_valorPadrao.ToString("F2")} ({novaQuantidade})";
-                
+                _lblProduto.Text = $"{NomeProduto} R${_valorPadrao.ToString("F2")} ({novaQuantidade})" + (Antecipado ? " [ANTECIPADO]" : "");
+
                 // Atualizar estado de disponibilidade (label vermelha e textbox desabilitado se sem estoque)
                 AtualizarEstadoDisponibilidade();
             }
@@ -1204,6 +1228,19 @@ namespace GestorEvento.Views
                     _txtQuantidade.BackColor = Color.White;
                     _btnMais.Enabled = true;
                     _btnMenos.Enabled = true;
+                    return;
+                }
+
+                // Produto antecipado: quantidade SEMPRE bloqueada para edição manual do operador,
+                // independente de estoque ou de haver inscrição vinculada no momento - só a rotina
+                // de vinculação de inscrição (SetQuantidade) pode alterar o valor.
+                if (Antecipado)
+                {
+                    _lblProduto.ForeColor = _quantidadeDisponivel <= 0 ? Color.Red : Color.Black;
+                    _txtQuantidade.Enabled = false;
+                    _txtQuantidade.BackColor = Color.FromArgb(230, 230, 230);
+                    _btnMais.Enabled = false;
+                    _btnMenos.Enabled = false;
                     return;
                 }
 
@@ -1381,8 +1418,8 @@ namespace GestorEvento.Views
                 IdFormaPagamento = idFormaPagamento;
                 NomeFormaPagamento = nomeFormaPagamento;
 
-                int larguraLabel = 62;
-                int xValor = larguraLabel + 6;
+                int larguraLabel = 78;
+                int xValor = larguraLabel + 12;
                 int larguraValor = Math.Max(55, larguraPanel - xValor - 10);
 
                 _lblForma = new Label
@@ -1511,6 +1548,116 @@ namespace GestorEvento.Views
                 );
                 erro.ShowDialog();
             }
+        }
+
+        private void btnVincularInscricao_Click(object sender, EventArgs e)
+        {
+            if (_inscricaoVinculada != null)
+            {
+                DialogoCustomizado dialogo = new DialogoCustomizado(
+                    "Aviso",
+                    "Já existe uma inscrição vinculada a esta venda. Clique em CANCELAR INSCRIÇÃO antes de vincular outra.",
+                    TipoDialogo.Aviso,
+                    TipoButton.Ok
+                );
+                dialogo.ShowDialog();
+                return;
+            }
+
+            if (_rbReimprimir.Checked)
+            {
+                DialogoCustomizado dialogo = new DialogoCustomizado(
+                    "Aviso",
+                    "Não é possível vincular inscrição no modo REIMPRIMIR.",
+                    TipoDialogo.Aviso,
+                    TipoButton.Ok
+                );
+                dialogo.ShowDialog();
+                return;
+            }
+
+            var formPesquisa = new FormPesquisarInscricaoEvento(_eventoIdSelecionado);
+            if (formPesquisa.ShowDialog(this) == DialogResult.OK)
+            {
+                AplicarInscricaoVinculada(formPesquisa.InscricaoSelecionada);
+            }
+        }
+
+        private void btnCancelarInscricao_Click(object sender, EventArgs e)
+        {            
+            DesvincularInscricao();            
+            LimparTudo();
+            CarregarProdutos();
+        }
+        
+        private void AplicarInscricaoVinculada(InscricaoEvento inscricao)
+        {
+            _inscricaoVinculada = inscricao;
+
+            bool existeProdutoAntecipado = false;
+            foreach (var linha in _produtosLinhas)
+            {
+                if (linha.Antecipado)
+                {
+                    existeProdutoAntecipado = true;
+                    linha.SetQuantidade(inscricao.QtdeAntecipada);
+                }
+            }
+
+            lblInscricaoVinculada.Text = $"🎫 Inscrição vinculada: {inscricao.NomeParticipante} ({inscricao.QtdeAntecipada}x)";
+            lblInscricaoVinculada.Visible = true;
+
+            TravarPanelBotoes(true);
+            AtualizarTotalVenda();
+
+            if (!existeProdutoAntecipado)
+            {
+                DialogoCustomizado aviso = new DialogoCustomizado(
+                    "Aviso",
+                    "Este evento não possui nenhum produto marcado como antecipado (fl_antecipado). A inscrição foi vinculada, mas nenhum produto foi carregado automaticamente.",
+                    TipoDialogo.Aviso,
+                    TipoButton.Ok
+                );
+                aviso.ShowDialog();
+            }
+        }
+        
+        private void DesvincularInscricao()
+        {
+            if (_inscricaoVinculada == null)
+                return;
+
+            foreach (var linha in _produtosLinhas)
+            {
+                if (linha.Antecipado)
+                {
+                    linha.SetQuantidade(0);
+                }
+            }
+
+            _inscricaoVinculada = null;
+            lblInscricaoVinculada.Visible = false;
+
+            TravarPanelBotoes(false);
+        }
+
+        
+        private void TravarPanelBotoes(bool travar)
+        {
+            btnAtualizarPDV.Enabled = !travar;
+            btnMovimentacaoCaixa.Enabled = !travar;
+            btnConsultarVenda.Enabled = !travar;
+            btnVincularInscricao.Enabled = !travar;
+
+            btnCancelarInscricao.Visible = travar;
+            btnCancelarInscricao.Enabled = travar;
+
+            if (travar)
+            {
+                _rbVenda.Checked = true;
+            }
+            _rbCortesia.Enabled = !travar;
+            _rbReimprimir.Enabled = !travar;
         }
     }
 }

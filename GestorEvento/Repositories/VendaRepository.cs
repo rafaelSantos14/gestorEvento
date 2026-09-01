@@ -23,10 +23,10 @@ namespace GestorEvento.Repositories
             try
             {
                 // 1. Inserir venda
-                string queryVenda = @"INSERT INTO VENDA 
-                                      (id_ponto_venda, dt_venda, vl_total, cd_status, tp_operacao) 
-                                      VALUES 
-                                      (@idPontoVenda, @dtVenda, @vlTotal, @cdStatus, @tpOperacao);
+                string queryVenda = @"INSERT INTO VENDA
+                                      (id_ponto_venda, dt_venda, vl_total, cd_status, tp_operacao, id_inscricao_evento)
+                                      VALUES
+                                      (@idPontoVenda, @dtVenda, @vlTotal, @cdStatus, @tpOperacao, @idInscricaoEvento);
                                       SELECT LAST_INSERT_ID();";
 
                 int idVenda = 0;
@@ -37,6 +37,7 @@ namespace GestorEvento.Repositories
                     command.Parameters.AddWithValue("@vlTotal", venda.VlTotal);
                     command.Parameters.AddWithValue("@cdStatus", "Concluida"); // Status sempre Concluida ao registrar
                     command.Parameters.AddWithValue("@tpOperacao", venda.TipoOperacao ?? "VENDA"); // Tipo de operação: VENDA ou CORTESIA
+                    command.Parameters.AddWithValue("@idInscricaoEvento", (object)venda.IdInscricaoEvento ?? DBNull.Value);
 
                     object result = command.ExecuteScalar();
                     idVenda = Convert.ToInt32(result);

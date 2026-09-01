@@ -17,9 +17,10 @@ namespace GestorEvento.Views
         public decimal PrecoDigitado { get; set; }
         public int QuantidadeDigitada { get; set; }
         public bool PermiteValorZerado { get; set; }
+        public bool Antecipado { get; set; }
         public string NomeProduto { get; private set; }
 
-        public FormVincularProdutoEvento(string nomeProduto, int idProduto, int idEvento, decimal precoAtual = 0, int quantidadeAtual = 0, bool permiteValorZeradoAtual = false)
+        public FormVincularProdutoEvento(string nomeProduto, int idProduto, int idEvento, decimal precoAtual = 0, int quantidadeAtual = 0, bool permiteValorZeradoAtual = false, bool antecipadoAtual = false)
         {
             InitializeComponent();
             NomeProduto = nomeProduto;
@@ -28,6 +29,7 @@ namespace GestorEvento.Views
             PrecoDigitado = precoAtual;
             QuantidadeDigitada = quantidadeAtual;
             PermiteValorZerado = permiteValorZeradoAtual;
+            Antecipado = antecipadoAtual;
 
             _produtoEventoService = new ProdutoEventoService();
 
@@ -50,6 +52,7 @@ namespace GestorEvento.Views
                 txtQuantidade.Text = QuantidadeDigitada.ToString();
 
             chkPermiteValorZerado.Checked = PermiteValorZerado;
+            chkAntecipado.Checked = Antecipado;
 
             // Focar no campo de preço
             txtPreco.Focus();
@@ -105,6 +108,7 @@ namespace GestorEvento.Views
             PrecoDigitado = decimal.Parse(txtPreco.Text);
             QuantidadeDigitada = int.Parse(txtQuantidade.Text);
             PermiteValorZerado = chkPermiteValorZerado.Checked;
+            Antecipado = chkAntecipado.Checked;
 
             this.DialogResult = DialogResult.OK;
             this.Close();
