@@ -469,6 +469,17 @@ namespace GestorEvento.Views
                 System.Diagnostics.Debug.WriteLine($"Erro ao atualizar troco: {ex.Message}");
             }
         }
+        
+        private decimal CalcularValorSugerido(FormaPagamentoInput formaEmFoco)
+        {
+            decimal somaOutrasFormas = _formasPagamento
+                .Where(f => !ReferenceEquals(f, formaEmFoco))
+                .Sum(f => f.GetValor());
+
+            decimal sugerido = _totalVenda - somaOutrasFormas;
+
+            return sugerido < 0 ? 0m : sugerido;
+        }
 
         private void BtnConfirmarVenda_Click(object sender, EventArgs e)
         {
@@ -1320,6 +1331,22 @@ namespace GestorEvento.Views
                 };
                 _txtValor.Leave += TxtValor_Leave;
                 _txtValor.TextChanged += TxtValor_TextChanged;
+                _txtValor.Enter += TxtValor_Enter;
+            }
+
+            private void TxtValor_Enter(object sender, EventArgs e)
+            {
+                decimal valorSugerido = _formParent.CalcularValorSugerido(this);
+
+                // Reaproveita a mesma formatação usada pela máscara monetária (TxtValor_TextChanged)
+                _txtValor.Text = valorSugerido.ToString("F2");
+
+                // UX de PDV: valor sugerido fica selecionado, operador pode digitar por cima direto
+                _txtValor.SelectAll();
+
+                // Garante troco atualizado mesmo no caso-limite em que o texto não muda
+                // (TextChanged não dispara para um valor igual ao atual)
+                _formParent.AtualizarTroco();
             }
 
             private void TxtValor_Leave(object sender, EventArgs e)

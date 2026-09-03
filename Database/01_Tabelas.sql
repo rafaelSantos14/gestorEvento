@@ -41,11 +41,13 @@ CREATE TABLE PRODUTO_EVENTO (
 	qtde_vendida INT NOT NULL,
     fl_ativo VARCHAR(3) DEFAULT 'SIM',
     fl_permite_vl_zerado VARCHAR(3) DEFAULT 'NAO',
-    fl_antecipado VARCHAR(3) DEFAULT 'NAO',    -- produto retirável automaticamente via inscrição prévia no PDV
     CONSTRAINT UQ_PRODUTO_EVENTO_ID_PRODUTO_ID_EVENTO UNIQUE (id_produto, id_evento),
     FOREIGN KEY (id_produto) REFERENCES PRODUTO(id_produto) ,
     FOREIGN KEY (id_evento) REFERENCES EVENTO(id_evento)
 );
+
+ALTER TABLE PRODUTO_EVENTO
+ADD COLUMN fl_antecipado VARCHAR(3) DEFAULT 'NAO';
 
 ALTER TABLE PRODUTO_EVENTO ADD COLUMN fl_permite_vl_zerado VARCHAR(3) DEFAULT 'NAO';
 
@@ -114,12 +116,16 @@ CREATE TABLE VENDA (
     vl_total DECIMAL(10,2) NOT NULL,
     tp_operacao ENUM('VENDA', 'CORTESIA') NOT NULL DEFAULT 'VENDA',
     dt_venda DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    id_inscricao_evento INT NULL,
     FOREIGN KEY (id_ponto_venda) REFERENCES PONTO_VENDA(id_ponto_venda),
-    CONSTRAINT fk_venda_inscricao_evento FOREIGN KEY (id_inscricao_evento) REFERENCES INSCRICAO_EVENTO(id_inscricao_evento),
-    INDEX idx_venda_tp_operacao (tp_operacao),
-    INDEX idx_venda_id_inscricao_evento (id_inscricao_evento)
+    INDEX idx_venda_tp_operacao (tp_operacao)
 );
+
+ALTER TABLE VENDA
+ADD COLUMN id_inscricao_evento INT NULL,
+ADD CONSTRAINT fk_venda_inscricao_evento
+    FOREIGN KEY (id_inscricao_evento)
+    REFERENCES INSCRICAO_EVENTO(id_inscricao_evento),
+ADD INDEX idx_venda_id_inscricao_evento (id_inscricao_evento);
 
 -- Cada produto vendido naquela transação
 CREATE TABLE ITEM_VENDA (
