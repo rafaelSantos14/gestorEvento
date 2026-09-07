@@ -12,6 +12,8 @@ namespace GestorEvento.Models
         public string CdStatus { get; set; } // Pendente, Concluida
         public string TipoOperacao { get; set; } = "VENDA"; // VENDA ou CORTESIA
         public int? IdInscricaoEvento { get; set; } // inscrição antecipada retirada por esta venda (se houver)
+        public int? IdSetor { get; set; } // setor de destino da cortesia (apenas para TipoOperacao = CORTESIA)
+        public string TxObservacaoSetor { get; set; } // observação/quem retirou a cortesia (opcional)
         public List<ItemVenda> Itens { get; set; }
 
         // Constructors

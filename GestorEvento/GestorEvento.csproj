@@ -179,6 +179,7 @@
     <Compile Include="Models\ProdutoEvento.cs" />
     <Compile Include="Models\ProdutoEventoMovimentacao.cs" />
     <Compile Include="Models\FormaPagamento.cs" />
+    <Compile Include="Models\Setor.cs" />
     <Compile Include="Models\Recebimento.cs" />
     <Compile Include="Models\DoacaoVenda.cs" />
     <Compile Include="Models\Movimentacao.cs" />
@@ -209,6 +210,7 @@
     <Compile Include="Services\MotivoReimpressaoService.cs" />
     <Compile Include="Services\ReimpressaoService.cs" />
     <Compile Include="Services\InscricaoEventoService.cs" />
+    <Compile Include="Services\SetorService.cs" />
     <Compile Include="Repositories\Connection.cs" />
     <Compile Include="Repositories\EventoRepository.cs" />
     <Compile Include="Repositories\ProdutoRepository.cs" />
@@ -221,6 +223,7 @@
     <Compile Include="Repositories\MotivoReimpressaoRepository.cs" />
     <Compile Include="Repositories\ReimpressaoRepository.cs" />
     <Compile Include="Repositories\InscricaoEventoRepository.cs" />
+    <Compile Include="Repositories\SetorRepository.cs" />
     <Compile Include="Utilities\EstiloManager.cs" />
     <Compile Include="Utilities\UiHelper.cs" />
     <Compile Include="Utilities\ItemImpressao.cs" />
@@ -392,6 +395,24 @@
     <Compile Include="Views\DialogMotivoReimpressao.Designer.cs">
       <DependentUpon>DialogMotivoReimpressao.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\DialogIdentificacaoCortesia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\DialogIdentificacaoCortesia.Designer.cs">
+      <DependentUpon>DialogIdentificacaoCortesia.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormSetores.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormSetores.Designer.cs">
+      <DependentUpon>FormSetores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormEditarSetor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormEditarSetor.Designer.cs">
+      <DependentUpon>FormEditarSetor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Components\ModernCard.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -409,6 +430,15 @@
     </Compile>
     <EmbeddedResource Include="Views\DialogMotivoReimpressao.resx">
       <DependentUpon>DialogMotivoReimpressao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\DialogIdentificacaoCortesia.resx">
+      <DependentUpon>DialogIdentificacaoCortesia.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormSetores.resx">
+      <DependentUpon>FormSetores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormEditarSetor.resx">
+      <DependentUpon>FormEditarSetor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\DialogoCustomizado.resx">
       <DependentUpon>DialogoCustomizado.cs</DependentUpon>

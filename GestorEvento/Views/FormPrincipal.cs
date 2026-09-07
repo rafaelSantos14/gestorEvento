@@ -36,7 +36,8 @@ namespace GestorEvento.Views
             EstiloManager.AplicarEstiloInfo(btnProdutos);
             EstiloManager.AplicarEstiloInfo(btnEventos);
             EstiloManager.AplicarEstiloInfo(btnRelatorios);
-            EstiloManager.AplicarEstiloInfo(btnCaixa);            
+            EstiloManager.AplicarEstiloInfo(btnCaixa);
+            EstiloManager.AplicarEstiloInfo(btnConfiguracoes);
             EstiloManager.AplicarEstiloAviso(btnSair);
         }
 
@@ -173,6 +174,40 @@ namespace GestorEvento.Views
             
             // Mostrar o menu na frente do botão (ao lado direito)
             menuRelatorios.Show(btnRelatorios, new Point(btnRelatorios.Width, 0));
+        }
+
+        private void btnConfiguracoes_Click(object sender, EventArgs e)
+        {
+            // Criar o menu de contexto dinamicamente (mesmo padrão do btnRelatorios_Click)
+            ContextMenuStrip menuConfiguracoes = new ContextMenuStrip();
+
+            ToolStripMenuItem itemSetores = new ToolStripMenuItem("Setores");
+            itemSetores.Click += (s, args) => AbrirSetores();
+            menuConfiguracoes.Items.Add(itemSetores);
+
+            // Mostrar o menu na frente do botão (ao lado direito)
+            menuConfiguracoes.Show(btnConfiguracoes, new Point(btnConfiguracoes.Width, 0));
+        }
+
+        private void AbrirSetores()
+        {
+            // Verifica se já existe uma janela aberta (mesmo padrão do btnProdutos_Click)
+            foreach (Form f in this.MdiChildren)
+            {
+                if (f is FormSetores)
+                {
+                    f.Activate();
+                    return;
+                }
+            }
+
+            FormSetores form = new FormSetores();
+            form.Text = "Cadastro de Setores";
+            form.MdiParent = this;
+            form.Show();
+
+            form.Location = new Point(0, 0);
+            form.Size = new Size(this.ClientSize.Width - panelMenu.Width - 5, this.ClientSize.Height - panelTitulo.Height - 35);
         }
 
         private void AbrirRelatoriosConsolidados()

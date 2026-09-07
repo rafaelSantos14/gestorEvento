@@ -5,28 +5,29 @@ using GestorEvento.Models;
 
 namespace GestorEvento.Views
 {
-    public partial class DialogMotivoReimpressao : Form
+    public partial class DialogIdentificacaoCortesia : Form
     {
-        private List<MotivoReimpressao> _motivos;
-        public MotivoReimpressao MotivoSelecionado { get; private set; }
+        private List<Setor> _setores;
+        public Setor SetorSelecionado { get; private set; }
+        public string Observacao { get; private set; }
 
-        public DialogMotivoReimpressao(List<MotivoReimpressao> motivos)
+        public DialogIdentificacaoCortesia(List<Setor> setores)
         {
             InitializeComponent();
-            _motivos = motivos ?? new List<MotivoReimpressao>();
+            _setores = setores ?? new List<Setor>();
         }
 
-        private void DialogMotivoReimpressao_Load(object sender, EventArgs e)
+        private void DialogIdentificacaoCortesia_Load(object sender, EventArgs e)
         {
             try
             {
-                CarregarMotivos();
+                CarregarSetores();
             }
             catch (Exception ex)
             {
                 DialogoCustomizado erro = new DialogoCustomizado(
                     "Erro",
-                    $"Erro ao carregar motivos: {ex.Message}",
+                    $"Erro ao carregar setores: {ex.Message}",
                     TipoDialogo.Erro,
                     TipoButton.Ok
                 );
@@ -34,27 +35,29 @@ namespace GestorEvento.Views
             }
         }
 
-        private void CarregarMotivos()
+        private void CarregarSetores()
         {
-            cmbMotivo.Items.Clear();
-            cmbMotivo.Items.Add("Selecione um motivo");
+            cmbSetor.Items.Clear();
+            cmbSetor.Items.Add("Selecione um setor");
 
-            foreach (var motivo in _motivos)
+            foreach (var setor in _setores)
             {
-                cmbMotivo.Items.Add(motivo.DsMotivo);
+                cmbSetor.Items.Add(setor.NmSetor);
             }
+
+            cmbSetor.SelectedIndex = 0;
         }
 
         private void BtnConfirmar_Click(object sender, EventArgs e)
         {
             try
             {
-                // Validar seleção
-                if (cmbMotivo.SelectedIndex <= 0)
+                // Validar seleção: setor é obrigatório para CORTESIA
+                if (cmbSetor.SelectedIndex <= 0)
                 {
                     DialogoCustomizado aviso = new DialogoCustomizado(
                         "Aviso",
-                        "Por favor, selecione um motivo",
+                        "Por favor, selecione um setor",
                         TipoDialogo.Aviso,
                         TipoButton.Ok
                     );
@@ -63,8 +66,11 @@ namespace GestorEvento.Views
                 }
 
                 // O índice real é SelectedIndex - 1 (porque há um item de instrução no início)
-                int indiceMotivo = cmbMotivo.SelectedIndex - 1;
-                MotivoSelecionado = _motivos[indiceMotivo];
+                int indiceSetor = cmbSetor.SelectedIndex - 1;
+                SetorSelecionado = _setores[indiceSetor];
+
+                // Observação é opcional: não há validação de preenchimento
+                Observacao = string.IsNullOrWhiteSpace(txtObservacao.Text) ? null : txtObservacao.Text.Trim();
 
                 DialogResult = DialogResult.OK;
                 this.Close();
@@ -73,7 +79,7 @@ namespace GestorEvento.Views
             {
                 DialogoCustomizado erro = new DialogoCustomizado(
                     "Erro",
-                    $"Erro ao confirmar motivo: {ex.Message}",
+                    $"Erro ao confirmar identificação da cortesia: {ex.Message}",
                     TipoDialogo.Erro,
                     TipoButton.Ok
                 );

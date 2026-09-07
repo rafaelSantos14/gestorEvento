@@ -38,6 +38,7 @@ namespace GestorEvento.Views
         private MovimentacaoService _movimentacaoService;
         private MotivoReimpressaoService _motivoReimpressaoService;
         private ReimpressaoService _reimpressaoService;
+        private SetorService _setorService;
 
         public FormPDV(int caixaId)
         {
@@ -53,6 +54,7 @@ namespace GestorEvento.Views
             _movimentacaoService = new MovimentacaoService();
             _motivoReimpressaoService = new MotivoReimpressaoService();
             _reimpressaoService = new ReimpressaoService();
+            _setorService = new SetorService();
         }
 
         private void FormPDV_Load(object sender, EventArgs e)
@@ -551,6 +553,25 @@ namespace GestorEvento.Views
                         return;
                     }
                 }
+                
+                Setor setorSelecionado = null;
+                string observacaoSetor = null;
+
+                if (_rbCortesia.Checked)
+                {
+                    var setoresAtivos = _setorService.GetSetoresAtivos();
+                    using (var dialogSetor = new DialogIdentificacaoCortesia(setoresAtivos))
+                    {
+                        if (dialogSetor.ShowDialog(this) != DialogResult.OK)
+                        {
+                            // Operador cancelou: nada foi gravado, venda não é concluída
+                            return;
+                        }
+
+                        setorSelecionado = dialogSetor.SetorSelecionado;
+                        observacaoSetor = dialogSetor.Observacao;
+                    }
+                }
 
                 // ======== VALIDAÇÃO 3: VERIFICAR ESTOQUE ANTES DE REGISTRAR (camada adicional) ========
                 // Essa validação é feita NOVAMENTE durante a transação com SELECT...FOR UPDATE
@@ -610,7 +631,11 @@ namespace GestorEvento.Views
                 
                 // Definir tipo de operação (VENDA ou CORTESIA) baseado no seletor
                 venda.TipoOperacao = _rbCortesia.Checked ? "CORTESIA" : "VENDA";
-                
+
+                // Setor de destino e observação da retirada, apenas para CORTESIA (NULL para VENDA)
+                venda.IdSetor = setorSelecionado?.IdSetor;
+                venda.TxObservacaoSetor = observacaoSetor;
+
                 foreach (var linha in _produtosLinhas)
                 {
                     int qtde = linha.GetQuantidade();

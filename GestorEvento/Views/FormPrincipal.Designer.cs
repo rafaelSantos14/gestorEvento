@@ -32,6 +32,7 @@ namespace GestorEvento.Views
             this.btnMinimizar = new System.Windows.Forms.Button();
             this.lblTituloTela = new System.Windows.Forms.Label();
             this.panelMenu = new System.Windows.Forms.Panel();
+            this.btnConfiguracoes = new System.Windows.Forms.Button();
             this.btnRelatorios = new System.Windows.Forms.Button();
             this.btnPdv = new System.Windows.Forms.Button();
             this.btnSair = new System.Windows.Forms.Button();
@@ -90,6 +91,7 @@ namespace GestorEvento.Views
             // panelMenu
             // 
             this.panelMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.panelMenu.Controls.Add(this.btnConfiguracoes);
             this.panelMenu.Controls.Add(this.btnRelatorios);
             this.panelMenu.Controls.Add(this.btnPdv);
             this.panelMenu.Controls.Add(this.btnSair);
@@ -119,7 +121,24 @@ namespace GestorEvento.Views
             this.btnRelatorios.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnRelatorios.UseVisualStyleBackColor = false;
             this.btnRelatorios.Click += new System.EventHandler(this.btnRelatorios_Click);
-            // 
+            //
+            // btnConfiguracoes
+            //
+            this.btnConfiguracoes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
+            this.btnConfiguracoes.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnConfiguracoes.FlatAppearance.BorderSize = 0;
+            this.btnConfiguracoes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnConfiguracoes.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnConfiguracoes.ForeColor = System.Drawing.Color.White;
+            this.btnConfiguracoes.Location = new System.Drawing.Point(0, 237);
+            this.btnConfiguracoes.Name = "btnConfiguracoes";
+            this.btnConfiguracoes.Size = new System.Drawing.Size(202, 46);
+            this.btnConfiguracoes.TabIndex = 8;
+            this.btnConfiguracoes.Text = "⚙️ CONFIGURAÇÕES";
+            this.btnConfiguracoes.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnConfiguracoes.UseVisualStyleBackColor = false;
+            this.btnConfiguracoes.Click += new System.EventHandler(this.btnConfiguracoes_Click);
+            //
             // btnPdv
             // 
             this.btnPdv.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(118)))), ((int)(((byte)(210)))));
@@ -263,5 +282,6 @@ namespace GestorEvento.Views
         private System.Windows.Forms.Button btnSair;
         private System.Windows.Forms.Button btnPdv;
         private System.Windows.Forms.Button btnFechar;
+        private System.Windows.Forms.Button btnConfiguracoes;
     }
 }

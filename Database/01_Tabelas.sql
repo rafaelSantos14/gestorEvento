@@ -239,3 +239,30 @@ CREATE TABLE REIMPRESSAO_ITENS (
     INDEX idx_reimpressao (id_reimpressao),
     INDEX idx_produto_evento (id_produto_evento)
 );
+
+-- Catálogo de setores para onde uma CORTESIA (AMIGOS DA ALIANÇA) pode ser destinada
+-- Administrado em CONFIGURAÇÕES > Setores. Inativação lógica via fl_ativo (sem exclusão física,
+-- pois setores podem estar referenciados em vendas de cortesia já registradas)
+CREATE TABLE SETOR (
+    id_setor INT AUTO_INCREMENT PRIMARY KEY,
+    nm_setor VARCHAR(50) NOT NULL,
+    fl_ativo VARCHAR(3) DEFAULT 'SIM',
+    CONSTRAINT UQ_SETOR_NM_SETOR UNIQUE (nm_setor)
+);
+
+INSERT INTO SETOR (nm_setor) VALUES
+('COZINHA'),
+('MÚSICA'),
+('CAIXA'),
+('ORDEM'),
+('LANCHONETE');
+
+-- Setor de destino e observação da retirada, preenchidos apenas para venda do tipo CORTESIA
+-- (permanecem NULL para tp_operacao = 'VENDA', sem impacto nenhum no fluxo de venda normal)
+ALTER TABLE VENDA
+ADD COLUMN id_setor INT NULL,
+ADD COLUMN tx_observacao_setor VARCHAR(255) NULL,
+ADD CONSTRAINT fk_venda_setor
+    FOREIGN KEY (id_setor)
+    REFERENCES SETOR(id_setor),
+ADD INDEX idx_venda_id_setor (id_setor);

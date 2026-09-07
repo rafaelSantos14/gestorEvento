@@ -24,9 +24,9 @@ namespace GestorEvento.Repositories
             {
                 // 1. Inserir venda
                 string queryVenda = @"INSERT INTO VENDA
-                                      (id_ponto_venda, dt_venda, vl_total, cd_status, tp_operacao, id_inscricao_evento)
+                                      (id_ponto_venda, dt_venda, vl_total, cd_status, tp_operacao, id_inscricao_evento, id_setor, tx_observacao_setor)
                                       VALUES
-                                      (@idPontoVenda, @dtVenda, @vlTotal, @cdStatus, @tpOperacao, @idInscricaoEvento);
+                                      (@idPontoVenda, @dtVenda, @vlTotal, @cdStatus, @tpOperacao, @idInscricaoEvento, @idSetor, @txObservacaoSetor);
                                       SELECT LAST_INSERT_ID();";
 
                 int idVenda = 0;
@@ -38,15 +38,17 @@ namespace GestorEvento.Repositories
                     command.Parameters.AddWithValue("@cdStatus", "Concluida"); // Status sempre Concluida ao registrar
                     command.Parameters.AddWithValue("@tpOperacao", venda.TipoOperacao ?? "VENDA"); // Tipo de operação: VENDA ou CORTESIA
                     command.Parameters.AddWithValue("@idInscricaoEvento", (object)venda.IdInscricaoEvento ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@idSetor", (object)venda.IdSetor ?? DBNull.Value); // Setor de destino, apenas para CORTESIA
+                    command.Parameters.AddWithValue("@txObservacaoSetor", (object)venda.TxObservacaoSetor ?? DBNull.Value); // Observação da retirada, opcional
 
                     object result = command.ExecuteScalar();
                     idVenda = Convert.ToInt32(result);
                 }
 
                 // 2. Inserir itens da venda
-                string queryItem = @"INSERT INTO ITEM_VENDA 
-                                     (id_venda, id_produto_evento, qtde_vendida, vl_unitario, vl_subtotal) 
-                                     VALUES 
+                string queryItem = @"INSERT INTO ITEM_VENDA
+                                     (id_venda, id_produto_evento, qtde_vendida, vl_unitario, vl_subtotal)
+                                     VALUES
                                      (@idVenda, @idProdutoEvento, @qtdeVendida, @vlUnitario, @vlSubtotal);";
 
                 foreach (var item in venda.Itens)
@@ -86,10 +88,10 @@ namespace GestorEvento.Repositories
                 transaction = connection.BeginTransaction();
 
                 // 1. Inserir venda
-                string queryVenda = @"INSERT INTO VENDA 
-                                      (id_ponto_venda, dt_venda, vl_total, cd_status, tp_operacao) 
-                                      VALUES 
-                                      (@idPontoVenda, @dtVenda, @vlTotal, @cdStatus, @tpOperacao);
+                string queryVenda = @"INSERT INTO VENDA
+                                      (id_ponto_venda, dt_venda, vl_total, cd_status, tp_operacao, id_setor, tx_observacao_setor)
+                                      VALUES
+                                      (@idPontoVenda, @dtVenda, @vlTotal, @cdStatus, @tpOperacao, @idSetor, @txObservacaoSetor);
                                       SELECT LAST_INSERT_ID();";
 
                 int idVenda = 0;
@@ -100,6 +102,8 @@ namespace GestorEvento.Repositories
                     command.Parameters.AddWithValue("@vlTotal", venda.VlTotal);
                     command.Parameters.AddWithValue("@cdStatus", "Concluida"); // Status sempre Concluida ao registrar
                     command.Parameters.AddWithValue("@tpOperacao", venda.TipoOperacao ?? "VENDA"); // Tipo de operação: VENDA ou CORTESIA
+                    command.Parameters.AddWithValue("@idSetor", (object)venda.IdSetor ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@txObservacaoSetor", (object)venda.TxObservacaoSetor ?? DBNull.Value);
 
                     object result = command.ExecuteScalar();
                     idVenda = Convert.ToInt32(result);

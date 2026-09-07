@@ -196,6 +196,11 @@ namespace GestorEvento.Services
             if (venda.IdPontoVenda <= 0)
                 throw new ArgumentException("ID do ponto de venda inválido");
 
+            // CORTESIA exige setor de destino (rede de segurança: a obrigatoriedade real já é
+            // garantida na tela de identificação da cortesia, no FormPDV)
+            if (venda.TipoOperacao == "CORTESIA" && (!venda.IdSetor.HasValue || venda.IdSetor.Value <= 0))
+                throw new ArgumentException("Venda de cortesia exige um setor de destino");
+
             if (venda.VlTotal < 0)
                 throw new ArgumentException("Valor total da venda não pode ser negativo");
 
