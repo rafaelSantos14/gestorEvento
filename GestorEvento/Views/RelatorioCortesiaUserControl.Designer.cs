@@ -53,7 +53,7 @@ namespace GestorEvento.Views
             this.panelCards.Location = new System.Drawing.Point(0, 0);
             this.panelCards.Name = "panelCards";
             this.panelCards.Padding = new System.Windows.Forms.Padding(15);
-            this.panelCards.Size = new System.Drawing.Size(941, 140);
+            this.panelCards.Size = new System.Drawing.Size(924, 140);
             this.panelCards.TabIndex = 2;
             // 
             // pnlCardTicket
@@ -173,7 +173,7 @@ namespace GestorEvento.Views
             this.panelGrafico.Location = new System.Drawing.Point(0, 140);
             this.panelGrafico.Name = "panelGrafico";
             this.panelGrafico.Padding = new System.Windows.Forms.Padding(15);
-            this.panelGrafico.Size = new System.Drawing.Size(941, 250);
+            this.panelGrafico.Size = new System.Drawing.Size(924, 250);
             this.panelGrafico.TabIndex = 3;
             // 
             // lblGraficoBarras
@@ -194,7 +194,7 @@ namespace GestorEvento.Views
             this.chartBarras.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartBarras.Location = new System.Drawing.Point(15, 15);
             this.chartBarras.Name = "chartBarras";
-            this.chartBarras.Size = new System.Drawing.Size(911, 220);
+            this.chartBarras.Size = new System.Drawing.Size(894, 220);
             this.chartBarras.TabIndex = 1;
             this.chartBarras.Text = "cartesianChart1";
             // 
@@ -207,7 +207,7 @@ namespace GestorEvento.Views
             this.panelProdutos.Location = new System.Drawing.Point(0, 390);
             this.panelProdutos.Name = "panelProdutos";
             this.panelProdutos.Padding = new System.Windows.Forms.Padding(15);
-            this.panelProdutos.Size = new System.Drawing.Size(941, 360);
+            this.panelProdutos.Size = new System.Drawing.Size(924, 360);
             this.panelProdutos.TabIndex = 4;
             // 
             // dgvProdutosCortesia
@@ -218,7 +218,7 @@ namespace GestorEvento.Views
             this.dgvProdutosCortesia.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvProdutosCortesia.Location = new System.Drawing.Point(15, 35);
             this.dgvProdutosCortesia.Name = "dgvProdutosCortesia";
-            this.dgvProdutosCortesia.Size = new System.Drawing.Size(911, 310);
+            this.dgvProdutosCortesia.Size = new System.Drawing.Size(894, 310);
             this.dgvProdutosCortesia.TabIndex = 1;
             // 
             // lblProdutosCortesia
@@ -249,7 +249,7 @@ namespace GestorEvento.Views
             this.Controls.Add(this.panelCards);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Name = "RelatorioCortesiaUserControl";
-            this.Size = new System.Drawing.Size(941, 402);
+            this.Size = new System.Drawing.Size(924, 402);
             this.panelCards.ResumeLayout(false);
             this.pnlCardTicket.ResumeLayout(false);
             this.pnlCardTicket.PerformLayout();

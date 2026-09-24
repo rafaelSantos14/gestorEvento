@@ -145,27 +145,7 @@ namespace GestorEvento.Views
             menuRelatorios.Items.Add(itemConsolidado);
             
             // Separador
-            menuRelatorios.Items.Add(new ToolStripSeparator());
-            
-            // Adicionar item Relatório de Vendas
-            ToolStripMenuItem itemVendas = new ToolStripMenuItem("📊 Vendas");
-            itemVendas.Click += (s, args) => AbrirRelatorioVendas();
-            menuRelatorios.Items.Add(itemVendas);
-
-            // Adicionar item Relatório de Caixas (Ponto de Venda)
-            ToolStripMenuItem itemCaixas = new ToolStripMenuItem("💰 Caixas (PDV)");
-            itemCaixas.Click += (s, args) => AbrirRelatorioCaixas();
-            menuRelatorios.Items.Add(itemCaixas);
-
-            // Adicionar item Relatório de Cortesia
-            ToolStripMenuItem itemCortesia = new ToolStripMenuItem("🎁 Cortesias");
-            itemCortesia.Click += (s, args) => AbrirRelatorioCortesias();
-            menuRelatorios.Items.Add(itemCortesia);
-
-            // Adicionar item Relatório de Reimpressões
-            ToolStripMenuItem itemReimpressoes = new ToolStripMenuItem("🖨️ Reimpressões");
-            itemReimpressoes.Click += (s, args) => AbrirRelatorioReimpressoes();
-            menuRelatorios.Items.Add(itemReimpressoes);
+            menuRelatorios.Items.Add(new ToolStripSeparator());           
             
             // adicionar mais relatórios no futuro:
             // ToolStripMenuItem itemTeste = new ToolStripMenuItem("📦 Estoque");
@@ -225,114 +205,7 @@ namespace GestorEvento.Views
 
         private void AbrirRelatorioVendas()
         {
-            try
-            {
-                // Verifica se já existe uma janela aberta
-                foreach (Form f in this.MdiChildren)
-                {
-                    if (f is FormRelatorioVenda)
-                    {
-                        f.Activate();
-                        return;
-                    }
-                }
-                
-                // Abre uma nova instância
-                FormRelatorioVenda form = new FormRelatorioVenda();
-                form.Text = "Relatório de Vendas";
-                form.MdiParent = this;
-                form.Show();
-                
-                // Dimensionar DEPOIS de Show() para resetar qualquer configuração anterior
-                // Desconta: panelMenu (202px) + barra de título (40px) + espaço abas (35px)
-                form.Location = new Point(0, 0);
-                form.Size = new Size(this.ClientSize.Width - panelMenu.Width - 5, this.ClientSize.Height - panelTitulo.Height - 35);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao abrir FormRelatorioVenda: " + ex.Message + "\n" + ex.StackTrace, "Erro");
-            }
-        }
-
-        private void AbrirRelatorioCaixas()
-        {
-            try
-            {
-                foreach (Form f in this.MdiChildren)
-                {
-                    if (f is FormRelatorioCaixa)
-                    {
-                        f.Activate();
-                        return;
-                    }
-                }
-
-                FormRelatorioCaixa form = new FormRelatorioCaixa();
-                form.Text = "Relatório de Caixas";
-                form.MdiParent = this;
-                form.Show();
-
-                form.Location = new Point(0, 0);
-                form.Size = new Size(this.ClientSize.Width - panelMenu.Width - 5, this.ClientSize.Height - panelTitulo.Height - 35);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao abrir FormRelatorioCaixa: " + ex.Message + "\n" + ex.StackTrace, "Erro");
-            }
-        }
-
-        private void AbrirRelatorioCortesias()
-        {
-            try
-            {
-                foreach (Form f in this.MdiChildren)
-                {
-                    if (f is FormRelatorioCortesia)
-                    {
-                        f.Activate();
-                        return;
-                    }
-                }
-
-                FormRelatorioCortesia form = new FormRelatorioCortesia();
-                form.Text = "Relatório de Cortesias";
-                form.MdiParent = this;
-                form.Show();
-
-                form.Location = new Point(0, 0);
-                form.Size = new Size(this.ClientSize.Width - panelMenu.Width - 5, this.ClientSize.Height - panelTitulo.Height - 35);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao abrir FormRelatorioCortesia: " + ex.Message + "\n" + ex.StackTrace, "Erro");
-            }
-        }
-
-        private void AbrirRelatorioReimpressoes()
-        {
-            try
-            {
-                foreach (Form f in this.MdiChildren)
-                {
-                    if (f is FormRelatorioReimpressao)
-                    {
-                        f.Activate();
-                        return;
-                    }
-                }
-
-                FormRelatorioReimpressao form = new FormRelatorioReimpressao();
-                form.Text = "Relatório de Reimpressões";
-                form.MdiParent = this;
-                form.Show();
-
-                form.Location = new Point(0, 0);
-                form.Size = new Size(this.ClientSize.Width - panelMenu.Width - 5, this.ClientSize.Height - panelTitulo.Height - 35);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao abrir FormRelatorioReimpressao: " + ex.Message + "\n" + ex.StackTrace, "Erro");
-            }
+            
         }
 
         private void btnSair_Click(object sender, EventArgs e)

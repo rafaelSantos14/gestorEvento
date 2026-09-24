@@ -329,30 +329,6 @@
     <Compile Include="Views\FormPesquisarInscricaoEvento.Designer.cs">
       <DependentUpon>FormPesquisarInscricaoEvento.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\FormRelatorioVenda.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\FormRelatorioVenda.Designer.cs">
-      <DependentUpon>FormRelatorioVenda.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\FormRelatorioCaixa.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\FormRelatorioCaixa.Designer.cs">
-      <DependentUpon>FormRelatorioCaixa.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\FormRelatorioCortesia.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\FormRelatorioCortesia.Designer.cs">
-      <DependentUpon>FormRelatorioCortesia.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\FormRelatorioReimpressao.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\FormRelatorioReimpressao.Designer.cs">
-      <DependentUpon>FormRelatorioReimpressao.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\FormRelatoriosConsolidados.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -473,12 +449,6 @@
       <DependentUpon>FormAbrirCaixa.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\FormRelatorioCortesia.resx">
-      <DependentUpon>FormRelatorioCortesia.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\FormRelatorioReimpressao.resx">
-      <DependentUpon>FormRelatorioReimpressao.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Views\FormRelatoriosConsolidados.resx">
       <DependentUpon>FormRelatoriosConsolidados.cs</DependentUpon>
     </EmbeddedResource>
@@ -499,14 +469,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormVincularProdutoEvento.resx">
       <DependentUpon>FormVincularProdutoEvento.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\FormRelatorioVenda.resx">
-      <DependentUpon>FormRelatorioVenda.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\FormRelatorioCaixa.resx">
-      <DependentUpon>FormRelatorioCaixa.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\RelatorioCaixaUserControl.resx">
       <DependentUpon>RelatorioCaixaUserControl.cs</DependentUpon>
